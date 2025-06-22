@@ -29,8 +29,13 @@ public class CartItemEntity {
     @Column(nullable = false)
     private Long cartId;
 
-    @Column(nullable = false)
-    private Long productDetailId;
+//    @Column(nullable = false)
+//    private Long productDetailId;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
+
 
     @Column(nullable = false)
     private Integer quantity;
@@ -46,8 +51,8 @@ public class CartItemEntity {
     private CartEntity cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productDetailId", insertable = false, updatable = false)
-    private ProductDetailEntity productDetail;
+    @JoinColumn(name = "product", insertable = false, updatable = false)
+    private ProductEntity productEntity;
 
 //    public Long getId() { return id; }
 //    public Integer getQuantity() { return quantity; }

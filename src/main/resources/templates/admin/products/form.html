@@ -17,9 +17,72 @@
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
     <!-- ✅ Form thêm/sửa sản phẩm -->
+<!--    <form th:action="@{${formAction}}" th:object="${product}" method="post" enctype="multipart/form-data">-->
+
+<!--        &lt;!&ndash; Tên sản phẩm &ndash;&gt;-->
+<!--        <div class="mb-3">-->
+<!--            <label for="name" class="form-label">Tên sản phẩm</label>-->
+<!--            <input type="text" class="form-control" id="name" th:field="*{name}">-->
+<!--            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Mô tả &ndash;&gt;-->
+<!--        <div class="mb-3">-->
+<!--            <label for="description" class="form-label">Mô tả</label>-->
+<!--            <textarea class="form-control" id="description" rows="3" th:field="*{description}"></textarea>-->
+<!--            <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Giá gốc &ndash;&gt;-->
+<!--        <div class="mb-3">-->
+<!--            <label for="basePrice" class="form-label">Giá gốc</label>-->
+<!--            <input type="number" step="0.01" class="form-control" id="basePrice" th:field="*{basePrice}">-->
+<!--            <div class="text-danger" th:if="${#fields.hasErrors('basePrice')}" th:errors="*{basePrice}"></div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Danh mục &ndash;&gt;-->
+<!--        <div class="mb-3">-->
+<!--            <label for="categoryId" class="form-label">Danh mục</label>-->
+<!--            <select class="form-select" id="categoryId" th:field="*{categoryId}">-->
+<!--                <option value="">&#45;&#45; Chọn danh mục &#45;&#45;</option>-->
+<!--                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>-->
+<!--            </select>-->
+<!--            <div class="text-danger" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Thương hiệu &ndash;&gt;-->
+<!--        <div class="mb-3">-->
+<!--            <label for="brandId" class="form-label">Thương hiệu</label>-->
+<!--            <select class="form-select" id="brandId" th:field="*{brandId}">-->
+<!--                <option value="">&#45;&#45; Chọn thương hiệu &#45;&#45;</option>-->
+<!--                <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>-->
+<!--            </select>-->
+<!--            <div class="text-danger" th:if="${#fields.hasErrors('brandId')}" th:errors="*{brandId}"></div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Ảnh đại diện &ndash;&gt;-->
+<!--        <div class="mb-3">-->
+<!--            <label for="imageFile" class="form-label">Ảnh đại diện</label>-->
+<!--            <input class="form-control" type="file" id="imageFile" name="imageFile">-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Ảnh chi tiết &ndash;&gt;-->
+<!--        <div class="mb-3">-->
+<!--            <label for="imageFiles" class="form-label">Ảnh chi tiết</label>-->
+<!--            <input class="form-control" type="file" id="imageFiles" name="imageFiles" multiple>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Trạng thái &ndash;&gt;-->
+<!--        <div class="form-check mb-3">-->
+<!--            <input class="form-check-input" type="checkbox" th:field="*{isActive}" id="isActive">-->
+<!--            <label class="form-check-label" for="isActive">Kích hoạt</label>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Nút gửi &ndash;&gt;-->
+<!--        <button type="submit" class="btn btn-primary" th:text="${isEdit} ? 'Cập nhật' : 'Thêm mới'"></button>-->
+<!--        <a href="/admin/products" class="btn btn-secondary ms-2">Quay lại</a>-->
+<!--    </form>-->
     <form th:action="@{${formAction}}" th:object="${product}" method="post" enctype="multipart/form-data">
-<!--          th:object="${product}"-->
-<!--          method="post" enctype="multipart/form-data">-->
 
         <!-- Tên sản phẩm -->
         <div class="mb-3">
@@ -35,11 +98,39 @@
             <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
         </div>
 
-        <!-- Giá gốc -->
+        <!-- Kích thước -->
         <div class="mb-3">
-            <label for="basePrice" class="form-label">Giá gốc</label>
-            <input type="number" step="0.01" class="form-control" id="basePrice" th:field="*{basePrice}">
-            <div class="text-danger" th:if="${#fields.hasErrors('basePrice')}" th:errors="*{basePrice}"></div>
+            <label for="size" class="form-label">Kích thước</label>
+            <input type="text" class="form-control" id="size" th:field="*{size}">
+            <div class="text-danger" th:if="${#fields.hasErrors('size')}" th:errors="*{size}"></div>
+        </div>
+
+        <!-- Màu sắc -->
+        <div class="mb-3">
+            <label for="color" class="form-label">Màu sắc</label>
+            <input type="text" class="form-control" id="color" th:field="*{color}">
+            <div class="text-danger" th:if="${#fields.hasErrors('color')}" th:errors="*{color}"></div>
+        </div>
+
+        <!-- Số lượng tồn -->
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Số lượng tồn</label>
+            <input type="number" class="form-control" id="quantity" min="0" th:field="*{quantity}">
+            <div class="text-danger" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+        </div>
+
+        <!-- Giá bán -->
+        <div class="mb-3">
+            <label for="price" class="form-label">Giá bán (VNĐ)</label>
+            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}">
+            <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+        </div>
+
+        <!-- Mã SKU -->
+        <div class="mb-3">
+            <label for="sku" class="form-label">Mã SKU</label>
+            <input type="text" class="form-control" id="sku" th:field="*{sku}">
+            <div class="text-danger" th:if="${#fields.hasErrors('sku')}" th:errors="*{sku}"></div>
         </div>
 
         <!-- Danh mục -->
@@ -84,6 +175,7 @@
         <button type="submit" class="btn btn-primary" th:text="${isEdit} ? 'Cập nhật' : 'Thêm mới'"></button>
         <a href="/admin/products" class="btn btn-secondary ms-2">Quay lại</a>
     </form>
+
 </div>
 
 <!-- ✅ Bootstrap JS -->

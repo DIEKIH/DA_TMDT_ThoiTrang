@@ -223,6 +223,176 @@
             </div>
 
             <!-- Products Table -->
+<!--            <div class="row mt-4">-->
+<!--                <div class="col-12">-->
+<!--                    <div class="card">-->
+<!--                        <div class="card-header d-flex justify-content-between align-items-center">-->
+<!--                            <h5 class="mb-0">Danh sách sản phẩm</h5>-->
+<!--                            <div>-->
+<!--                                <a th:href="@{/admin/products/stats}" class="btn btn-info btn-sm me-2">-->
+<!--                                    <i class="fas fa-chart-bar"></i> Thống kê-->
+<!--                                </a>-->
+<!--                                <a th:href="@{/admin/products/add}" class="btn btn-primary btn-sm">-->
+<!--                                    <i class="fas fa-plus"></i> Thêm sản phẩm-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="table-responsive">-->
+<!--                            <table class="table table-hover">-->
+<!--                                <thead class="table-light">-->
+<!--                                <tr>-->
+<!--                                    <th width="5%">-->
+<!--                                        <input type="checkbox" class="form-check-input" id="selectAll">-->
+<!--                                    </th>-->
+<!--                                    <th width="8%">Hình ảnh</th>-->
+<!--                                    <th width="25%">Tên sản phẩm</th>-->
+<!--                                    <th width="12%">Danh mục</th>-->
+<!--                                    <th width="12%">Thương hiệu</th>-->
+<!--                                    <th width="12%">Giá bán</th>-->
+<!--                                    <th width="8%">Trạng thái</th>-->
+<!--                                    <th width="10%">Ngày tạo</th>-->
+<!--                                    <th width="8%">Thao tác</th>-->
+<!--                                </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                <tr th:each="product : ${products.content}">-->
+<!--                                    <td>-->
+<!--                                        <input type="checkbox" class="form-check-input product-checkbox"-->
+<!--                                               th:value="${product.id}">-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/no-image.png'}"-->
+<!--                                             alt="Product" class="product-image" style="width: 60px;">-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div>-->
+<!--                                            <div class="fw-bold" th:text="${product.name}">Tên sản phẩm</div>-->
+<!--                                            <small class="text-muted" th:text="${#strings.abbreviate(product.description, 50)}">Mô tả ngắn</small>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
+<!--                                    <td th:text="${product.category != null ? product.category.name : 'N/A'}">Danh mục</td>-->
+<!--                                    <td th:text="${product.brand != null ? product.brand.name : 'N/A'}">Thương hiệu</td>-->
+<!--                                    <td class="price-format">-->
+<!--                                        <span th:text="${#numbers.formatCurrency(product.basePrice)}">đ</span>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <span th:if="${product.isActive}" class="badge bg-success">Hoạt động</span>-->
+<!--                                        <span th:unless="${product.isActive}" class="badge bg-warning">Ngừng hoạt động</span>-->
+<!--                                    </td>-->
+<!--                                    <td th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy')}">Ngày tạo</td>-->
+<!--                                    <td>-->
+<!--                                        <div class="btn-group" role="group">-->
+<!--                                            <a th:href="@{/admin/products/{id}(id=${product.id})}"-->
+<!--                                               class="btn btn-sm btn-outline-primary" title="Xem chi tiết">-->
+<!--                                                <i class="fas fa-eye"></i>-->
+<!--                                            </a>-->
+<!--                                            <a th:href="@{/admin/products/edit/{id}(id=${product.id})}"-->
+<!--                                               class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">-->
+<!--                                                <i class="fas fa-edit"></i>-->
+<!--                                            </a>-->
+<!--                                            <form th:action="@{/admin/products/toggle-status/{id}(id=${product.id})}"-->
+<!--                                                  method="post" style="display: inline;">-->
+<!--                                                <button type="submit"-->
+<!--                                                        th:class="${product.isActive ? 'btn btn-sm btn-outline-secondary' : 'btn btn-sm btn-outline-success'}"-->
+<!--                                                        th:title="${product.isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}"-->
+<!--                                                        onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái?')">-->
+<!--                                                    <i th:class="${product.isActive ? 'fas fa-pause' : 'fas fa-play'}"></i>-->
+<!--                                                </button>-->
+<!--                                            </form>-->
+<!--                                            <form th:action="@{/admin/products/delete/{id}(id=${product.id})}"-->
+<!--                                                  method="post" style="display: inline;">-->
+<!--                                                <button type="submit" class="btn btn-sm btn-outline-danger"-->
+<!--                                                        title="Xóa"-->
+<!--                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">-->
+<!--                                                    <i class="fas fa-trash"></i>-->
+<!--                                                </button>-->
+<!--                                            </form>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+
+<!--                                &lt;!&ndash; Nếu không có sản phẩm &ndash;&gt;-->
+<!--                                <tr th:if="${#lists.isEmpty(products.content)}">-->
+<!--                                    <td colspan="9" class="text-center py-4">-->
+<!--                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>-->
+<!--                                        <p class="text-muted">Không có sản phẩm nào được tìm thấy</p>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Pagination &ndash;&gt;-->
+<!--                        <div class="card-footer" th:if="${products.content != null and !#lists.isEmpty(products.content)}">-->
+<!--                            <div class="row align-items-center">-->
+<!--                                <div class="col-md-6">-->
+<!--                                    <div class="d-flex align-items-center">-->
+<!--                                        <span class="me-2">Hiển thị:</span>-->
+<!--                                        <select class="form-select form-select-sm me-2" style="width: auto;"-->
+<!--                                                onchange="changePageSize(this.value)">-->
+<!--                                            <option value="12" th:selected="${products.size == 12}">12</option>-->
+<!--                                            <option value="24" th:selected="${products.size == 24}">24</option>-->
+<!--                                            <option value="48" th:selected="${products.size == 48}">48</option>-->
+<!--                                            <option value="96" th:selected="${products.size == 96}">96</option>-->
+<!--                                        </select>-->
+<!--                                        <span class="text-muted">-->
+<!--                                        trên tổng <span th:text="${totalElements}">0</span> sản phẩm-->
+<!--                                    </span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-6">-->
+<!--                                    <nav aria-label="Phân trang" th:if="${totalPages > 1}">-->
+<!--                                        <ul class="pagination pagination-sm mb-0 justify-content-end">-->
+<!--                                            &lt;!&ndash; Previous button &ndash;&gt;-->
+<!--                                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                                                &lt;!&ndash; Nút Trước (có link) &ndash;&gt;-->
+<!--                                                <a class="page-link"-->
+<!--                                                   th:if="${currentPage > 0}"-->
+<!--                                                   th:href="@{/admin/products(page=${currentPage - 1}, size=${products.size}, search=${search}, categoryId=${categoryId}, isActive=${isActive}, sortBy=${sortBy}, sortDir=${sortDir})}"-->
+<!--                                                   th:text="'Trước'">-->
+<!--                                                </a>-->
+
+<!--                                                &lt;!&ndash; Nút Trước (disabled) &ndash;&gt;-->
+<!--                                                <a class="page-link disabled"-->
+<!--                                                   th:unless="${currentPage > 0}"-->
+<!--                                                   href="#"-->
+<!--                                                   th:text="'Trước'">-->
+<!--                                                </a>-->
+
+<!--                                            </li>-->
+
+<!--                                            &lt;!&ndash; Page numbers &ndash;&gt;-->
+<!--                                            <li class="page-item"-->
+<!--                                                th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"-->
+<!--                                                th:if="${pageNum >= (currentPage > 2 ? currentPage - 2 : 0) && pageNum <= (currentPage < totalPages - 3 ? currentPage+2 : totalPages - 1)}"-->
+<!--                                                th:classappend="${pageNum == currentPage} ? 'active'">-->
+<!--                                                <a class="page-link"-->
+<!--                                                   th:href="@{/admin/products(page=${pageNum}, size=${products.size}, search=${search}, categoryId=${categoryId}, isActive=${isActive}, sortBy=${sortBy}, sortDir=${sortDir})}"-->
+<!--                                                   th:text="${pageNum + 1}">-->
+<!--                                                </a>-->
+<!--                                            </li>-->
+
+<!--                                            &lt;!&ndash; Next button &ndash;&gt;-->
+<!--                                            <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">-->
+<!--                                                <a class="page-link" th:if="${currentPage < totalPages - 1}"-->
+<!--                                                   th:href="@{/admin/products(page=${currentPage + 1}, size=${products.size}, search=${search}, categoryId=${categoryId}, isActive=${isActive}, sortBy=${sortBy}, sortDir=${sortDir})}">-->
+<!--                                                    Trang sau-->
+<!--                                                </a>-->
+<!--                                                <a th:unless="${currentPage < totalPages - 1}" href="#">-->
+<!--                                                    Trang sau-->
+<!--                                                </a>-->
+<!--&lt;!&ndash;                                                   th:text="'Sau'">&ndash;&gt;-->
+<!--&lt;!&ndash;                                                </a>&ndash;&gt;-->
+<!--                                            </li>-->
+<!--                                        </ul>-->
+<!--                                    </nav>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="card">
@@ -232,78 +402,63 @@
                                 <a th:href="@{/admin/products/stats}" class="btn btn-info btn-sm me-2">
                                     <i class="fas fa-chart-bar"></i> Thống kê
                                 </a>
-                                <a th:href="@{/admin/products/add}" class="btn btn-primary btn-sm">
+                                <a th:href="@{/admin/products/create}" class="btn btn-primary btn-sm">
                                     <i class="fas fa-plus"></i> Thêm sản phẩm
                                 </a>
                             </div>
                         </div>
+
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-light">
                                 <tr>
-                                    <th width="5%">
-                                        <input type="checkbox" class="form-check-input" id="selectAll">
-                                    </th>
-                                    <th width="8%">Hình ảnh</th>
-                                    <th width="25%">Tên sản phẩm</th>
-                                    <th width="12%">Danh mục</th>
-                                    <th width="12%">Thương hiệu</th>
-                                    <th width="12%">Giá bán</th>
-                                    <th width="8%">Trạng thái</th>
-                                    <th width="10%">Ngày tạo</th>
-                                    <th width="8%">Thao tác</th>
+                                    <th>#</th>
+                                    <th>Hình</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Danh mục</th>
+                                    <th>Thương hiệu</th>
+                                    <th>Giá bán</th>
+                                    <th>Kích cỡ</th>
+                                    <th>Màu sắc</th>
+                                    <th>Tồn kho</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="product : ${products.content}">
-                                    <td>
-                                        <input type="checkbox" class="form-check-input product-checkbox"
-                                               th:value="${product.id}">
-                                    </td>
+                                    <td th:text="${product.id}">1</td>
                                     <td>
                                         <img th:src="${product.imageUrl != null ? product.imageUrl : '/images/no-image.png'}"
-                                             alt="Product" class="product-image" style="width: 60px;">
+                                             style="width: 60px;" alt="Ảnh" class="img-thumbnail">
                                     </td>
                                     <td>
                                         <div>
-                                            <div class="fw-bold" th:text="${product.name}">Tên sản phẩm</div>
-                                            <small class="text-muted" th:text="${#strings.abbreviate(product.description, 50)}">Mô tả ngắn</small>
+                                            <strong th:text="${product.name}">Tên</strong><br>
+                                            <small class="text-muted" th:text="${#strings.abbreviate(product.description, 40)}">Mô tả</small>
                                         </div>
                                     </td>
-                                    <td th:text="${product.category != null ? product.category.name : 'N/A'}">Danh mục</td>
-                                    <td th:text="${product.brand != null ? product.brand.name : 'N/A'}">Thương hiệu</td>
-                                    <td class="price-format">
-                                        <span th:text="${#numbers.formatCurrency(product.basePrice)}">đ</span>
-                                    </td>
+                                    <td th:text="${product.category?.name ?: 'N/A'}">Danh mục</td>
+                                    <td th:text="${product.brand?.name ?: 'N/A'}">Thương hiệu</td>
+                                    <td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</td>
+                                    <td th:text="${product.size ?: '-'}">Size</td>
+                                    <td th:text="${product.color ?: '-'}">Màu</td>
+                                    <td th:text="${product.quantity}">0</td>
                                     <td>
                                         <span th:if="${product.isActive}" class="badge bg-success">Hoạt động</span>
-                                        <span th:unless="${product.isActive}" class="badge bg-warning">Ngừng hoạt động</span>
+                                        <span th:unless="${product.isActive}" class="badge bg-secondary">Ẩn</span>
                                     </td>
-                                    <td th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy')}">Ngày tạo</td>
                                     <td>
-                                        <div class="btn-group" role="group">
-                                            <a th:href="@{/admin/products/{id}(id=${product.id})}"
-                                               class="btn btn-sm btn-outline-primary" title="Xem chi tiết">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a th:href="@{/admin/products/{id}(id=${product.id})}" class="btn btn-outline-primary" title="Chi tiết">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a th:href="@{/admin/products/edit/{id}(id=${product.id})}"
-                                               class="btn btn-sm btn-outline-warning" title="Chỉnh sửa">
+                                            <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-outline-warning" title="Sửa">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form th:action="@{/admin/products/toggle-status/{id}(id=${product.id})}"
-                                                  method="post" style="display: inline;">
-                                                <button type="submit"
-                                                        th:class="${product.isActive ? 'btn btn-sm btn-outline-secondary' : 'btn btn-sm btn-outline-success'}"
-                                                        th:title="${product.isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn thay đổi trạng thái?')">
-                                                    <i th:class="${product.isActive ? 'fas fa-pause' : 'fas fa-play'}"></i>
-                                                </button>
-                                            </form>
-                                            <form th:action="@{/admin/products/delete/{id}(id=${product.id})}"
-                                                  method="post" style="display: inline;">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger"
-                                                        title="Xóa"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
+                                            <form th:action="@{/admin/products/delete/{id}(id=${product.id})}" method="post" style="display:inline;">
+                                                <button type="submit" class="btn btn-outline-danger"
+                                                        onclick="return confirm('Xóa sản phẩm này?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -311,110 +466,88 @@
                                     </td>
                                 </tr>
 
-                                <!-- Nếu không có sản phẩm -->
                                 <tr th:if="${#lists.isEmpty(products.content)}">
-                                    <td colspan="9" class="text-center py-4">
-                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                        <p class="text-muted">Không có sản phẩm nào được tìm thấy</p>
+                                    <td colspan="11" class="text-center text-muted py-4">
+                                        <i class="fas fa-box-open fa-2x mb-2"></i><br>
+                                        Không có sản phẩm nào được tìm thấy
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <!-- Pagination -->
-                        <div class="card-footer" th:if="${products.content != null and !#lists.isEmpty(products.content)}">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">Hiển thị:</span>
-                                        <select class="form-select form-select-sm me-2" style="width: auto;"
-                                                onchange="changePageSize(this.value)">
-                                            <option value="12" th:selected="${products.size == 12}">12</option>
-                                            <option value="24" th:selected="${products.size == 24}">24</option>
-                                            <option value="48" th:selected="${products.size == 48}">48</option>
-                                            <option value="96" th:selected="${products.size == 96}">96</option>
-                                        </select>
-                                        <span class="text-muted">
-                                        trên tổng <span th:text="${totalElements}">0</span> sản phẩm
-                                    </span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <nav aria-label="Phân trang" th:if="${totalPages > 1}">
-                                        <ul class="pagination pagination-sm mb-0 justify-content-end">
-                                            <!-- Previous button -->
-                                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                                                <!-- Nút Trước (có link) -->
-                                                <a class="page-link"
-                                                   th:if="${currentPage > 0}"
-                                                   th:href="@{/admin/products(page=${currentPage - 1}, size=${products.size}, search=${search}, categoryId=${categoryId}, isActive=${isActive}, sortBy=${sortBy}, sortDir=${sortDir})}"
-                                                   th:text="'Trước'">
-                                                </a>
-
-                                                <!-- Nút Trước (disabled) -->
-                                                <a class="page-link disabled"
-                                                   th:unless="${currentPage > 0}"
-                                                   href="#"
-                                                   th:text="'Trước'">
-                                                </a>
-
-                                            </li>
-
-                                            <!-- Page numbers -->
-                                            <li class="page-item"
-                                                th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                                                th:if="${pageNum >= (currentPage > 2 ? currentPage - 2 : 0) && pageNum <= (currentPage < totalPages - 3 ? currentPage+2 : totalPages - 1)}"
-                                                th:classappend="${pageNum == currentPage} ? 'active'">
-                                                <a class="page-link"
-                                                   th:href="@{/admin/products(page=${pageNum}, size=${products.size}, search=${search}, categoryId=${categoryId}, isActive=${isActive}, sortBy=${sortBy}, sortDir=${sortDir})}"
-                                                   th:text="${pageNum + 1}">
-                                                </a>
-                                            </li>
-
-                                            <!-- Next button -->
-                                            <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-                                                <a class="page-link" th:if="${currentPage < totalPages - 1}"
-                                                   th:href="@{/admin/products(page=${currentPage + 1}, size=${products.size}, search=${search}, categoryId=${categoryId}, isActive=${isActive}, sortBy=${sortBy}, sortDir=${sortDir})}">
-                                                    Trang sau
-                                                </a>
-                                                <a th:unless="${currentPage < totalPages - 1}" href="#">
-                                                    Trang sau
-                                                </a>
-<!--                                                   th:text="'Sau'">-->
-<!--                                                </a>-->
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
+                        <!-- Phân trang -->
+                        <div class="card-footer d-flex justify-content-between align-items-center" th:if="${products.totalPages > 1}">
+                            <div>Trang <b th:text="${currentPage + 1}">1</b> / <b th:text="${totalPages}">1</b></div>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/products(page=${currentPage - 1})}">Trước</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                                    th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/admin/products(page=${i})}" th:text="${i + 1}">1</a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/products(page=${currentPage + 1})}">Sau</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <!-- Bulk Actions -->
+<!--            <div class="row mt-3" th:if="${not #lists.isEmpty(products.content)}">-->
+<!--                <div class="col-12">-->
+<!--                    <div class="card">-->
+<!--                        <div class="card-body">-->
+<!--                            <div class="d-flex align-items-center">-->
+<!--                                <span class="me-3">Thao tác với các mục đã chọn:</span>-->
+<!--                                <button class="btn btn-sm btn-success me-2" onclick="bulkAction('activate')">-->
+<!--                                    <i class="fas fa-check"></i> Kích hoạt-->
+<!--                                </button>-->
+<!--                                <button class="btn btn-sm btn-warning me-2" onclick="bulkAction('deactivate')">-->
+<!--                                    <i class="fas fa-pause"></i> Ngừng hoạt động-->
+<!--                                </button>-->
+<!--                                <button class="btn btn-sm btn-danger" onclick="bulkAction('delete')">-->
+<!--                                    <i class="fas fa-trash"></i> Xóa-->
+<!--                                </button>-->
+<!--                                <span class="ms-auto text-muted" id="selectedCount">0 mục được chọn</span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <!-- Thao tác hàng loạt -->
             <div class="row mt-3" th:if="${not #lists.isEmpty(products.content)}">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <span class="me-3">Thao tác với các mục đã chọn:</span>
-                                <button class="btn btn-sm btn-success me-2" onclick="bulkAction('activate')">
-                                    <i class="fas fa-check"></i> Kích hoạt
-                                </button>
-                                <button class="btn btn-sm btn-warning me-2" onclick="bulkAction('deactivate')">
-                                    <i class="fas fa-pause"></i> Ngừng hoạt động
-                                </button>
-                                <button class="btn btn-sm btn-danger" onclick="bulkAction('delete')">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </button>
-                                <span class="ms-auto text-muted" id="selectedCount">0 mục được chọn</span>
+                    <form id="bulkActionForm" method="post" th:action="@{/admin/products/bulk}">
+                        <input type="hidden" name="action" id="bulkActionType">
+                        <div id="selectedIdsContainer"></div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-3">Thao tác với các mục đã chọn:</span>
+                                    <button type="submit" class="btn btn-sm btn-success me-2" onclick="setBulkAction('activate')">
+                                        <i class="fas fa-check"></i> Kích hoạt
+                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-warning me-2" onclick="setBulkAction('deactivate')">
+                                        <i class="fas fa-pause"></i> Ngừng hoạt động
+                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="setBulkAction('delete')">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                    <span class="ms-auto text-muted" id="selectedCount">0 mục được chọn</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
+
         </div>
     </div>
 
