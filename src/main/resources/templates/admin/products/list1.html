@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Quản lý bán hàng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 80px;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary-color), #34495e);
+            color: white;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .sidebar-header h4 {
+            margin: 0;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .sidebar-header h4 {
+            opacity: 0;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 0;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 0.75rem 1rem;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 0.75rem;
+            text-align: center;
+        }
+
+        .sidebar.collapsed .nav-link span {
+            display: none;
+        }
+
+        .submenu {
+            background-color: rgba(0,0,0,0.2);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .submenu.show {
+            max-height: 500px;
+        }
+
+        .submenu .nav-link {
+            padding-left: 3rem;
+            font-size: 0.9rem;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        .top-navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--secondary-color), #5dade2);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, var(--success-color), #58d68d);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, var(--warning-color), #f7dc6f);
+        }
+
+        .stat-card.danger {
+            background: linear-gradient(135deg, var(--accent-color), #ec7063);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 1rem;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color), #5dade2);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .alert {
+            border: none;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+
+        .alert-warning {
+            border-left-color: var(--warning-color);
+            background-color: #fff3cd;
+        }
+
+        .alert-danger {
+            border-left-color: var(--accent-color);
+            background-color: #f8d7da;
+        }
+
+        .badge {
+            padding: 0.5rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 100%;
+                z-index: 1050;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .main-content.expanded {
+                margin-left: 0;
+            }
+
+            .top-navbar {
+                padding: 1rem;
+            }
+
+            .stat-card {
+                margin-bottom: 1rem;
+                padding: 1.5rem;
+            }
+
+            .stat-card h3 {
+                font-size: 2rem;
+            }
+
+            .chart-container {
+                padding: 1rem;
+            }
+
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1040;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .search-bar {
+            background: white;
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: none;
+            width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 100%;
+                margin-top: 1rem;
+            }
+        }
+        /* Product card styles */
+        .product-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .category-badge {
+            background: #f1f1f1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            flex: 1;
+        }
+
+        .product-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .status-inactive {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* Stats card styles */
+        .stats-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        /* Filter card styles */
+        .filter-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .search-box input {
+            padding-left: 35px;
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<!--<div th:replace="fragments/admin_sidebar :: admin_sidebar"></div>-->
+
+
+<!-- Overlay for mobile -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+    <!-- Top Navbar -->
+    <!--    <div th:replace="fragments/admin_navbar :: admin_navbar"></div>-->
+
+    <!-- Dashboard Content -->
+    <div class="content-section active" id="products-list">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h2 class="mb-0">
+                            <i class="fas fa-box me-2"></i>
+                            Quản lý sản phẩm
+                        </h2>
+                        <p class="mb-0 opacity-75">Quản lý toàn bộ sản phẩm trong hệ thống</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                            <span class="badge bg-light text-dark fs-6">
+                                <i class="fas fa-user me-1"></i>
+                                <span th:text="${adminUsername}">Admin</span>
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <!-- Alert Messages -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-primary text-white">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <h4 class="text-primary mb-1" th:text="${totalElements}">0</h4>
+                        <p class="text-muted mb-0">Tổng sản phẩm</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-success text-white">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h4 class="text-success mb-1" id="activeProducts">0</h4>
+                        <p class="text-muted mb-0">Đang hoạt động</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-danger text-white">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h4 class="text-danger mb-1" id="inactiveProducts">0</h4>
+                        <p class="text-muted mb-0">Ngừng kinh doanh</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-warning text-white">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h4 class="text-warning mb-1" th:text="${totalViews}">0</h4>
+                        <p class="text-muted mb-0">Lượt xem</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="filter-card">
+                <form th:action="@{/admin/products}" method="get" class="row g-3">
+                    <div class="col-md-4 search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm sản phẩm..." th:value="${search}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="categoryId" class="form-select">
+                            <option value="">-- Tất cả danh mục --</option>
+                            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"
+                                    th:selected="${categoryId == cat.id}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="isActive" class="form-select">
+                            <option value="">-- Trạng thái --</option>
+                            <option value="true" th:selected="${isActive == true}">Đang hoạt động</option>
+                            <option value="false" th:selected="${isActive == false}">Ngừng kinh doanh</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter me-1"></i> Lọc
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col" th:each="product : ${products.content}">
+                    <div class="product-card position-relative">
+                        <img th:src="@{'/uploads/products/' + ${product.imageUrl}}" alt="Ảnh sản phẩm" class="product-image">
+                        <div class="p-3">
+                            <h5 class="fw-bold mb-1" th:text="${product.name}">Tên sản phẩm</h5>
+                            <span class="category-badge mb-2 d-inline-block" th:text="${product.category?.name}">Danh mục</span>
+                            <p class="product-price mb-2" th:text="${#numbers.formatDecimal(product.basePrice, 0, 'COMMA', '.', 0)} + '₫'">0₫</p>
+                            <div class="product-actions">
+                                <a th:href="@{'/admin/products/edit/' + ${product.id}}" class="btn btn-primary btn-action">
+                                    <i class="fas fa-edit me-1"></i> Sửa
+                                </a>
+                                <a th:href="@{'/admin/products/toggle-status/' + ${product.id}}"
+                                   class="btn btn-warning btn-action"
+                                   onclick="return confirm('Bạn có chắc muốn thay đổi trạng thái sản phẩm này?')">
+                                    <i class="fas fa-power-off me-1"></i>
+                                    <span th:text="${product.isActive ? 'Vô hiệu' : 'Kích hoạt'}">Trạng thái</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="product-status"
+                             th:classappend="${product.isActive} ? ' status-active' : ' status-inactive'"
+                             th:text="${product.isActive} ? 'Đang hoạt động' : 'Ngừng kinh doanh'">
+                            Trạng thái
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination mt-4">
+                <ul class="pagination">
+                    <li th:classappend="${products.hasPrevious()} ? '' : 'disabled'" class="page-item">
+                        <a th:href="@{'/admin/products?page=' + ${products.number - 1}}" class="page-link">Trước</a>
+                    </li>
+                    <li th:each="pageNum : ${#numbers.sequence(0, products.totalPages - 1)}"
+                        th:classappend="${products.number == pageNum} ? 'active'" class="page-item">
+                        <a th:href="@{'/admin/products?page=' + ${pageNum}}" class="page-link" th:text="${pageNum + 1}">1</a>
+                    </li>
+                    <li th:classappend="${products.hasNext()} ? '' : 'disabled'" class="page-item">
+                        <a th:href="@{'/admin/products?page=' + ${products.number + 1}}" class="page-link">Sau</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Content Sections (Hidden by default) -->
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<!-- <script>
+    // Sidebar toggle functionality
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const overlay = document.getElementById('overlay');
+
+        if (window.innerWidth <= 768) {
+            // Mobile behavior
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        } else {
+            // Desktop behavior
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+    }
+
+    // Submenu toggle
+    function toggleSubmenu(menuId) {
+        const submenu = document.getElementById(menuId);
+        submenu.classList.toggle('show');
+    }
+
+    // Show section
+    function showSection(sectionId) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Show selected section
+        document.getElementById(sectionId).classList.add('active');
+
+        // Update active nav link
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Hide sidebar on mobile after selection
+        if (window.innerWidth <= 768) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+    } -->
+
+// Chart initialization
+// const ctx = document.getElementById('revenueChart').getContext('2d');
+// const revenueChart = new Chart(ctx, {
+//     type: 'line',
+//     data: {
+//         labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+//         datasets: [{
+//             label: 'Doanh thu (triệu đồng)',
+//             data: [12, 19, 15, 25, 22, 30, 28],
+//             borderColor: '#3498db',
+//             backgroundColor: 'rgba(52, 152, 219, 0.1)',
+//             borderWidth: 3,
+//             fill: true,
+//             tension: 0.4
+//         }]
+//     },
+//     options: {
+//         responsive: true,
+//         maintainAspectRatio: false,
+//         scales: {
+//             y: {
+//                 beginAtZero: true,
+//                 grid: {
+//                     color: 'rgba(0,0,0,0.1)'
+//                 }
+//             },
+//             x: {
+//                 grid: {
+//                     color: 'rgba(0,0,0,0.1)'
+//                 }
+//             }
+//         },
+//         plugins: {
+//             legend: {
+//                 display: false
+//             }
+//         }
+//     }
+// });
+
+// Window resize handler
+window.addEventListener('resize', function() {
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+const overlay = document.getElementById('overlay');
+
+if (window.innerWidth > 768) {
+sidebar.classList.remove('show');
+overlay.classList.remove('show');
+} else {
+sidebar.classList.remove('collapsed');
+mainContent.classList.remove('expanded');
+}
+});
+
+// Initialize tooltips
+const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+</script>
+<script>
+    // Fetch product stats
+    fetch('/admin/products/stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('activeProducts').textContent = data.activeCount || 0;
+            document.getElementById('inactiveProducts').textContent = data.inactiveCount || 0;
+        })
+        .catch(error => console.error('Error fetching product stats:', error));
+</script>
+</body>
+</html>

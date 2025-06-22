@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý giảm giá - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin_nav.css}">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div th:replace="fragments/admin_sidebar :: admin_sidebar"></div>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Navbar -->
+        <div th:replace="fragments/admin_navbar :: admin_navbar"></div>
+
+        <!-- Dashboard Content -->
+         <!-- ở đây -->
+        <div class="admin-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h4 class="mb-0">
+                            <i class="fas fa-tags me-2"></i>
+                            Quản lý danh mục
+                        </h4>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                    <span class="me-3">
+                        <i class="fas fa-user me-1"></i>
+                        Xin chào, <strong th:text="${adminUsername}">Admin</strong>
+                    </span>
+                        <a href="/admin/logout" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-sign-out-alt me-1"></i>
+                            Đăng xuất
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+            <!-- Alerts -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="search-container">
+                <form method="get" th:action="@{/admin/categories}">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Tìm kiếm</label>
+                            <input type="text" class="form-control" name="search" th:value="${search}"
+                                   placeholder="Nhập tên danh mục...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Trạng thái</label>
+                            <select class="form-select" name="status">
+                                <option value="all" th:selected="${status == 'all'}">Tất cả</option>
+                                <option value="active" th:selected="${status == 'active'}">Hoạt động</option>
+                                <option value="inactive" th:selected="${status == 'inactive'}">Không hoạt động</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Số lượng/trang</label>
+                            <select class="form-select" name="size">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <a href="/admin/categories" class="btn btn-outline-secondary">
+                                <i class="fas fa-refresh"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-title mb-0">Danh sách danh mục</h1>
+                    <p class="text-muted mb-0">Tổng cộng: <strong th:text="${#lists.size(categories)}">0</strong> danh mục</p>
+                </div>
+                <a href="/admin/categories/create" class="btn btn-create">
+                    <i class="fas fa-plus me-2"></i>
+                    Thêm danh mục mới
+                </a>
+            </div>
+
+            <!-- Categories Table -->
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th style="width: 80px">#</th>
+                            <th style="width: 100px">Hình ảnh</th>
+                            <th>Tên danh mục</th>
+                            <th class="d-none d-md-table-cell">Mô tả</th>
+                            <th style="width: 120px">Trạng thái</th>
+                            <th class="d-none d-lg-table-cell" style="width: 150px">Ngày tạo</th>
+                            <th style="width: 200px" class="text-center">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="category, iterStat : ${categories}">
+                            <td class="align-middle" th:text="${iterStat.count}">1</td>
+                            <td class="align-middle">
+                                <img th:if="${category.imageUrl}"
+                                     th:src="${category.imageUrl}"
+                                     class="category-image rounded"
+                                     alt="Category image">
+                                <div th:unless="${category.imageUrl}"
+                                     class="category-image bg-light d-flex align-items-center justify-content-center rounded">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <strong th:text="${category.name}">Tên danh mục</strong>
+                            </td>
+                            <td class="align-middle d-none d-md-table-cell">
+                                <span th:text="${category.description ?: 'Chưa có mô tả'}">Mô tả</span>
+                            </td>
+                            <td class="align-middle">
+                                <span th:if="${category.isActive}" class="badge bg-success status-badge">
+                                    <i class="fas fa-check me-1"></i>Hoạt động
+                                </span>
+                                <span th:unless="${category.isActive}" class="badge bg-danger status-badge">
+                                    <i class="fas fa-times me-1"></i>Tạm dừng
+                                </span>
+                            </td>
+                            <td class="align-middle d-none d-lg-table-cell text-muted"
+                                th:text="${#temporals.format(category.createdAt, 'dd/MM/yyyy HH:mm')}">
+                                01/01/2024 10:00
+                            </td>
+                            <td class="align-middle text-center">
+                                <div class="btn-group" role="group">
+                                    <a th:href="@{/admin/categories/edit/{id}(id=${category.id})}"
+                                       class="btn btn-outline-primary btn-sm btn-action"
+                                       title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <form th:action="@{/admin/categories/toggle-status/{id}(id=${category.id})}"
+                                          method="post" class="d-inline">
+                                        <button type="submit"
+                                                th:class="${category.isActive} ? 'btn btn-outline-warning btn-sm btn-action' : 'btn btn-outline-success btn-sm btn-action'"
+                                                th:title="${category.isActive} ? 'Tạm dừng' : 'Kích hoạt'">
+                                            <i th:class="${category.isActive} ? 'fas fa-pause' : 'fas fa-play'"></i>
+                                        </button>
+                                    </form>
+
+                                    <button type="button"
+                                            class="btn btn-outline-danger btn-sm btn-action"
+                                            data-bs-toggle="modal"
+                                            th:data-bs-target="'#deleteModal' + ${category.id}"
+                                            title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" th:id="'deleteModal' + ${category.id}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Xác nhận xóa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Bạn có chắc chắn muốn xóa danh mục
+                                                    <strong th:text="${category.name}">này</strong> không?</p>
+                                                <p class="text-danger small">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                                    Hành động này không thể hoàn tác!
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Hủy
+                                                </button>
+                                                <form th:action="@{/admin/categories/delete/{id}(id=${category.id})}"
+                                                      method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-danger">
+                                                        <i class="fas fa-trash me-1"></i>Xóa
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(categories)}">
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                Không có danh mục nào được tìm thấy
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Add/Edit Discount Modal -->
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const overlay = document.getElementById('overlay');
+
+            if (window.innerWidth <= 768) {
+                // Mobile behavior
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            } else {
+                // Desktop behavior
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            }
+        }
+
+        // Submenu toggle
+        function toggleSubmenu(menuId) {
+            const submenu = document.getElementById(menuId);
+            submenu.classList.toggle('show');
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update active nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Hide sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        }
+    </script>
+</body>
+</html>

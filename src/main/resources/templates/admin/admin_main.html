@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Quản lý bán hàng</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin_nav.css}">
+    <style>
+
+    </style>
+</head>
+<body>
+<div th:replace="fragments/admin_sidebar :: admin_sidebar"></div>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="main-content" id="mainContent">
+    <div th:replace="fragments/admin_navbar :: admin_navbar"></div>
+    <!-- Dashboard Content -->
+    <div class="content-section active" id="dashboard">
+        <div class="container-fluid">
+            <!-- Stats Cards -->
+            <div class="row">
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3>1,234</h3>
+                                <p class="mb-0">Tổng đơn hàng</p>
+                            </div>
+                            <i class="fas fa-shopping-cart fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card success">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3>₫25.6M</h3>
+                                <p class="mb-0">Doanh thu tháng</p>
+                            </div>
+                            <i class="fas fa-dollar-sign fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card warning">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3>567</h3>
+                                <p class="mb-0">Sản phẩm</p>
+                            </div>
+                            <i class="fas fa-box fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stat-card danger">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3>892</h3>
+                                <p class="mb-0">Khách hàng</p>
+                            </div>
+                            <i class="fas fa-users fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Cảnh báo!</strong> Có 5 sản phẩm sắp hết hàng.
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <strong>Chú ý!</strong> Có 12 đơn hàng chờ duyệt.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Tables -->
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="chart-container">
+                        <h5 class="mb-3">Doanh thu 7 ngày qua</h5>
+                        <canvas id="revenueChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Sản phẩm bán chạy</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span>Áo Jacket</span>
+                                <span class="badge bg-primary">156 bán</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span>Áo Vest</span>
+                                <span class="badge bg-success">134 bán</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span>Quần Short</span>
+                                <span class="badge bg-warning">98 bán</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Áo Cardigan</span>
+                                <span class="badge bg-info">87 bán</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Đơn hàng gần đây</h5>
+                            <button class="btn btn-primary btn-sm">Xem tất cả</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>#DH001</td>
+                                    <td>Nguyễn Văn A</td>
+                                    <td>12/06/2025</td>
+                                    <td>₫2,500,000</td>
+                                    <td><span class="badge bg-warning">Chờ duyệt</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary">Duyệt</button>
+                                        <button class="btn btn-sm btn-outline-primary">Xem</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#DH002</td>
+                                    <td>Trần Thị B</td>
+                                    <td>12/06/2025</td>
+                                    <td>₫1,800,000</td>
+                                    <td><span class="badge bg-success">Đã giao</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">Xem</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Content Sections (Hidden by default) -->
+    <div class="content-section" id="customers">
+        <div class="container-fluid">
+            <h4>Quản lý khách hàng</h4>
+            <p>Nội dung quản lý khách hàng sẽ được hiển thị ở đây...</p>
+        </div>
+    </div>
+
+    <div class="content-section" id="products">
+        <div class="container-fluid">
+            <h4>Quản lý sản phẩm</h4>
+            <p>Nội dung quản lý sản phẩm sẽ được hiển thị ở đây...</p>
+        </div>
+    </div>
+
+    <div class="content-section" id="orders">
+        <div class="container-fluid">
+            <h4>Quản lý đơn hàng</h4>
+            <p>Nội dung quản lý đơn hàng sẽ được hiển thị ở đây...</p>
+        </div>
+    </div>
+
+    <div class="content-section" id="inventory">
+        <div class="container-fluid">
+            <h4>Quản lý tồn kho</h4>
+            <p>Nội dung quản lý tồn kho sẽ được hiển thị ở đây...</p>
+        </div>
+    </div>
+
+    <div class="content-section" id="analytics">
+        <div class="container-fluid">
+            <h4>Thống kê & Báo cáo</h4>
+            <p>Nội dung thống kê và báo cáo sẽ được hiển thị ở đây...</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+    // Sidebar toggle functionality
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const overlay = document.getElementById('overlay');
+
+        if (window.innerWidth <= 768) {
+            // Mobile behavior
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        } else {
+            // Desktop behavior
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        }
+    }
+
+    // Submenu toggle
+    function toggleSubmenu(menuId) {
+        const submenu = document.getElementById(menuId);
+        submenu.classList.toggle('show');
+    }
+
+    // Show section
+    function showSection(sectionId) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Show selected section
+        document.getElementById(sectionId).classList.add('active');
+
+        // Update active nav link
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Hide sidebar on mobile after selection
+        if (window.innerWidth <= 768) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+    }
+
+    // Chart initialization
+    // const ctx = document.getElementById('revenueChart').getContext('2d');
+    // const revenueChart = new Chart(ctx, {
+    //     type: 'line',
+    //     data: {
+    //         labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+    //         datasets: [{
+    //             label: 'Doanh thu (triệu đồng)',
+    //             data: [12, 19, 15, 25, 22, 30, 28],
+    //             borderColor: '#3498db',
+    //             backgroundColor: 'rgba(52, 152, 219, 0.1)',
+    //             borderWidth: 3,
+    //             fill: true,
+    //             tension: 0.4
+    //         }]
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //         scales: {
+    //             y: {
+    //                 beginAtZero: true,
+    //                 grid: {
+    //                     color: 'rgba(0,0,0,0.1)'
+    //                 }
+    //             },
+    //             x: {
+    //                 grid: {
+    //                     color: 'rgba(0,0,0,0.1)'
+    //                 }
+    //             }
+    //         },
+    //         plugins: {
+    //             legend: {
+    //                 display: false
+    //             }
+    //         }
+    //     }
+    // });
+
+    // Window resize handler
+    window.addEventListener('resize', function() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const overlay = document.getElementById('overlay');
+
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        } else {
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('expanded');
+        }
+    });
+
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>
+</body>
+</html>

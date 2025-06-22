@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit} ? 'Sửa thương hiệu' : 'Thêm thương hiệu'">Quản lý Thương hiệu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .form-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .form-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 16px;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+        .logo-upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .logo-upload-area:hover {
+            border-color: #667eea;
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container-fluid py-4">
+    <div class="form-container">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="mb-1">
+                            <i class="fas fa-tags text-primary me-2"></i>
+                            <span th:text="${isEdit} ? 'Sửa thương hiệu' : 'Thêm thương hiệu'">Thêm thương hiệu</span>
+                        </h2>
+                        <p class="text-muted mb-0">
+                            <span th:text="${isEdit} ? 'Cập nhật thông tin thương hiệu' : 'Thêm thương hiệu mới vào hệ thống'"></span>
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted">Xin chào, <strong th:text="${adminUsername}">Admin</strong></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a th:href="@{/admin/brands}" class="text-decoration-none">
+                        <i class="fas fa-tags me-1"></i>Thương hiệu
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" th:text="${isEdit} ? 'Sửa' : 'Thêm mới'">Thêm mới</li>
+            </ol>
+        </nav>
+
+        <!-- Form -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-edit me-2"></i>Thông tin thương hiệu
+                </h5>
+            </div>
+            <div class="card-body">
+                <form th:action="${isEdit} ? @{/admin/brands/edit/{id}(id=${brand.id})} : @{/admin/brands/add}"
+                      method="post" th:object="${brand}">
+
+                    <div class="row">
+                        <!-- Logo Preview -->
+                        <div class="col-md-3 mb-4">
+                            <label class="form-label fw-bold">Logo thương hiệu</label>
+                            <div class="text-center">
+                                <div id=urllogo class="mb-3">
+                                    <img th:if="${brand.logoUrl != null and brand.logoUrl != ''}"
+                                         th:src="${brand.logoUrl}"
+                                         alt="Logo"
+                                         class="logo-preview">
+                                    <div th:unless="${brand.logoUrl != null and brand.logoUrl != ''}"
+                                         class="logo-placeholder">
+                                        <i class="fas fa-image fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Fields -->
+                        <div class="col-md-9">
+                            <!-- Tên thương hiệu -->
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">
+                                    Tên thương hiệu <span class="text-danger">*</span>
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="name"
+                                       th:field="*{name}"
+                                       placeholder="Nhập tên thương hiệu..."
+                                       required>
+                                <div class="form-text">Tên thương hiệu phải là duy nhất trong hệ thống</div>
+                            </div>
+
+                            <!-- URL Logo -->
+                            <!-- Thay thế phần URL Logo bằng upload file -->
+                            <div class="mb-3">
+                                <label for="logoFile" class="form-label fw-bold">Logo thương hiệu</label>
+                                <div class="logo-upload-area" onclick="document.getElementById('logoFile').click()">
+                                    <div id="logoPreview">
+                                        <div th:if="${brand.logoUrl == null or brand.logoUrl == ''}" class="logo-placeholder">
+                                            <i class="fas fa-image fa-2x"></i>
+                                            <p class="mt-2 mb-0">Nhấn để tải lên logo</p>
+                                        </div>
+                                        <img th:if="${brand.logoUrl != null and brand.logoUrl != ''}"
+                                             th:src="${brand.logoUrl}"
+                                             alt="Logo"
+                                             class="logo-preview">
+                                    </div>
+                                </div>
+                                <input type="file" 
+                                       id="logoFile" 
+                                       name="logoFile" 
+                                       accept="image/*" 
+                                       style="display: none;"
+                                       onchange="previewUploadedLogo(this)">
+                                <div class="form-text">Tải lên file ảnh logo (JPG, PNG, max 2MB)</div>
+                            </div>
+
+                            <script>
+                            function previewUploadedLogo(input) {
+                                if (input.files && input.files[0]) {
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        document.getElementById('logoPreview').innerHTML = 
+                                            `<img src="${e.target.result}" class="logo-preview" alt="Logo preview">`;
+                                    }
+                                    reader.readAsDataURL(input.files[0]);
+                                }
+                            }
+                            </script>
+                            <!-- Mô tả -->
+                            <div class="mb-3">
+                                <label for="description" class="form-label fw-bold">Mô tả</label>
+                                <textarea class="form-control"
+                                          id="description"
+                                          rows="4"
+                                          th:field="*{description}"
+                                          placeholder="Nhập mô tả về thương hiệu..."></textarea>
+                                <div class="form-text">Mô tả ngắn gọn về thương hiệu (tùy chọn)</div>
+                            </div>
+
+                            <!-- Trạng thái -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Trạng thái</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="isActive"
+                                           th:field="*{isActive}"
+                                           checked>
+                                    <label class="form-check-label" for="isActive">
+                                        <span class="text-success fw-bold">Kích hoạt thương hiệu</span>
+                                    </label>
+                                </div>
+                                <div class="form-text">Chỉ những thương hiệu được kích hoạt mới hiển thị trên website</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                                <a th:href="@{/admin/brands}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                                </a>
+                                <div>
+                                    <button type="reset" class="btn btn-outline-warning me-2">
+                                        <i class="fas fa-undo me-2"></i>Đặt lại
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>
+                                        <span th:text="${isEdit} ? 'Cập nhật' : 'Thêm mới'">Thêm mới</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function previewLogo(url) {
+        const preview = document.getElementById('logoPreview');
+        if (url && url.trim() !== '') {
+            preview.innerHTML = `<img src="${url}" alt="Logo" class="logo-preview" onerror="showPlaceholder()">`;
+        } else {
+            showPlaceholder();
+        }
+    }
+
+    function showPlaceholder() {
+        const preview = document.getElementById('logoPreview');
+        preview.innerHTML = `
+                <div class="logo-placeholder">
+                    <i class="fas fa-image fa-2x"></i>
+                </div>
+            `;
+    }
+
+    // Auto preview logo on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoUrl = document.getElementById('logoUrl').value;
+        if (logoUrl) {
+            previewLogo(logoUrl);
+        }
+    });
+</script>
+</body>
+</html>
+
+<script>
+    // Thêm validation khi submit form
+    document.querySelector('form').addEventListener('submit', function(event) {
+        if (!this.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        this.classList.add('was-validated');
+    }, false);
+</script>

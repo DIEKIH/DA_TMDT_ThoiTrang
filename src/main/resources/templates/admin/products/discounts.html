@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý giảm giá - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin_nav.css}">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div th:replace="fragments/admin_sidebar :: admin_sidebar"></div>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Navbar -->
+        <div th:replace="fragments/admin_navbar :: admin_navbar"></div>
+
+        <!-- Dashboard Content -->
+        <div class="content-section active">
+            <div class="container-fluid">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-0"><i class="fas fa-tags me-2"></i>Quản lý giảm giá</h2>
+                        <p class="text-muted mb-0">Quản lý các chương trình giảm giá</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDiscountModal">
+                        <i class="fas fa-plus me-2"></i>Thêm mới
+                    </button>
+                </div>
+
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form th:action="@{/admin/discounts}" method="get" class="row g-3">
+                            <div class="col-md-3">
+                                <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..." th:value="${search}">
+                            </div>
+                            <div class="col-md-2">
+                                <select name="type" class="form-select">
+                                    <option value="">Loại giảm giá</option>
+                                    <option value="PRODUCT">Sản phẩm</option>
+                                    <option value="CATEGORY">Danh mục</option>
+                                    <option value="BRAND">Thương hiệu</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="valueType" class="form-select">
+                                    <option value="">Kiểu giảm giá</option>
+                                    <option value="PERCENTAGE">Theo phần trăm</option>
+                                    <option value="FIXED_AMOUNT">Số tiền cố định</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="status" class="form-select">
+                                    <option value="">Trạng thái</option>
+                                    <option value="active">Đang hoạt động</option>
+                                    <option value="inactive">Không hoạt động</option>
+                                    <option value="scheduled">Theo lịch</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-2"></i>Tìm kiếm
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Discounts List -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên chương trình</th>
+                                            <th>Loại</th>
+                                            <th>Giá trị</th>
+                                            <th>Thời gian</th>
+                                            <th>Trạng thái</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="discount : ${discounts}">
+                                            <td>
+                                                <div class="fw-bold" th:text="${discount.name}">Tên chương trình</div>
+                                                <small class="text-muted" th:text="${discount.description}">Mô tả</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info" th:text="${discount.type}">PRODUCT</span>
+                                            </td>
+                                            <td>
+                                                <span th:if="${discount.valueType == 'PERCENTAGE'}"
+                                                      th:text="${discount.value + '%'}">10%</span>
+                                                <span th:if="${discount.valueType == 'FIXED_AMOUNT'}"
+                                                      th:text="${#numbers.formatDecimal(discount.value, 0, 'COMMA', 0, 'POINT') + '₫'}">100.000₫</span>
+                                            </td>
+                                            <td>
+                                                <div th:if="${discount.startDate != null}"
+                                                     th:text="${#temporals.format(discount.startDate, 'dd/MM/yyyy HH:mm')}">01/01/2024 00:00</div>
+                                                <div th:if="${discount.endDate != null}"
+                                                     th:text="${#temporals.format(discount.endDate, 'dd/MM/yyyy HH:mm')}">31/12/2024 23:59</div>
+                                            </td>
+                                            <td>
+                                                <span th:if="${discount.isActive}" class="badge bg-success">Đang hoạt động</span>
+                                                <span th:unless="${discount.isActive}" class="badge bg-danger">Không hoạt động</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-sm btn-primary"
+                                                            th:onclick="'editDiscount(' + ${discount.id} + ')'">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-warning"
+                                                            th:onclick="'toggleStatus(' + ${discount.id} + ')'">
+                                                        <i class="fas fa-power-off"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav th:if="${discounts.totalPages > 1}" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${discounts.first ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/discounts(page=${discounts.number - 1})}">Trước</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, discounts.totalPages - 1)}"
+                            th:classappend="${i == discounts.number ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/discounts(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${discounts.last ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/discounts(page=${discounts.number + 1})}">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Discount Modal -->
+    <div class="modal fade" id="discountModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Thêm chương trình giảm giá</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="discountForm" th:action="@{/admin/discounts/save}" method="post">
+                        <input type="hidden" id="discountId" name="id">
+                        <div class="mb-3">
+                            <label class="form-label">Tên chương trình</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Loại giảm giá</label>
+                                <select class="form-select" name="type" required>
+                                    <option value="PRODUCT">Sản phẩm</option>
+                                    <option value="CATEGORY">Danh mục</option>
+                                    <option value="BRAND">Thương hiệu</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Kiểu giảm giá</label>
+                                <select class="form-select" name="valueType" required>
+                                    <option value="PERCENTAGE">Theo phần trăm</option>
+                                    <option value="FIXED_AMOUNT">Số tiền cố định</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Giá trị giảm</label>
+                            <input type="number" class="form-control" name="value" required min="0" step="0.01">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày bắt đầu</label>
+                                <input type="datetime-local" class="form-control" name="startDate">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày kết thúc</label>
+                                <input type="datetime-local" class="form-control" name="endDate">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="isActive" id="isActive" checked>
+                                <label class="form-check-label" for="isActive">Kích hoạt ngay</label>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const overlay = document.getElementById('overlay');
+
+            if (window.innerWidth <= 768) {
+                // Mobile behavior
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            } else {
+                // Desktop behavior
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            }
+        }
+
+        // Submenu toggle
+
+        function toggleSubmenu(menuId) {
+            const submenu = document.getElementById(menuId);
+            submenu.classList.toggle('show');
+        }
+
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update active nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Hide sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        }
+        // Show modal for adding new discount
+        function showAddModal() {
+            document.getElementById('modalTitle').textContent = 'Thêm chương trình giảm giá';
+            document.getElementById('discountForm').reset();
+            document.getElementById('discountId').value = '';
+            new bootstrap.Modal(document.getElementById('discountModal')).show();
+        }
+
+        // Show modal for editing discount
+        function editDiscount(id) {
+            document.getElementById('modalTitle').textContent = 'Sửa chương trình giảm giá';
+            // Fetch discount data and populate form
+            fetch(`/admin/discounts/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('discountId').value = data.id;
+                    document.querySelector('input[name="name"]').value = data.name;
+                    document.querySelector('textarea[name="description"]').value = data.description;
+                    document.querySelector('select[name="type"]').value = data.type;
+                    document.querySelector('select[name="valueType"]').value = data.valueType;
+                    document.querySelector('input[name="value"]').value = data.value;
+                    document.querySelector('input[name="startDate"]').value = data.startDate;
+                    document.querySelector('input[name="endDate"]').value = data.endDate;
+                    document.querySelector('input[name="isActive"]').checked = data.isActive;
+                    new bootstrap.Modal(document.getElementById('discountModal')).show();
+                });
+        }
+
+        // Toggle discount status
+        function toggleStatus(id) {
+            if (confirm('Bạn có chắc muốn thay đổi trạng thái của chương trình giảm giá này?')) {
+                fetch(`/admin/discounts/toggle/${id}`, { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                        }
+                    });
+            }
+        }
+    </script>
+</body>
+</html>

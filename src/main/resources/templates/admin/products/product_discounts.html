@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Áp dụng giảm giá - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin_nav.css}">
+</head>
+<body>
+<!-- Sidebar -->
+<div th:replace="fragments/admin_sidebar :: admin_sidebar"></div>
+
+<!-- Overlay for mobile -->
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+    <!-- Top Navbar -->
+    <div th:replace="fragments/admin_navbar :: admin_navbar"></div>
+
+    <!-- Dashboard Content -->
+    <div class="content-section active">
+        <div class="container-fluid">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-0"><i class="fas fa-percentage me-2"></i>Áp dụng giảm giá</h2>
+                    <p class="text-muted mb-0">Quản lý áp dụng giảm giá cho sản phẩm</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form th:action="@{/admin/product-discounts}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" name="productSearch" class="form-control" 
+                                   placeholder="Tìm kiếm sản phẩm..." th:value="${productSearch}">
+                        </div>
+                        <div class="col-md-4">
+                            <select name="discountId" class="form-select">
+                                <option value="">-- Chọn chương trình giảm giá --</option>
+                                <option th:each="discount : ${discounts}" 
+                                        th:value="${discount.id}" 
+                                        th:text="${discount.name}"
+                                        th:selected="${discountId == discount.id}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Products List -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">
+                                    <input type="checkbox" class="form-check-input" id="selectAll" 
+                                           onclick="toggleSelectAll()">
+                                </th>
+                                <th style="width: 100px;">Ảnh</th>
+                                <th>Sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Giá gốc</th>
+                                <th>Giảm giá đang áp dụng</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products.content}">
+                                <td>
+                                    <input type="checkbox" class="form-check-input product-select" 
+                                           th:value="${product.id}">
+                                </td>
+                                <td>
+                                    <img th:src="@{'/uploads/products/' + ${product.imageUrl}}" 
+                                         class="img-thumbnail" style="width: 80px;">
+                                </td>
+                                <td>
+                                    <div class="fw-bold" th:text="${product.name}">Tên sản phẩm</div>
+                                    <small class="text-muted" th:text="${product.sku}">SKU</small>
+                                </td>
+                                <td th:text="${product.category?.name}">Danh mục</td>
+                                <td th:text="${#numbers.formatDecimal(product.basePrice, 0, 'COMMA', 0, 'POINT') + '₫'}">Giá</td>
+                                <td>
+                                    <div th:if="${product.activeDiscounts}" th:each="discount : ${product.activeDiscounts}">
+                                        <span class="badge bg-success" 
+                                              th:text="${discount.name + ' (' + (discount.valueType == 'PERCENTAGE' ? discount.value + '%' : #numbers.formatDecimal(discount.value, 0, 'COMMA', 0, 'POINT') + '₫') + ')'}"></span>
+                                    </div>
+                                    <span th:unless="${product.activeDiscounts}">Không có</span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" 
+                                            th:onclick="'showApplyDiscountModal([' + ${product.id} + '])'">
+                                        <i class="fas fa-plus me-1"></i>Áp dụng
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div class="card mt-3" id="bulkActionCard" style="display: none;">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <span id="selectedCount">0 sản phẩm được chọn</span>
+                    <button class="btn btn-primary" onclick="showApplyDiscountModal()">
+                        <i class="fas fa-plus me-1"></i>Áp dụng giảm giá
+                    </button>
+                </div>
+
+                <!-- Pagination -->
+                <nav th:if="${products.totalPages > 1}" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${products.first ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/product-discounts(page=${products.number - 1})}">Trước</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}" 
+                            th:classappend="${i == products.number ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/product-discounts(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${products.last ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/product-discounts(page=${products.number + 1})}">Sau</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply Discount Modal -->
+    <div class="modal fade" id="applyDiscountModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Áp dụng giảm giá</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="applyDiscountForm" th:action="@{/admin/product-discounts/apply}" method="post">
+                        <input type="hidden" id="selectedProductIds" name="productIds">
+                        <div class="mb-3">
+                            <label class="form-label">Chọn chương trình giảm giá</label>
+                            <select class="form-select" name="discountId" required>
+                                <option value="">-- Chọn chương trình --</option>
+                                <option th:each="discount : ${activeDiscounts}" 
+                                        th:value="${discount.id}" 
+                                        th:text="${discount.name + ' (' + (discount.valueType == 'PERCENTAGE' ? discount.value + '%' : #numbers.formatDecimal(discount.value, 0, 'COMMA', 0, 'POINT') + '₫') + ')'}"></option>
+                            </select>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Áp dụng</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const overlay = document.getElementById('overlay');
+
+            if (window.innerWidth <= 768) {
+                // Mobile behavior
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            } else {
+                // Desktop behavior
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            }
+        }
+
+        // Submenu toggle
+        function toggleSubmenu(menuId) {
+            const submenu = document.getElementById(menuId);
+            submenu.classList.toggle('show');
+        }
+
+        // Show section
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update active nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Hide sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        }
+        // Toggle select all products
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.product-select');
+            checkboxes.forEach(checkbox => checkbox.checked = selectAll.checked);
+            updateBulkActionCard();
+        }
+
+        // Update bulk action card visibility
+        function updateBulkActionCard() {
+            const selectedProducts = document.querySelectorAll('.product-select:checked');
+            const bulkActionCard = document.getElementById('bulkActionCard');
+            const selectedCount = document.getElementById('selectedCount');
+
+            if (selectedProducts.length > 0) {
+                bulkActionCard.style.display = 'block';
+                selectedCount.textContent = `${selectedProducts.length} sản phẩm được chọn`;
+            } else {
+                bulkActionCard.style.display = 'none';
+            }
+        }
+
+        // Show apply discount modal
+        function showApplyDiscountModal(productIds = null) {
+            if (!productIds) {
+                const selectedProducts = document.querySelectorAll('.product-select:checked');
+                productIds = Array.from(selectedProducts).map(checkbox => checkbox.value);
+            }
+            document.getElementById('selectedProductIds').value = productIds.join(',');
+            new bootstrap.Modal(document.getElementById('applyDiscountModal')).show();
+        }
+
+        // Add event listeners to checkboxes
+        document.querySelectorAll('.product-select').forEach(checkbox => {
+            checkbox.addEventListener('change', updateBulkActionCard);
+        });
+    </script>
+
+</html>

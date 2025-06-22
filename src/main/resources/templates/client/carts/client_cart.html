@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Giỏ hàng - CEIN</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/navbar_client.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .cart-item {
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: 0.2s;
+        }
+
+        .cart-item:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-img {
+            max-width: 100px;
+            border-radius: 8px;
+        }
+
+        .order-summary {
+            border-radius: 12px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .recommend-item {
+            text-align: center;
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .recommend-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .recommend-item img {
+            max-height: 180px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .footer {
+            background: #fff;
+            padding: 40px 0;
+            border-top: 1px solid #dee2e6;
+            margin-top: 60px;
+        }
+
+        .footer h6 {
+            font-weight: bold;
+        }
+
+        .btn-checkout {
+            background-color: #000;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-checkout:hover {
+            background-color: #222;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<!--<header class="bg-white border-bottom py-3 mb-4">-->
+<!--    <div class="container d-flex justify-content-between align-items-center">-->
+<!--        <h3 class="mb-0">CEIN.</h3>-->
+<!--        <nav class="d-none d-md-flex gap-4">-->
+<!--            <a href="#" class="text-dark text-decoration-none">Trang chủ</a>-->
+<!--            <a href="#" class="text-dark text-decoration-none">Sản phẩm</a>-->
+<!--            <a href="#" class="text-dark text-decoration-none">Giảm giá</a>-->
+<!--            <a href="#" class="text-dark text-decoration-none">Giỏ hàng</a>-->
+<!--        </nav>-->
+<!--    </div>-->
+<!--</header>-->
+<div th:replace="fragments/client_navbar :: client_navbar"></div>
+
+
+<!-- Giỏ hàng -->
+<div class="container">
+    <h4 class="mb-4">Giỏ hàng của bạn</h4>
+    <div class="row">
+        <div class="col-lg-8">
+
+            <!-- Mỗi sản phẩm -->
+            <div class="cart-item d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=200" alt="Sweater" class="cart-img">
+                    <div>
+                        <h6 class="mb-1">Alpaca Wool Crewneck Sweater</h6>
+                        <p class="mb-0 text-muted">Beige | Size: M</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <input type="number" value="1" min="1" class="form-control w-auto">
+                    <p class="mb-0 fw-bold">$248</p>
+                </div>
+            </div>
+
+            <!-- Thêm sản phẩm khác nếu muốn -->
+
+            <div class="cart-item d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <img src="https://images.unsplash.com/photo-1602810318383-0503f80c9170?w=200" alt="Cardigan" class="cart-img">
+                    <div>
+                        <h6 class="mb-1">Cashmere Cropped Cardigan</h6>
+                        <p class="mb-0 text-muted">Natural | Size: L</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <input type="number" value="1" min="1" class="form-control w-auto">
+                    <p class="mb-0 fw-bold">$299</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tổng đơn -->
+        <div class="col-lg-4">
+            <div class="order-summary">
+                <h6 class="mb-3">Tóm tắt đơn hàng</h6>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Tạm tính</span>
+                    <span>$547</span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ghi chú cho đơn hàng</label>
+                    <textarea class="form-control" rows="2" placeholder="Thêm lời nhắn nếu cần..."></textarea>
+                </div>
+                <button class="btn btn-checkout w-100">Tiến hành thanh toán</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gợi ý mua thêm -->
+<div class="container mt-5">
+    <h5 class="mb-4">Gợi ý cho bạn</h5>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="recommend-item">
+                <img src="https://images.unsplash.com/photo-1585386959984-a415522e3f3b?w=300" class="img-fluid" alt="Look 1">
+                <p class="mb-1">Relaxed Blazer</p>
+                <strong>$248</strong>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="recommend-item">
+                <img src="https://images.unsplash.com/photo-1579547621706-1a9c79d5ffa0?w=300" class="img-fluid" alt="Look 2">
+                <p class="mb-1">Wool Cardigan</p>
+                <strong>$248</strong>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="recommend-item">
+                <img src="https://images.unsplash.com/photo-1581349487688-4e004f7d6c5b?w=300" class="img-fluid" alt="Look 3">
+                <p class="mb-1">Wide-Leg Pants</p>
+                <strong>$94</strong>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="recommend-item">
+                <img src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=300" class="img-fluid" alt="Look 4">
+                <p class="mb-1">Classic Pant</p>
+                <strong>$58</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h6>LIÊN HỆ</h6>
+                <p>+84 123 456 789</p>
+                <p>Email: support@cein.vn</p>
+            </div>
+            <div class="col-md-3">
+                <h6>CHÍNH SÁCH</h6>
+                <p>Đổi trả</p>
+                <p>Thanh toán</p>
+                <p>Vận chuyển</p>
+            </div>
+            <div class="col-md-3">
+                <h6>VỀ CEIN</h6>
+                <p>Giới thiệu</p>
+                <p>Tuyển dụng</p>
+                <p>Điều khoản</p>
+            </div>
+            <div class="col-md-3">
+                <h6>NHẬN THÔNG TIN</h6>
+                <form>
+                    <input type="email" class="form-control mb-2" placeholder="Nhập email của bạn">
+                    <button class="btn btn-dark w-100">Đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

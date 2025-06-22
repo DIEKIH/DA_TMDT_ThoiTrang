@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Quick View - Bootstrap 5</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .main-product-image {
+            background: white;
+            border-radius: 8px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .main-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail-image {
+            background: white;
+            border-radius: 8px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .thumbnail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #dee2e6;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: #212529;
+            box-shadow: 0 0 0 2px rgba(33, 37, 41, 0.2);
+        }
+
+        .color-option.active::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .color-beige { background-color: #E6D7C3; }
+        .color-black { background-color: #333333; }
+        .color-gray { background-color: #6c757d; }
+
+        .size-option {
+            min-width: 45px;
+            height: 40px;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: #495057;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .size-option:hover {
+            border-color: #495057;
+        }
+
+        .size-option.active {
+            background: #212529;
+            color: white;
+            border-color: #212529;
+        }
+
+        .btn-add-to-bag {
+            background: #212529;
+            border: none;
+            padding: 12px 0;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add-to-bag:hover {
+            background: #000;
+            transform: translateY(-1px);
+        }
+
+        .product-title {
+            font-weight: 500;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .size-chart-link {
+            color: #6c757d;
+            text-decoration: underline;
+            font-size: 0.875rem;
+        }
+
+        .size-chart-link:hover {
+            color: #495057;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6c757d;
+            z-index: 10;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #f8f9fa;
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .main-product-image {
+                height: 250px;
+            }
+
+            .modal-dialog {
+                margin: 10px;
+            }
+
+            .product-info-section {
+                padding-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Button để mở modal -->
+<div class="container py-5">
+    <div class="text-center">
+        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#productQuickView">
+            <i class="fas fa-eye me-2"></i>Quick View Product
+        </button>
+    </div>
+</div>
+
+<!-- Modal Quick View -->
+<div class="modal fade" id="productQuickView" tabindex="-1" aria-labelledby="productQuickViewLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <button type="button" class="close-btn" data-bs-dismiss="modal" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="modal-body p-0">
+                <div class="row g-0">
+                    <!-- Product Images -->
+                    <div class="col-lg-6">
+                        <div class="product-image-container h-100">
+                            <div class="main-product-image"  id="mainImageContainer">
+                                <img id="mainProductImage" src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=400&fit=crop"
+                                     alt="Alpaca Wool Crewneck Sweater" class="img-fluid">
+                            </div>
+<!--                            <div class="thumbnail-image">-->
+<!--                                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop"-->
+<!--                                     alt="Model wearing sweater" class="img-fluid">-->
+<!--                            </div>-->
+                            <div class="d-flex gap-2 overflow-auto">
+                                <div class="thumbnail-image flex-shrink-0" data-image="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=400&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=100&h=100&fit=crop" alt="thumb1">
+                                </div>
+                                <div class="thumbnail-image flex-shrink-0" data-image="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=100&h=100&fit=crop" alt="thumb2">
+                                </div>
+                                <div class="thumbnail-image flex-shrink-0" data-image="https://images.unsplash.com/photo-1581349487688-4e004f7d6c5b?w=400&h=400&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1581349487688-4e004f7d6c5b?w=100&h=100&fit=crop" alt="thumb3">
+                                </div>
+                                <div class="thumbnail-image flex-shrink-0" data-image="https://images.unsplash.com/photo-1585386959984-a415522e3f3b?w=400&h=400&fit=crop">
+                                    <img src="https://images.unsplash.com/photo-1585386959984-a415522e3f3b?w=100&h=100&fit=crop" alt="thumb4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Information -->
+                    <div class="col-lg-6">
+                        <div class="product-info-section p-4 p-lg-5">
+                            <h4 class="product-title">Alpaca Wool Crewneck Sweater</h4>
+                            <div class="product-price mb-4">$249</div>
+
+                            <!-- Color Selection -->
+                            <div class="mb-4">
+                                <div class="section-label">Color: Natural Color Range</div>
+                                <div class="d-flex gap-2">
+                                    <div class="color-option color-beige active" data-color="beige" title="Beige"></div>
+                                    <div class="color-option color-black" data-color="black" title="Black"></div>
+                                    <div class="color-option color-gray" data-color="gray" title="Gray"></div>
+                                </div>
+                            </div>
+
+                            <!-- Size Selection -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="section-label mb-0">Product Size</div>
+                                    <a href="#" class="size-chart-link">Size Chart</a>
+                                </div>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button class="size-option" data-size="XS">XS</button>
+                                    <button class="size-option active" data-size="S">S</button>
+                                    <button class="size-option" data-size="M">M</button>
+                                    <button class="size-option" data-size="L">L</button>
+                                    <button class="size-option" data-size="XL">XL</button>
+                                </div>
+                            </div>
+
+                            <!-- Add to Bag Button -->
+                            <button class="btn btn-add-to-bag btn-dark w-100 mb-3">
+                                Add to Bag
+                            </button>
+
+                            <!-- View Full Details Link -->
+                            <div class="text-center">
+                                <a href="#" class="size-chart-link">View Full Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Thumbnail image click to change main image
+    document.querySelectorAll('.thumbnail-image').forEach(thumbnail => {
+        thumbnail.addEventListener('click', function () {
+            const mainImage = document.getElementById('mainProductImage');
+            const newSrc = this.getAttribute('data-image');
+            mainImage.src = newSrc;
+        });
+    });
+
+    // Color selection functionality
+    document.querySelectorAll('.color-option').forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all color options
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            // Add active class to clicked option
+            this.classList.add('active');
+
+            // Update color display text
+            const colorName = this.getAttribute('data-color');
+            const colorText = colorName.charAt(0).toUpperCase() + colorName.slice(1);
+            document.querySelector('.section-label').textContent = `Color: ${colorText}`;
+        });
+    });
+
+    // Size selection functionality
+    document.querySelectorAll('.size-option').forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove active class from all size options
+            document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
+            // Add active class to clicked option
+            this.classList.add('active');
+        });
+    });
+
+    // Add to bag functionality
+    document.querySelector('.btn-add-to-bag').addEventListener('click', function() {
+        const selectedColor = document.querySelector('.color-option.active').getAttribute('data-color');
+        const selectedSize = document.querySelector('.size-option.active').getAttribute('data-size');
+
+        // Show success message
+        this.innerHTML = '<i class="fas fa-check me-2"></i>Added to Bag!';
+        this.classList.add('btn-success');
+        this.classList.remove('btn-dark');
+
+        // Reset button after 2 seconds
+        setTimeout(() => {
+            this.innerHTML = 'Add to Bag';
+            this.classList.remove('btn-success');
+            this.classList.add('btn-dark');
+        }, 2000);
+
+        console.log(`Added to bag: Color ${selectedColor}, Size ${selectedSize}`);
+    });
+
+    // Modal event listeners
+    document.getElementById('productQuickView').addEventListener('shown.bs.modal', function () {
+        console.log('Quick view modal opened');
+    });
+
+    document.getElementById('productQuickView').addEventListener('hidden.bs.modal', function () {
+        console.log('Quick view modal closed');
+    });
+</script>
+</body>
+</html>

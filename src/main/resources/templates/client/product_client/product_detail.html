@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail - Alpaca Wool Crewneck Sweater</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/navbar_client.css">
+    <style>
+        :root {
+            --primary-color: #212529;
+            --secondary-color: #6c757d;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+        }
+
+        /* Header */
+        .navbar {
+            border-bottom: 1px solid var(--border-color);
+            background: white !important;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: var(--primary-color) !important;
+        }
+
+        /* Product Images */
+        .product-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .main-product-image {
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .thumbnail-images {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .thumbnail-clickable {
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail-clickable:hover {
+            border-color: var(--primary-color);
+            opacity: 0.8;
+            transform: scale(1.02);
+        }
+
+        .thumbnail-clickable.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(33, 37, 41, 0.3);
+        }
+
+        /* Product Info */
+        .product-info {
+            position: sticky;
+            top: 20px;
+        }
+
+        .product-title {
+            font-size: 2rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        /* Color & Size Options */
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(33, 37, 41, 0.2);
+        }
+
+        .color-beige { background-color: #E6D7C3; }
+        .color-black { background-color: #333333; }
+        .color-gray { background-color: #6c757d; }
+
+        .size-option {
+            min-width: 50px;
+            height: 45px;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .size-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .size-option.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Buttons */
+        .btn-add-to-bag {
+            background: var(--primary-color);
+            border: none;
+            padding: 15px 0;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-add-to-bag:hover {
+            background: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Product Details */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Reviews */
+        .stars {
+            font-size: 0.9rem;
+        }
+
+        .review-item {
+            transition: background-color 0.2s ease;
+        }
+
+        .review-item:hover {
+            background-color: rgba(248, 249, 250, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin: -15px -15px 15px -15px;
+        }
+
+        .rating-breakdown {
+            padding: 20px 0;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+        }
+
+        /* Product Gallery */
+        .detail-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Related Products */
+        .related-product {
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        .related-product:hover {
+            transform: translateY(-5px);
+        }
+
+        .related-product img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .related-product-title {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .related-product-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-title {
+                font-size: 1.5rem;
+            }
+
+            .product-info {
+                position: static;
+                margin-top: 30px;
+            }
+
+            .main-product-image {
+                height: 400px;
+            }
+        }
+
+        .section-spacing {
+            margin: 60px 0;
+        }
+
+        .text-muted-custom {
+            color: var(--secondary-color) !important;
+        }
+
+        .border-custom {
+            border-color: var(--border-color) !important;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">-->
+<!--    <div class="container">-->
+<!--        <a class="navbar-brand" href="#">EVERLANE</a>-->
+<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">-->
+<!--            <span class="navbar-toggler-icon"></span>-->
+<!--        </button>-->
+<!--        <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--            <ul class="navbar-nav me-auto">-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="#">Women</a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="#">Men</a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="#">About</a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--            <ul class="navbar-nav">-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="#"><i class="fas fa-search"></i></a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="#"><i class="fas fa-shopping-bag"></i></a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+<div th:replace="fragments/client_navbar :: client_navbar"></div>
+
+
+<div class="container py-5">
+    <!-- Product Section -->
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-lg-7">
+            <!-- Main Product Image -->
+            <img id="mainImage" src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&h=600&fit=crop"
+                 alt="Alpaca Wool Crewneck Sweater" class="product-image main-product-image">
+
+            <!-- Thumbnail Images -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop"
+                         alt="Model wearing sweater" class="product-image thumbnail-images thumbnail-clickable active"
+                         data-main-src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=600&fit=crop">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=300&fit=crop"
+                         alt="Sweater back view" class="product-image thumbnail-images thumbnail-clickable"
+                         data-main-src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=600&fit=crop">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <img src="https://images.unsplash.com/photo-1583743814966-8936f37f3040?w=400&h=300&fit=crop"
+                         alt="Sweater detail" class="product-image thumbnail-images thumbnail-clickable"
+                         data-main-src="https://images.unsplash.com/photo-1583743814966-8936f37f3040?w=600&h=600&fit=crop">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=300&fit=crop"
+                         alt="Fabric texture" class="product-image thumbnail-images thumbnail-clickable"
+                         data-main-src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&h=600&fit=crop">
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Information -->
+        <div class="col-lg-5">
+            <div class="product-info">
+                <h1 class="product-title">Alpaca Wool Crewneck Sweater</h1>
+                <div class="product-price">$249</div>
+
+                <!-- Product Description -->
+                <p class="text-muted-custom mb-4">
+                    A timeless crewneck sweater crafted from premium alpaca wool.
+                    Soft, warm, and incredibly comfortable for everyday wear.
+                </p>
+
+                <!-- Color Selection -->
+                <div class="mb-4">
+                    <h6 class="mb-3">Color: <span id="selectedColor">Natural</span></h6>
+                    <div class="d-flex gap-2">
+                        <div class="color-option color-beige active" data-color="Natural" title="Natural"></div>
+                        <div class="color-option color-black" data-color="Black" title="Black"></div>
+                        <div class="color-option color-gray" data-color="Gray" title="Gray"></div>
+                    </div>
+                </div>
+
+                <!-- Size Selection -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0">Size: <span id="selectedSize">S</span></h6>
+                        <a href="#" class="text-decoration-underline text-muted-custom">Size Guide</a>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="size-option" data-size="XS">XS</button>
+                        <button class="size-option active" data-size="S">S</button>
+                        <button class="size-option" data-size="M">M</button>
+                        <button class="size-option" data-size="L">L</button>
+                        <button class="size-option" data-size="XL">XL</button>
+                    </div>
+                </div>
+
+                <!-- Add to Bag Button -->
+                <button class="btn btn-add-to-bag btn-dark w-100 mb-4">
+                    Add to Bag
+                </button>
+
+                <!-- Product Details -->
+                <div class="mb-4">
+                    <h6 class="section-title">Details</h6>
+                    <ul class="feature-list">
+                        <li><strong>Material:</strong> 100% Alpaca Wool</li>
+                        <li><strong>Fit:</strong> Regular fit</li>
+                        <li><strong>Care:</strong> Hand wash cold, lay flat to dry</li>
+                        <li><strong>Origin:</strong> Ethically sourced from Peru</li>
+                    </ul>
+                </div>
+
+                <!-- Shipping Info -->
+                <div class="border-custom border rounded p-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-truck me-2"></i>
+                        <span><strong>Free shipping</strong> on orders over $75</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-undo me-2"></i>
+                        <span><strong>Free returns</strong> within 30 days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Description Section -->
+    <div class="section-spacing">
+        <div class="row">
+            <div class="col-lg-8">
+                <h3 class="section-title">About This Product</h3>
+                <p class="mb-4">
+                    Our Alpaca Wool Crewneck Sweater is a wardrobe essential that combines luxury with everyday comfort.
+                    Made from the finest alpaca wool sourced from the highlands of Peru, this sweater offers unparalleled
+                    softness and warmth without the bulk.
+                </p>
+                <p class="mb-4">
+                    The classic crewneck design features a relaxed fit that's perfect for layering or wearing on its own.
+                    The natural properties of alpaca wool make it naturally temperature-regulating, hypoallergenic,
+                    and incredibly durable.
+                </p>
+
+                <h5 class="mt-4 mb-3">Key Features:</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Ultra-soft alpaca wool blend</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Temperature-regulating properties</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Hypoallergenic and odor-resistant</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Ethically sourced materials</li>
+                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Machine washable</li>
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <img src="https://images.unsplash.com/photo-1559582927-4c69e96961ed?w=400&h=300&fit=crop"
+                     alt="Alpaca wool detail" class="detail-image">
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Reviews Section -->
+    <div class="section-spacing">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="section-title">Customer Reviews</h3>
+
+                <!-- Overall Rating Summary -->
+                <div class="row mb-5">
+                    <div class="col-lg-4">
+                        <div class="text-center p-4 bg-light rounded">
+                            <div class="display-4 fw-bold mb-2">4.8</div>
+                            <div class="stars mb-2">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <div class="text-muted-custom">Based on 127 reviews</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="rating-breakdown">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="me-2">5</span>
+                                <i class="fas fa-star text-warning me-2"></i>
+                                <div class="flex-grow-1 bg-light rounded" style="height: 8px;">
+                                    <div class="bg-warning rounded" style="width: 85%; height: 100%;"></div>
+                                </div>
+                                <span class="ms-2 text-muted-custom">85%</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="me-2">4</span>
+                                <i class="fas fa-star text-warning me-2"></i>
+                                <div class="flex-grow-1 bg-light rounded" style="height: 8px;">
+                                    <div class="bg-warning rounded" style="width: 12%; height: 100%;"></div>
+                                </div>
+                                <span class="ms-2 text-muted-custom">12%</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="me-2">3</span>
+                                <i class="fas fa-star text-warning me-2"></i>
+                                <div class="flex-grow-1 bg-light rounded" style="height: 8px;">
+                                    <div class="bg-warning rounded" style="width: 2%; height: 100%;"></div>
+                                </div>
+                                <span class="ms-2 text-muted-custom">2%</span>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="me-2">2</span>
+                                <i class="fas fa-star text-warning me-2"></i>
+                                <div class="flex-grow-1 bg-light rounded" style="height: 8px;">
+                                    <div class="bg-warning rounded" style="width: 1%; height: 100%;"></div>
+                                </div>
+                                <span class="ms-2 text-muted-custom">1%</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">1</span>
+                                <i class="fas fa-star text-warning me-2"></i>
+                                <div class="flex-grow-1 bg-light rounded" style="height: 8px;">
+                                    <div class="bg-warning rounded" style="width: 0%; height: 100%;"></div>
+                                </div>
+                                <span class="ms-2 text-muted-custom">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Individual Reviews -->
+                <div class="reviews-container">
+                    <!-- Review 1 -->
+                    <div class="review-item border-bottom pb-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="stars mb-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                                <h6 class="mb-1">Amazing Quality and Comfort</h6>
+                                <small class="text-muted-custom">Sarah M. • Verified Purchase • 2 weeks ago</small>
+                            </div>
+                            <span class="badge bg-success">Verified</span>
+                        </div>
+                        <p class="mb-2">
+                            This sweater exceeded my expectations! The alpaca wool is incredibly soft and warm without being bulky.
+                            I've worn it multiple times and it still looks brand new. The fit is perfect - not too tight, not too loose.
+                            Definitely worth the investment.
+                        </p>
+                        <div class="review-meta">
+                            <small class="text-muted-custom">Size purchased: M • Color: Natural</small>
+                        </div>
+                    </div>
+
+                    <!-- Review 2 -->
+                    <div class="review-item border-bottom pb-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="stars mb-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                                <h6 class="mb-1">Perfect for Layering</h6>
+                                <small class="text-muted-custom">Michael R. • Verified Purchase • 1 month ago</small>
+                            </div>
+                            <span class="badge bg-success">Verified</span>
+                        </div>
+                        <p class="mb-2">
+                            Love this sweater! It's become my go-to piece for cooler weather. The material is high-quality and
+                            the construction is solid. I particularly appreciate that it doesn't pill after washing.
+                            Great for both casual and business casual settings.
+                        </p>
+                        <div class="review-meta">
+                            <small class="text-muted-custom">Size purchased: L • Color: Black</small>
+                        </div>
+                    </div>
+
+                    <!-- Review 3 -->
+                    <div class="review-item border-bottom pb-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="stars mb-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                </div>
+                                <h6 class="mb-1">Great Quality, Runs Slightly Large</h6>
+                                <small class="text-muted-custom">Jessica L. • Verified Purchase • 3 weeks ago</small>
+                            </div>
+                            <span class="badge bg-success">Verified</span>
+                        </div>
+                        <p class="mb-2">
+                            Beautiful sweater with excellent quality. The only reason I'm giving 4 stars instead of 5 is that
+                            it runs a bit large. I ordered my usual size M but could have gone with S for a more fitted look.
+                            The material is luxurious and the color is exactly as shown.
+                        </p>
+                        <div class="review-meta">
+                            <small class="text-muted-custom">Size purchased: M • Color: Gray</small>
+                        </div>
+                    </div>
+
+                    <!-- Load More Reviews Button -->
+                    <div class="text-center mt-4">
+                        <button class="btn btn-outline-dark" id="loadMoreReviews">
+                            Load More Reviews
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Size & Fit Section -->
+    <div class="section-spacing">
+        <h3 class="section-title">Size & Fit</h3>
+        <div class="row">
+            <div class="col-lg-6">
+                <h6 class="mb-3">Measurements (Size M):</h6>
+                <ul class="feature-list">
+                    <li>Chest: 42"</li>
+                    <li>Length: 26"</li>
+                    <li>Sleeve: 25"</li>
+                    <li>Shoulder: 18"</li>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h6 class="mb-3">Fit Notes:</h6>
+                <p class="text-muted-custom">
+                    This sweater has a relaxed, comfortable fit. For a more fitted look,
+                    consider sizing down. Model is 5'9" and wearing size S.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="section-spacing">
+        <h3 class="section-title">You Might Also Like</h3>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="related-product">
+                    <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=300&h=300&fit=crop" alt="Cashmere Cardigan">
+                    <div class="related-product-title">Cashmere Cardigan</div>
+                    <div class="related-product-price">$198</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="related-product">
+                    <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop" alt="Merino Wool Turtleneck">
+                    <div class="related-product-title">Merino Wool Turtleneck</div>
+                    <div class="related-product-price">$165</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="related-product">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop" alt="Cotton T-Shirt">
+                    <div class="related-product-title">Organic Cotton Tee</div>
+                    <div class="related-product-price">$28</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="related-product">
+                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop" alt="Denim Jacket">
+                    <div class="related-product-title">Denim Jacket</div>
+                    <div class="related-product-price">$128</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-light py-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <h6 class="mb-3">Customer Care</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-muted-custom text-decoration-none">Contact Us</a></li>
+                    <li><a href="#" class="text-muted-custom text-decoration-none">Size Guide</a></li>
+                    <li><a href="#" class="text-muted-custom text-decoration-none">Shipping & Returns</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h6 class="mb-3">About</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-muted-custom text-decoration-none">Our Story</a></li>
+                    <li><a href="#" class="text-muted-custom text-decoration-none">Sustainability</a></li>
+                    <li><a href="#" class="text-muted-custom text-decoration-none">Careers</a></li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6 class="mb-3">Newsletter</h6>
+                <p class="text-muted-custom">Subscribe to get updates on new products and exclusive offers.</p>
+                <div class="input-group">
+                    <input type="email" class="form-control" placeholder="Enter your email">
+                    <button class="btn btn-dark" type="button">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Load more reviews functionality
+    document.getElementById('loadMoreReviews').addEventListener('click', function() {
+        // Simulate loading more reviews
+        const reviewsContainer = document.querySelector('.reviews-container');
+        const loadMoreBtn = this;
+
+        // Show loading state
+        loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+        loadMoreBtn.disabled = true;
+
+        // Simulate API call delay
+        setTimeout(() => {
+            // Add new review (in real app, this would come from API)
+            const newReview = `
+                    <div class="review-item border-bottom pb-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <div class="stars mb-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                                <h6 class="mb-1">Excellent Purchase</h6>
+                                <small class="text-muted-custom">David K. • Verified Purchase • 1 week ago</small>
+                            </div>
+                            <span class="badge bg-success">Verified</span>
+                        </div>
+                        <p class="mb-2">
+                            This is my second purchase of this sweater. The quality is consistently excellent and
+                            the customer service is outstanding. Highly recommend for anyone looking for a premium
+                            wool sweater that will last for years.
+                        </p>
+                        <div class="review-meta">
+                            <small class="text-muted-custom">Size purchased: L • Color: Natural</small>
+                        </div>
+                    </div>
+                `;
+
+            // Insert before the load more button
+            loadMoreBtn.parentElement.insertAdjacentHTML('beforebegin', newReview);
+
+            // Reset button
+            loadMoreBtn.innerHTML = 'Load More Reviews';
+            loadMoreBtn.disabled = false;
+
+            // Hide button if no more reviews (simulate)
+            // In real app, check if there are more reviews from API response
+            // loadMoreBtn.style.display = 'none';
+        }, 1000);
+    });
+
+    // Thumbnail image selection functionality
+    document.querySelectorAll('.thumbnail-clickable').forEach(thumbnail => {
+        thumbnail.addEventListener('click', function() {
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.thumbnail-clickable').forEach(thumb => thumb.classList.remove('active'));
+
+            // Add active class to clicked thumbnail
+            this.classList.add('active');
+
+            // Update main image
+            const mainImage = document.getElementById('mainImage');
+            const newSrc = this.getAttribute('data-main-src');
+            const newAlt = this.getAttribute('alt');
+
+            // Fade effect
+            mainImage.style.opacity = '0.5';
+            setTimeout(() => {
+                mainImage.src = newSrc;
+                mainImage.alt = newAlt;
+                mainImage.style.opacity = '1';
+            }, 150);
+        });
+    });
+
+    // Color selection functionality
+    document.querySelectorAll('.color-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+
+            const colorName = this.getAttribute('data-color');
+            document.getElementById('selectedColor').textContent = colorName;
+        });
+    });
+
+    // Size selection functionality
+    document.querySelectorAll('.size-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+
+            const sizeName = this.getAttribute('data-size');
+            document.getElementById('selectedSize').textContent = sizeName;
+        });
+    });
+
+    // Add to bag functionality
+    document.querySelector('.btn-add-to-bag').addEventListener('click', function() {
+        const selectedColor = document.querySelector('.color-option.active').getAttribute('data-color');
+        const selectedSize = document.querySelector('.size-option.active').getAttribute('data-size');
+
+        // Show success message
+        const originalText = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-check me-2"></i>Added to Bag!';
+        this.classList.add('btn-success');
+        this.classList.remove('btn-dark');
+
+        // Reset button after 2 seconds
+        setTimeout(() => {
+            this.innerHTML = originalText;
+            this.classList.remove('btn-success');
+            this.classList.add('btn-dark');
+        }, 2000);
+
+        console.log(`Added to bag: ${selectedColor} ${selectedSize}`);
+
+        // Could integrate with shopping cart API here
+        // addToCart(productId, selectedColor, selectedSize, quantity);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Related products click handlers
+    document.querySelectorAll('.related-product').forEach(product => {
+        product.addEventListener('click', function() {
+            // Navigate to product page
+            console.log('Navigate to related product');
+            // window.location.href = '/product/' + productId;
+        });
+    });
+</script>
+</body>
+</html>

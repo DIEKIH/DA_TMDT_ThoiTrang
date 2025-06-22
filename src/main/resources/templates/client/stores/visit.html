@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Ghé thăm cửa hàng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/navbar_client.css">
+</head>
+<body>
+
+<!-- Header -->
+<!--<header class="py-3 border-bottom">-->
+<!--  <div class="container d-flex justify-content-between align-items-center">-->
+<!--    <h3 class="mb-0">CEIN.</h3>-->
+<!--    <nav class="d-flex gap-3">-->
+<!--      <a href="#" class="text-decoration-none text-dark">Cửa hàng</a>-->
+<!--      <a href="#" class="text-decoration-none text-dark">Bộ sưu tập</a>-->
+<!--      <a href="#" class="text-decoration-none text-dark">Giảm giá</a>-->
+<!--      <a href="#" class="text-decoration-none text-dark">Ghé thăm</a>-->
+<!--    </nav>-->
+<!--  </div>-->
+<!--</header>-->
+<div th:replace="fragments/client_navbar :: client_navbar"></div>
+
+
+<!-- Nội dung chính -->
+<section class="container my-5">
+  <h2 class="text-center mb-3">Ghé Thăm Chúng Tôi</h2>
+  <p class="text-center text-muted mb-5">Hãy trải nghiệm triết lý "Ít nhưng Tinh tế" của chúng tôi tại các cửa hàng. Tận hưởng không gian yên tĩnh, dịch vụ cá nhân hóa và bộ sưu tập thời trang hiện đại.</p>
+
+  <div class="row mb-5">
+    <div class="col-md-6">
+      <img src="https://images.unsplash.com/photo-1585128792021-6721373a38e3" class="img-fluid rounded" alt="Store interior">
+    </div>
+    <div class="col-md-6 d-flex align-items-center">
+      <p>Trải nghiệm sự yên tĩnh và tối giản tại các cửa hàng của chúng tôi – nơi bạn có thể mua sắm bộ sưu tập thời trang cao cấp trong không gian nhẹ nhàng và hiện đại. Các cửa hàng của chúng tôi cung cấp dịch vụ tư vấn riêng, đặt lịch hẹn và hỗ trợ trực tiếp.</p>
+    </div>
+  </div>
+
+  <h4 class="mb-4">Các Cửa Hàng</h4>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <img src="https://images.unsplash.com/photo-1585128792040-44e4b2c17b2a" class="img-fluid rounded mb-2" alt="Union Square">
+      <p>Union Square – San Francisco, CA</p>
+    </div>
+    <div class="col-md-4">
+      <img src="https://images.unsplash.com/photo-1601978976203-4a4fcb59c7f0" class="img-fluid rounded mb-2" alt="Fillmore St.">
+      <p>Fillmore St. – San Francisco, CA</p>
+    </div>
+    <div class="col-md-4">
+      <img src="https://images.unsplash.com/photo-1585386959984-a415522e3f3b" class="img-fluid rounded mb-2" alt="Stanford Center">
+      <p>Stanford Shopping Center – Palo Alto, CA</p>
+    </div>
+    <div class="col-md-4">
+      <img src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1" class="img-fluid rounded mb-2" alt="Abbot Kinney">
+      <p>Abbot Kinney – Venice, CA</p>
+    </div>
+    <div class="col-md-4">
+      <img src="https://images.unsplash.com/photo-1579547621706-1a9c79d5ffa0" class="img-fluid rounded mb-2" alt="Pacific Palisades">
+      <p>Pacific Palisades, CA</p>
+    </div>
+    <div class="col-md-4">
+      <img src="https://images.unsplash.com/photo-1581349487688-4e004f7d6c5b" class="img-fluid rounded mb-2" alt="Seaport">
+      <p>Seaport – Boston, MA</p>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <h4 class="mb-3">Đặt Lịch Hẹn</h4>
+    <p>Hãy đặt lịch để được tư vấn mua sắm cá nhân hóa trong không gian thoải mái. Đội ngũ của chúng tôi luôn sẵn sàng hỗ trợ bạn tìm kiếm trang phục phù hợp – trực tiếp hoặc trực tuyến.</p>
+    <button class="btn btn-dark">Đặt Lịch Hẹn</button>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-light py-4 mt-5 border-top">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <h6>LIÊN HỆ</h6>
+        <p>+84 123 456 789</p>
+        <p>Hàng ngày: 9AM - 6PM</p>
+      </div>
+      <div class="col-md-3">
+        <h6>CHÍNH SÁCH</h6>
+        <p>Đổi trả</p>
+        <p>Vận chuyển</p>
+        <p>Thanh toán</p>
+      </div>
+      <div class="col-md-3">
+        <h6>VỀ CHÚNG TÔI</h6>
+        <p>Câu chuyện thương hiệu</p>
+        <p>Báo chí</p>
+        <p>Cơ hội nghề nghiệp</p>
+      </div>
+      <div class="col-md-3">
+        <h6>NHẬN THÔNG TIN MỚI</h6>
+        <form>
+          <input type="email" class="form-control mb-2" placeholder="Nhập email của bạn">
+          <button type="submit" class="btn btn-dark w-100">Đăng ký</button>
+        </form>
+      </div>
+    </div>
+    <div class="text-center mt-3">
+      <small>© 2025 CEIN. Bản quyền thuộc về chúng tôi.</small>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

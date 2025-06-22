@@ -1,0 +1,28 @@
+<!-- src/main/resources/templates/fragments/admin_navbar.html -->
+<div th:fragment="admin_navbar" class="top-navbar d-flex justify-content-between align-items-center p-3 bg-white shadow-sm">
+    <!-- Nút toggle sidebar + Tiêu đề -->
+    <div class="d-flex align-items-center">
+        <button class="btn btn-outline-secondary me-3" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h5 class="mb-0">Dashboard</h5>
+    </div>
+
+    <!-- Thanh tìm kiếm + Menu người dùng -->
+    <div class="d-flex align-items-center">
+        <input type="text" class="form-control me-3" placeholder="Tìm kiếm..." style="max-width: 250px;">
+
+        <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user me-2"></i>
+                <span th:if="${user != null}" th:text="|Xin chào, ${user.username} |">Xin chào, Admin 👋</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Hồ sơ</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Cài đặt</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
