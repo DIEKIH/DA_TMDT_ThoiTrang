@@ -78,6 +78,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductViewEntity> productViews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VoucherUsageEntity> voucherUsages = new ArrayList<>();
+
+
     // Getters and Setters
 //    public Long getId() { return id; }
 //    public String getUsername() { return username; }

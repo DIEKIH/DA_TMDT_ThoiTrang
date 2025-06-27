@@ -1,186 +1,774 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Thêm Sản phẩm - Admin Dashboard</title>-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" th:href="@{/css/admin_nav.css}">-->
+<!--    <style>-->
+<!--        .form-section {-->
+<!--            background: white;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 0 15px rgba(0,0,0,0.1);-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        .section-header {-->
+<!--            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);-->
+<!--            color: white;-->
+<!--            padding: 15px 20px;-->
+<!--            border-radius: 10px 10px 0 0;-->
+<!--            margin: 0;-->
+<!--        }-->
+<!--        .image-preview {-->
+<!--            max-width: 150px;-->
+<!--            max-height: 150px;-->
+<!--            object-fit: cover;-->
+<!--            border-radius: 8px;-->
+<!--            margin: 5px;-->
+<!--        }-->
+<!--        .image-upload-area {-->
+<!--            border: 2px dashed #ddd;-->
+<!--            border-radius: 8px;-->
+<!--            padding: 20px;-->
+<!--            text-align: center;-->
+<!--            transition: border-color 0.3s;-->
+<!--        }-->
+<!--        .image-upload-area:hover {-->
+<!--            border-color: #667eea;-->
+<!--        }-->
+<!--        .checkbox-group {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));-->
+<!--            gap: 10px;-->
+<!--        }-->
+<!--        .checkbox-item {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            padding: 8px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 5px;-->
+<!--            transition: all 0.3s;-->
+<!--        }-->
+<!--        .checkbox-item:hover {-->
+<!--            background-color: #f8f9fa;-->
+<!--            border-color: #667eea;-->
+<!--        }-->
+<!--        .checkbox-item input:checked + label {-->
+<!--            color: #667eea;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        .required-field::after {-->
+<!--            content: " *";-->
+<!--            color: red;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div th:replace="fragments/admin_sidebar :: admin_sidebar"></div>-->
+<!--<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>-->
+<!--<div class="main-content" id="mainContent">-->
+<!--    <div th:replace="fragments/admin_navbar :: admin_navbar"></div>-->
+
+<!--    <div class="container-fluid px-4">-->
+<!--        <div class="row">-->
+<!--            <div class="col-12">-->
+<!--                &lt;!&ndash; Header &ndash;&gt;-->
+<!--                <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--                    <h2><i class="fas fa-plus-circle me-2"></i>Thêm Sản phẩm mới</h2>-->
+<!--                    <a th:href="@{/admin/products/list}" class="btn btn-secondary">-->
+<!--                        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách-->
+<!--                    </a>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Thông báo lỗi &ndash;&gt;-->
+<!--                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">-->
+<!--                    <i class="fas fa-exclamation-circle me-2"></i>-->
+<!--                    <span th:text="${error}"></span>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
+<!--                </div>-->
+
+<!--                &lt;!&ndash; Form thêm sản phẩm &ndash;&gt;-->
+<!--                <form th:action="@{/admin/products/add}" th:object="${product}" method="post" enctype="multipart/form-data">-->
+
+<!--                    &lt;!&ndash; Thông tin cơ bản &ndash;&gt;-->
+<!--                    <div class="form-section">-->
+<!--                        <h5 class="section-header">-->
+<!--                            <i class="fas fa-info-circle me-2"></i>Thông tin cơ bản-->
+<!--                        </h5>-->
+<!--                        <div class="p-4">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-6 mb-3">-->
+<!--                                    <label for="name" class="form-label required-field">Tên sản phẩm</label>-->
+<!--                                    <input type="text" class="form-control" id="name" th:field="*{name}" required>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-6 mb-3">-->
+<!--                                    <label for="sku" class="form-label">Mã SKU</label>-->
+<!--                                    <input type="text" class="form-control" id="sku" th:field="*{sku}" placeholder="Tự động tạo nếu để trống">-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            <div class="mb-3">-->
+<!--                                <label for="description" class="form-label">Mô tả sản phẩm</label>-->
+<!--                                <textarea class="form-control" id="description" th:field="*{description}" rows="4"></textarea>-->
+<!--                            </div>-->
+
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-4 mb-3">-->
+<!--                                    <label for="categoryId" class="form-label required-field">Danh mục</label>-->
+<!--                                    <select class="form-select" id="categoryId" th:field="*{categoryId}" required>-->
+<!--                                        <option value="">Chọn danh mục</option>-->
+<!--                                        <option th:each="category : ${categories}"-->
+<!--                                                th:value="${category.id}"-->
+<!--                                                th:text="${category.name}">Danh mục</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-4 mb-3">-->
+<!--                                    <label for="brandId" class="form-label required-field">Thương hiệu</label>-->
+<!--                                    <select class="form-select" id="brandId" th:field="*{brandId}" required>-->
+<!--                                        <option value="">Chọn thương hiệu</option>-->
+<!--                                        <option th:each="brand : ${brands}"-->
+<!--                                                th:value="${brand.id}"-->
+<!--                                                th:text="${brand.name}">Thương hiệu</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-4 mb-3">-->
+<!--                                    <label for="isActive" class="form-label">Trạng thái</label>-->
+<!--                                    <select class="form-select" id="isActive" th:field="*{isActive}">-->
+<!--                                        <option value="true">Hoạt động</option>-->
+<!--                                        <option value="false">Tạm ngưng</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Giá và số lượng &ndash;&gt;-->
+<!--                    <div class="form-section">-->
+<!--                        <h5 class="section-header">-->
+<!--                            <i class="fas fa-dollar-sign me-2"></i>Giá và Kho hàng-->
+<!--                        </h5>-->
+<!--                        <div class="p-4">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-6 mb-3">-->
+<!--                                    <label for="price" class="form-label required-field">Giá bán (VNĐ)</label>-->
+<!--                                    <input type="number" class="form-control" id="price" th:field="*{price}" min="0" step="1000" required>-->
+<!--                                </div>-->
+<!--                                <div class="col-md-6 mb-3">-->
+<!--                                    <label for="quantity" class="form-label required-field">Số lượng trong kho</label>-->
+<!--                                    <input type="number" class="form-control" id="quantity" th:field="*{quantity}" min="0" required>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Size và màu sắc &ndash;&gt;-->
+<!--                    <div class="form-section">-->
+<!--                        <h5 class="section-header">-->
+<!--                            <i class="fas fa-palette me-2"></i>Size và Màu sắc-->
+<!--                        </h5>-->
+<!--                        <div class="p-4">-->
+<!--                            &lt;!&ndash; Size &ndash;&gt;-->
+<!--                            <div class="mb-4">-->
+<!--                                <label class="form-label">Kích thước có sẵn</label>-->
+<!--                                <div class="checkbox-group">-->
+<!--                                    <div th:each="size : ${sizes}" class="checkbox-item">-->
+<!--                                        <input type="checkbox"-->
+<!--                                               th:id="'size_' + ${size}"-->
+<!--                                               name="selectedSizes"-->
+<!--                                               th:value="${size}"-->
+<!--                                               class="form-check-input me-2">-->
+<!--                                        <label th:for="'size_' + ${size}"-->
+<!--                                               th:text="${size}"-->
+<!--                                               class="form-check-label">S</label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            &lt;!&ndash; Màu sắc &ndash;&gt;-->
+<!--                            <div class="mb-3">-->
+<!--                                <label class="form-label">Màu sắc có sẵn</label>-->
+<!--                                <div class="checkbox-group">-->
+<!--                                    <div th:each="color : ${colors}" class="checkbox-item">-->
+<!--                                        <input type="checkbox"-->
+<!--                                               th:id="'color_' + ${color}"-->
+<!--                                               name="selectedColors"-->
+<!--                                               th:value="${color}"-->
+<!--                                               class="form-check-input me-2">-->
+<!--                                        <label th:for="'color_' + ${color}"-->
+<!--                                               th:text="${color}"-->
+<!--                                               class="form-check-label">Đỏ</label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Hình ảnh &ndash;&gt;-->
+<!--                    <div class="form-section">-->
+<!--                        <h5 class="section-header">-->
+<!--                            <i class="fas fa-images me-2"></i>Hình ảnh sản phẩm-->
+<!--                        </h5>-->
+<!--                        <div class="p-4">-->
+<!--                            &lt;!&ndash; Ảnh chính &ndash;&gt;-->
+<!--                            <div class="mb-4">-->
+<!--                                <label for="mainImage" class="form-label required-field">Ảnh chính</label>-->
+<!--                                <div class="image-upload-area">-->
+<!--                                    <input type="file" class="form-control" id="mainImage" name="mainImage" accept="image/*" required>-->
+<!--                                    <div class="mt-2">-->
+<!--                                        <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>-->
+<!--                                        <p class="text-muted mt-2">Chọn ảnh chính cho sản phẩm</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div id="mainImagePreview" class="mt-3"></div>-->
+<!--                            </div>-->
+
+<!--                            &lt;!&ndash; Ảnh phụ &ndash;&gt;-->
+<!--                            <div class="mb-3">-->
+<!--                                <label for="additionalImages" class="form-label">Ảnh phụ (có thể chọn nhiều)</label>-->
+<!--                                <div class="image-upload-area">-->
+<!--                                    <input type="file" class="form-control" id="additionalImages" name="additionalImages" accept="image/*" multiple>-->
+<!--                                    <div class="mt-2">-->
+<!--                                        <i class="fas fa-images fa-2x text-muted"></i>-->
+<!--                                        <p class="text-muted mt-2">Chọn nhiều ảnh phụ cho sản phẩm</p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div id="additionalImagesPreview" class="mt-3 d-flex flex-wrap"></div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Buttons &ndash;&gt;-->
+<!--                    <div class="text-end mb-4">-->
+<!--                        <a th:href="@{/admin/products/list}" class="btn btn-secondary me-2">-->
+<!--                            <i class="fas fa-times me-2"></i>Hủy-->
+<!--                        </a>-->
+<!--                        <button type="submit" class="btn btn-primary">-->
+<!--                            <i class="fas fa-save me-2"></i>Lưu sản phẩm-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Scripts &ndash;&gt;-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>-->
+<!--<script th:src="@{/js/admin_nav.js}"></script>-->
+<!--<script>-->
+<!--    // Preview ảnh chính-->
+<!--    document.getElementById('mainImage').addEventListener('change', function(e) {-->
+<!--        const file = e.target.files[0];-->
+<!--        const preview = document.getElementById('mainImagePreview');-->
+
+<!--        if (file) {-->
+<!--            const reader = new FileReader();-->
+<!--            reader.onload = function(e) {-->
+<!--                preview.innerHTML = `<img src="${e.target.result}" class="image-preview" alt="Main Image Preview">`;-->
+<!--            };-->
+<!--            reader.readAsDataURL(file);-->
+<!--        } else {-->
+<!--            preview.innerHTML = '';-->
+<!--        }-->
+<!--    });-->
+
+<!--    // Preview ảnh phụ-->
+<!--    document.getElementById('additionalImages').addEventListener('change', function(e) {-->
+<!--        const files = e.target.files;-->
+<!--        const preview = document.getElementById('additionalImagesPreview');-->
+<!--        preview.innerHTML = '';-->
+
+<!--        for (let i = 0; i < files.length; i++) {-->
+<!--            const file = files[i];-->
+<!--            const reader = new FileReader();-->
+<!--            reader.onload = function(e) {-->
+<!--                const img = document.createElement('img');-->
+<!--                img.src = e.target.result;-->
+<!--                img.className = 'image-preview';-->
+<!--                img.alt = 'Additional Image Preview';-->
+<!--                preview.appendChild(img);-->
+<!--            };-->
+<!--            reader.readAsDataURL(file);-->
+<!--        }-->
+<!--    });-->
+
+<!--    // Auto generate SKU from product name-->
+<!--    document.getElementById('name').addEventListener('blur', function() {-->
+<!--        const skuField = document.getElementById('sku');-->
+<!--        if (!skuField.value) {-->
+<!--            const name = this.value;-->
+<!--            const sku = name.toUpperCase()-->
+<!--                .replace(/[^A-Z0-9]/g, '')-->
+<!--                .substring(0, 8) + Math.floor(Math.random() * 1000);-->
+<!--            skuField.value = sku;-->
+<!--        }-->
+<!--    });-->
+
+<!--    // Auto hide alerts-->
+<!--    setTimeout(function() {-->
+<!--        var alerts = document.querySelectorAll('.alert');-->
+<!--        alerts.forEach(function(alert) {-->
+<!--            var bsAlert = new bootstrap.Alert(alert);-->
+<!--            bsAlert.close();-->
+<!--        });-->
+<!--    }, 5000);-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit} ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'">Form sản phẩm</title>
-
-    <!-- ✅ Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product.id != null ? 'Cập nhật Sản phẩm' : 'Thêm Sản phẩm'} + ' - Admin Dashboard'">Thêm Sản phẩm - Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin_nav.css}">
+    <style>
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            margin: 0;
+        }
+        .image-preview {
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 5px;
+            position: relative;
+            display: inline-block;
+        }
+        .image-upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        .image-upload-area:hover {
+            border-color: #667eea;
+        }
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .checkbox-item:hover {
+            background-color: #f8f9fa;
+            border-color: #667eea;
+        }
+        .checkbox-item input:checked + label {
+            color: #667eea;
+            font-weight: bold;
+        }
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+        .current-image {
+            position: relative;
+            display: inline-block;
+            margin: 5px;
+        }
+        .delete-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .edit-mode .image-upload-area p {
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2 th:text="${isEdit} ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'" class="mb-4"></h2>
+<div th:replace="fragments/admin_sidebar :: admin_sidebar"></div>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<div class="main-content" id="mainContent">
+    <div th:replace="fragments/admin_navbar :: admin_navbar"></div>
 
-    <!-- Hiển thị lỗi chung -->
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div class="container-fluid px-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>
+                        <i th:class="${product.id != null ? 'fas fa-edit' : 'fas fa-plus-circle'} + ' me-2'"></i>
+                        <span th:text="${product.id != null ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm mới'}">Thêm sản phẩm mới</span>
+                    </h2>
+                    <a th:href="@{/admin/products/list}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách
+                    </a>
+                </div>
 
-    <!-- ✅ Form thêm/sửa sản phẩm -->
-<!--    <form th:action="@{${formAction}}" th:object="${product}" method="post" enctype="multipart/form-data">-->
+                <!-- Thông báo -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
 
-<!--        &lt;!&ndash; Tên sản phẩm &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="name" class="form-label">Tên sản phẩm</label>-->
-<!--            <input type="text" class="form-control" id="name" th:field="*{name}">-->
-<!--            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>-->
-<!--        </div>-->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
 
-<!--        &lt;!&ndash; Mô tả &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="description" class="form-label">Mô tả</label>-->
-<!--            <textarea class="form-control" id="description" rows="3" th:field="*{description}"></textarea>-->
-<!--            <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>-->
-<!--        </div>-->
+                <!-- Form thêm/sửa sản phẩm -->
+                <form th:action="${product.id != null ? '/admin/products/edit/' + product.id : '/admin/products/add'}"
+                      th:object="${product}"
+                      method="post"
+                      enctype="multipart/form-data"
+                      th:class="${product.id != null ? 'edit-mode' : ''}">
 
-<!--        &lt;!&ndash; Giá gốc &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="basePrice" class="form-label">Giá gốc</label>-->
-<!--            <input type="number" step="0.01" class="form-control" id="basePrice" th:field="*{basePrice}">-->
-<!--            <div class="text-danger" th:if="${#fields.hasErrors('basePrice')}" th:errors="*{basePrice}"></div>-->
-<!--        </div>-->
+                    <!-- Hidden field cho edit -->
+                    <input type="hidden" th:field="*{id}" th:if="${product.id != null}">
 
-<!--        &lt;!&ndash; Danh mục &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="categoryId" class="form-label">Danh mục</label>-->
-<!--            <select class="form-select" id="categoryId" th:field="*{categoryId}">-->
-<!--                <option value="">&#45;&#45; Chọn danh mục &#45;&#45;</option>-->
-<!--                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>-->
-<!--            </select>-->
-<!--            <div class="text-danger" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>-->
-<!--        </div>-->
+                    <!-- Thông tin cơ bản -->
+                    <div class="form-section">
+                        <h5 class="section-header">
+                            <i class="fas fa-info-circle me-2"></i>Thông tin cơ bản
+                        </h5>
+                        <div class="p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label required-field">Tên sản phẩm</label>
+                                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="sku" class="form-label">Mã SKU</label>
+                                    <input type="text" class="form-control" id="sku" th:field="*{sku}"
+                                           th:placeholder="${product.id != null ? 'SKU hiện tại' : 'Tự động tạo nếu để trống'}">
+                                </div>
+                            </div>
 
-<!--        &lt;!&ndash; Thương hiệu &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="brandId" class="form-label">Thương hiệu</label>-->
-<!--            <select class="form-select" id="brandId" th:field="*{brandId}">-->
-<!--                <option value="">&#45;&#45; Chọn thương hiệu &#45;&#45;</option>-->
-<!--                <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>-->
-<!--            </select>-->
-<!--            <div class="text-danger" th:if="${#fields.hasErrors('brandId')}" th:errors="*{brandId}"></div>-->
-<!--        </div>-->
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Mô tả sản phẩm</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" rows="4"></textarea>
+                            </div>
 
-<!--        &lt;!&ndash; Ảnh đại diện &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="imageFile" class="form-label">Ảnh đại diện</label>-->
-<!--            <input class="form-control" type="file" id="imageFile" name="imageFile">-->
-<!--        </div>-->
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="categoryId" class="form-label required-field">Danh mục</label>
+                                    <select class="form-select" id="categoryId" th:field="*{categoryId}" required>
+                                        <option value="">Chọn danh mục</option>
+                                        <option th:each="category : ${categories}"
+                                                th:value="${category.id}"
+                                                th:text="${category.name}"
+                                                th:selected="${category.id == product.categoryId}">Danh mục</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="brandId" class="form-label required-field">Thương hiệu</label>
+                                    <select class="form-select" id="brandId" th:field="*{brandId}" required>
+                                        <option value="">Chọn thương hiệu</option>
+                                        <option th:each="brand : ${brands}"
+                                                th:value="${brand.id}"
+                                                th:text="${brand.name}"
+                                                th:selected="${brand.id == product.brandId}">Thương hiệu</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="isActive" class="form-label">Trạng thái</label>
+                                    <select class="form-select" id="isActive" th:field="*{isActive}">
+                                        <option value="true" th:selected="${product.isActive == true}">Hoạt động</option>
+                                        <option value="false" th:selected="${product.isActive == false}">Tạm ngưng</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<!--        &lt;!&ndash; Ảnh chi tiết &ndash;&gt;-->
-<!--        <div class="mb-3">-->
-<!--            <label for="imageFiles" class="form-label">Ảnh chi tiết</label>-->
-<!--            <input class="form-control" type="file" id="imageFiles" name="imageFiles" multiple>-->
-<!--        </div>-->
+                    <!-- Giá và số lượng -->
+                    <div class="form-section">
+                        <h5 class="section-header">
+                            <i class="fas fa-dollar-sign me-2"></i>Giá và Kho hàng
+                        </h5>
+                        <div class="p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label required-field">Giá bán (VNĐ)</label>
+                                    <input type="number" class="form-control" id="price" th:field="*{price}" min="0" step="1000" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="quantity" class="form-label required-field">Số lượng trong kho</label>
+                                    <input type="number" class="form-control" id="quantity" th:field="*{quantity}" min="0" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<!--        &lt;!&ndash; Trạng thái &ndash;&gt;-->
-<!--        <div class="form-check mb-3">-->
-<!--            <input class="form-check-input" type="checkbox" th:field="*{isActive}" id="isActive">-->
-<!--            <label class="form-check-label" for="isActive">Kích hoạt</label>-->
-<!--        </div>-->
+                    <!-- Size và màu sắc -->
+                    <div class="form-section">
+                        <h5 class="section-header">
+                            <i class="fas fa-palette me-2"></i>Size và Màu sắc
+                        </h5>
+                        <div class="p-4">
+                            <!-- Size -->
+                            <div class="mb-4">
+                                <label class="form-label">Kích thước có sẵn</label>
+                                <div class="checkbox-group">
+                                    <div th:each="size : ${sizes}" class="checkbox-item">
+                                        <input type="checkbox"
+                                               th:id="'size_' + ${size}"
+                                               name="selectedSizes"
+                                               th:value="${size}"
+                                               th:checked="${currentSizes != null && #arrays.contains(currentSizes, size)}"
+                                               class="form-check-input me-2">
+                                        <label th:for="'size_' + ${size}"
+                                               th:text="${size}"
+                                               class="form-check-label">S</label>
+                                    </div>
+                                </div>
+                            </div>
 
-<!--        &lt;!&ndash; Nút gửi &ndash;&gt;-->
-<!--        <button type="submit" class="btn btn-primary" th:text="${isEdit} ? 'Cập nhật' : 'Thêm mới'"></button>-->
-<!--        <a href="/admin/products" class="btn btn-secondary ms-2">Quay lại</a>-->
-<!--    </form>-->
-    <form th:action="@{${formAction}}" th:object="${product}" method="post" enctype="multipart/form-data">
+                            <!-- Màu sắc -->
+                            <div class="mb-3">
+                                <label class="form-label">Màu sắc có sẵn</label>
+                                <div class="checkbox-group">
+                                    <div th:each="color : ${colors}" class="checkbox-item">
+                                        <input type="checkbox"
+                                               th:id="'color_' + ${color}"
+                                               name="selectedColors"
+                                               th:value="${color}"
+                                               th:checked="${currentColors != null && #arrays.contains(currentColors, color)}"
+                                               class="form-check-input me-2">
+                                        <label th:for="'color_' + ${color}"
+                                               th:text="${color}"
+                                               class="form-check-label">Đỏ</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Tên sản phẩm -->
-        <div class="mb-3">
-            <label for="name" class="form-label">Tên sản phẩm</label>
-            <input type="text" class="form-control" id="name" th:field="*{name}">
-            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    <!-- Hình ảnh -->
+                    <div class="form-section">
+                        <h5 class="section-header">
+                            <i class="fas fa-images me-2"></i>Hình ảnh sản phẩm
+                        </h5>
+                        <div class="p-4">
+                            <!-- Ảnh chính hiện tại (chỉ hiện khi edit) -->
+                            <div th:if="${product.id != null && product.imageUrl != null}" class="mb-3">
+                                <label class="form-label">Ảnh chính hiện tại</label>
+                                <div class="current-image">
+                                    <img th:src="@{${product.imageUrl}}" class="image-preview" alt="Current Main Image">
+                                </div>
+                            </div>
+
+                            <!-- Upload ảnh chính mới -->
+                            <div class="mb-4">
+                                <label for="mainImage" th:class="${product.id != null ? 'form-label' : 'form-label required-field'}">
+                                    <span th:text="${product.id != null ? 'Thay đổi ảnh chính (tùy chọn)' : 'Ảnh chính'}">Ảnh chính</span>
+                                </label>
+                                <div class="image-upload-area">
+                                    <input type="file" class="form-control" id="mainImage" name="mainImage"
+                                           accept="image/*" th:required="${product.id == null}">
+                                    <div class="mt-2">
+                                        <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
+                                        <p class="text-muted mt-2" th:text="${product.id != null ? 'Chọn ảnh mới để thay thế (bỏ trống nếu giữ nguyên)' : 'Chọn ảnh chính cho sản phẩm'}">
+                                            Chọn ảnh chính cho sản phẩm
+                                        </p>
+                                    </div>
+                                </div>
+                                <div id="mainImagePreview" class="mt-3"></div>
+                            </div>
+
+                            <!-- Ảnh phụ hiện tại (chỉ hiện khi edit) -->
+                            <div th:if="${product.id != null && productImages != null && !#lists.isEmpty(productImages)}" class="mb-3">
+                                <label class="form-label">Ảnh phụ hiện tại</label>
+                                <div class="d-flex flex-wrap">
+                                    <div th:each="image : ${productImages}" class="current-image">
+                                        <img th:src="@{${image.imageUrl}}" class="image-preview" alt="Current Additional Image">
+                                        <button type="button" class="delete-image-btn"
+                                                th:onclick="'deleteProductImage(' + ${image.id} + ')'"
+                                                title="Xóa ảnh này">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload ảnh phụ mới -->
+                            <div class="mb-3">
+                                <label for="additionalImages" class="form-label">
+                                    <span th:text="${product.id != null ? 'Thêm ảnh phụ mới (tùy chọn)' : 'Ảnh phụ (có thể chọn nhiều)'}">Ảnh phụ (có thể chọn nhiều)</span>
+                                </label>
+                                <div class="image-upload-area">
+                                    <input type="file" class="form-control" id="additionalImages" name="additionalImages" accept="image/*" multiple>
+                                    <div class="mt-2">
+                                        <i class="fas fa-images fa-2x text-muted"></i>
+                                        <p class="text-muted mt-2" th:text="${product.id != null ? 'Chọn ảnh phụ để thêm vào sản phẩm' : 'Chọn nhiều ảnh phụ cho sản phẩm'}">
+                                            Chọn nhiều ảnh phụ cho sản phẩm
+                                        </p>
+                                    </div>
+                                </div>
+                                <div id="additionalImagesPreview" class="mt-3 d-flex flex-wrap"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="text-end mb-4">
+                        <a th:href="@{/admin/products/list}" class="btn btn-secondary me-2">
+                            <i class="fas fa-times me-2"></i>Hủy
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i th:class="${product.id != null ? 'fas fa-save' : 'fas fa-plus'} + ' me-2'"></i>
+                            <span th:text="${product.id != null ? 'Cập nhật sản phẩm' : 'Lưu sản phẩm'}">Lưu sản phẩm</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <!-- Mô tả -->
-        <div class="mb-3">
-            <label for="description" class="form-label">Mô tả</label>
-            <textarea class="form-control" id="description" rows="3" th:field="*{description}"></textarea>
-            <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
-        </div>
-
-        <!-- Kích thước -->
-        <div class="mb-3">
-            <label for="size" class="form-label">Kích thước</label>
-            <input type="text" class="form-control" id="size" th:field="*{size}">
-            <div class="text-danger" th:if="${#fields.hasErrors('size')}" th:errors="*{size}"></div>
-        </div>
-
-        <!-- Màu sắc -->
-        <div class="mb-3">
-            <label for="color" class="form-label">Màu sắc</label>
-            <input type="text" class="form-control" id="color" th:field="*{color}">
-            <div class="text-danger" th:if="${#fields.hasErrors('color')}" th:errors="*{color}"></div>
-        </div>
-
-        <!-- Số lượng tồn -->
-        <div class="mb-3">
-            <label for="quantity" class="form-label">Số lượng tồn</label>
-            <input type="number" class="form-control" id="quantity" min="0" th:field="*{quantity}">
-            <div class="text-danger" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
-        </div>
-
-        <!-- Giá bán -->
-        <div class="mb-3">
-            <label for="price" class="form-label">Giá bán (VNĐ)</label>
-            <input type="number" step="0.01" class="form-control" id="price" th:field="*{price}">
-            <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
-        </div>
-
-        <!-- Mã SKU -->
-        <div class="mb-3">
-            <label for="sku" class="form-label">Mã SKU</label>
-            <input type="text" class="form-control" id="sku" th:field="*{sku}">
-            <div class="text-danger" th:if="${#fields.hasErrors('sku')}" th:errors="*{sku}"></div>
-        </div>
-
-        <!-- Danh mục -->
-        <div class="mb-3">
-            <label for="categoryId" class="form-label">Danh mục</label>
-            <select class="form-select" id="categoryId" th:field="*{categoryId}">
-                <option value="">-- Chọn danh mục --</option>
-                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
-            </select>
-            <div class="text-danger" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
-        </div>
-
-        <!-- Thương hiệu -->
-        <div class="mb-3">
-            <label for="brandId" class="form-label">Thương hiệu</label>
-            <select class="form-select" id="brandId" th:field="*{brandId}">
-                <option value="">-- Chọn thương hiệu --</option>
-                <option th:each="brand : ${brands}" th:value="${brand.id}" th:text="${brand.name}"></option>
-            </select>
-            <div class="text-danger" th:if="${#fields.hasErrors('brandId')}" th:errors="*{brandId}"></div>
-        </div>
-
-        <!-- Ảnh đại diện -->
-        <div class="mb-3">
-            <label for="imageFile" class="form-label">Ảnh đại diện</label>
-            <input class="form-control" type="file" id="imageFile" name="imageFile">
-        </div>
-
-        <!-- Ảnh chi tiết -->
-        <div class="mb-3">
-            <label for="imageFiles" class="form-label">Ảnh chi tiết</label>
-            <input class="form-control" type="file" id="imageFiles" name="imageFiles" multiple>
-        </div>
-
-        <!-- Trạng thái -->
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" th:field="*{isActive}" id="isActive">
-            <label class="form-check-label" for="isActive">Kích hoạt</label>
-        </div>
-
-        <!-- Nút gửi -->
-        <button type="submit" class="btn btn-primary" th:text="${isEdit} ? 'Cập nhật' : 'Thêm mới'"></button>
-        <a href="/admin/products" class="btn btn-secondary ms-2">Quay lại</a>
-    </form>
-
+    </div>
 </div>
 
-<!-- ✅ Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-w76A2z02tPqdj8eO+5rOGUstC2RxA+4U8zJOa+PpF0rjIEz9MuNo+8AU6R9Qr2h5"
-        crossorigin="anonymous"></script>
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/admin_nav.js}"></script>
+<script>
+    // Preview ảnh chính
+    document.getElementById('mainImage').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('mainImagePreview');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.innerHTML = `<img src="${e.target.result}" class="image-preview" alt="Main Image Preview">`;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.innerHTML = '';
+        }
+    });
+
+    // Preview ảnh phụ
+    document.getElementById('additionalImages').addEventListener('change', function(e) {
+        const files = e.target.files;
+        const preview = document.getElementById('additionalImagesPreview');
+        preview.innerHTML = '';
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'image-preview';
+                img.alt = 'Additional Image Preview';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Auto generate SKU from product name (chỉ khi thêm mới)
+    const isEditMode = document.querySelector('.edit-mode') !== null;
+    if (!isEditMode) {
+        document.getElementById('name').addEventListener('blur', function() {
+            const skuField = document.getElementById('sku');
+            if (!skuField.value) {
+                const name = this.value;
+                const sku = name.toUpperCase()
+                    .replace(/[^A-Z0-9]/g, '')
+                    .substring(0, 8) + Math.floor(Math.random() * 1000);
+                skuField.value = sku;
+            }
+        });
+    }
+
+    // Function to delete product image (for edit mode)
+    function deleteProductImage(imageId) {
+        if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+            // Send AJAX request to delete image
+            fetch('/admin/products/images/delete/' + imageId, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove image from DOM
+                        event.target.closest('.current-image').remove();
+                        // Show success message
+                        showAlert('success', 'Đã xóa ảnh thành công!');
+                    } else {
+                        showAlert('error', 'Có lỗi xảy ra khi xóa ảnh!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('error', 'Có lỗi xảy ra khi xóa ảnh!');
+                });
+        }
+    }
+
+    // Function to show alert messages
+    function showAlert(type, message) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const iconClass = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+
+        const alertHtml = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                <i class="${iconClass} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+
+        const container = document.querySelector('.container-fluid .row .col-12');
+        const firstChild = container.firstElementChild.nextElementSibling;
+        firstChild.insertAdjacentHTML('afterend', alertHtml);
+
+        // Auto hide after 5 seconds
+        setTimeout(function() {
+            const alert = container.querySelector('.alert');
+            if (alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }
+        }, 5000);
+    }
+
+    // Auto hide alerts
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
 </body>
 </html>

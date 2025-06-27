@@ -29,6 +29,7 @@ public class CategoryService {
     }
 
 
+
     public List<CategoryEntity> findCategories(String search, String status) {
         if (search.isEmpty() && status.equals("all")) {
             return categoryRepository.findAll(Sort.by("createdAt").descending());
