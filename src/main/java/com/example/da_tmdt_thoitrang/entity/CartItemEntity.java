@@ -34,7 +34,7 @@ public class CartItemEntity {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private ProductEntity product;
+    private ProductEntity productId;
 
 
     @Column(nullable = false)
@@ -54,6 +54,10 @@ public class CartItemEntity {
     @JoinColumn(name = "product", insertable = false, updatable = false)
     private ProductEntity productEntity;
 
+
+    public BigDecimal getSubtotal() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
 //    public Long getId() { return id; }
 //    public Integer getQuantity() { return quantity; }
 //    public BigDecimal getTotalPrice() {

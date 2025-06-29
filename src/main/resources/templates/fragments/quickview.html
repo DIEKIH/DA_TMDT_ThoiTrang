@@ -1,0 +1,37 @@
+<!-- fragments/modal.html -->
+<div th:fragment="quickViewModalContent">
+    <div class="modal-body p-0">
+        <div class="row g-0">
+            <!-- Product Images -->
+            <div class="col-lg-6">
+                <div class="product-image-container h-100">
+                    <div class="main-product-image" id="mainImageContainer">
+                        <img id="mainProductImage"
+                             th:src="${#lists.isEmpty(product.images) ? '/images/default.png' : product.images[0].imageUrl}"
+                             class="img-fluid" th:alt="${product.name}">
+                    </div>
+
+                    <!-- Thumbnails -->
+                    <div class="d-flex gap-2 overflow-auto mt-2">
+                        <div class="thumbnail-image flex-shrink-0"
+                             th:each="img : ${product.productImages}"
+                             th:attr="data-image=${img.imageUrl}">
+                            <img th:src="${img.imageUrl}" alt="thumb" class="img-thumbnail" width="80">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-lg-6">
+                <div class="product-info-section p-4 p-lg-5">
+                    <h4 class="product-title" th:text="${product.name}"></h4>
+                    <div class="product-price mb-4" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + '₫'"></div>
+
+                    <!-- Add to cart -->
+                    <button class="btn btn-dark w-100 mb-3">Thêm vào giỏ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -178,6 +178,7 @@ public class ProductEntity {
     private BrandEntity brand;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @OrderBy("sortOrder ASC")
     private List<ProductImageEntity> productImages;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

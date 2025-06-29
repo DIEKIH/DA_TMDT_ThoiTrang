@@ -42,6 +42,18 @@ public class CartEntity {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CartItemEntity> cartItems = new ArrayList<>();
 
+
+    public BigDecimal getTotalAmount() {
+        return cartItems.stream()
+                .map(CartItemEntity::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public Integer getTotalItems() {
+        return cartItems.stream()
+                .mapToInt(CartItemEntity::getQuantity)
+                .sum();
+    }
 //    public Long getId() { return id; }
 //
 //    public void addItem(ProductDetailEntity productDetail, Integer quantity) {

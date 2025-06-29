@@ -23,10 +23,10 @@ public class AuthController {
     }
 
     // Trang chủ
-    @GetMapping("/")
-    public String home() {
-        return "index";
-    }
+//    @GetMapping("/")
+//    public String home() {
+//        return "index";
+//    }
 
     // Trang admin
     @GetMapping("/admin/admin_main")
