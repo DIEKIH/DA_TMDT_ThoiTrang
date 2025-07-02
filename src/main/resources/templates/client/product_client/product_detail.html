@@ -311,7 +311,7 @@
                  class="product-image main-product-image">
 
             <!-- Thumbnail Images -->
-            <div class="row" th:if="${product.productImages != null && !product.productImages.empty}">
+            <div class="row" th:if="${product.productImages != null and !product.productImages.isEmpty()}">
                 <div class="col-md-6 mb-3" th:each="image, iterStat : ${product.productImages}" th:if="${iterStat.index < 4}">
                     <img th:src="${image.imageUrl}"
                          th:alt="${product.name + ' - Hình ' + (iterStat.index + 1)}"
@@ -329,7 +329,7 @@
                 <h1 class="product-title" th:text="${product.name}">Tên sản phẩm</h1>
 
                 <!-- Price -->
-                <div class="product-price" th:text="'$' + ${product.price}">$0</div>
+                <div class="product-price" th:text=" ${product.price}+'đ'">0đ</div>
 
                 <!-- Rating -->
                 <div class="mb-3" th:if="${product.averageRating != null && product.averageRating > 0}">
@@ -352,58 +352,88 @@
                               th:text="${product.quantity > 0} ? 'Còn hàng (' + ${product.quantity} + ' sản phẩm)' : 'Hết hàng'">
                         </span>
                 </div>
-
-                <!-- Color Selection -->
-                <div class="mb-4" th:if="${product.color != null}">
-                    <h6 class="mb-3">Màu sắc: <span id="selectedColor" th:text="${product.color}">Natural</span></h6>
-                    <div class="d-flex gap-2">
-                        <div class="color-option color-beige active"
-                             th:classappend="${product.color == 'Natural'} ? 'active' : ''"
-                             data-color="Natural" title="Natural"
-                             onclick="selectColor('Natural', this)"></div>
-                        <div class="color-option color-black"
-                             th:classappend="${product.color == 'Black'} ? 'active' : ''"
-                             data-color="Black" title="Black"
-                             onclick="selectColor('Black', this)"></div>
-                        <div class="color-option color-gray"
-                             th:classappend="${product.color == 'Gray'} ? 'active' : ''"
-                             data-color="Gray" title="Gray"
-                             onclick="selectColor('Gray', this)"></div>
-                    </div>
-                </div>
-
-                <!-- Size Selection -->
-                <div class="mb-4" th:if="${product.size != null}">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="mb-0">Kích cỡ: <span id="selectedSize" th:text="${product.size}">S</span></h6>
-                        <a href="#" class="text-decoration-underline text-muted-custom">Hướng dẫn chọn size</a>
-                    </div>
+                <!-- Màu sắc -->
+                <div class="mb-4" th:if="${product.color != null and !product.color.isEmpty()}">
+                    <h6 class="mb-3">Màu sắc: <span id="selectedColor">-- chọn --</span></h6>
                     <div class="d-flex gap-2 flex-wrap">
-                        <button class="size-option"
-                                th:classappend="${product.size == 'XS'} ? 'active' : ''"
-                                data-size="XS" onclick="selectSize('XS', this)">XS</button>
-                        <button class="size-option"
-                                th:classappend="${product.size == 'S'} ? 'active' : ''"
-                                data-size="S" onclick="selectSize('S', this)">S</button>
-                        <button class="size-option"
-                                th:classappend="${product.size == 'M'} ? 'active' : ''"
-                                data-size="M" onclick="selectSize('M', this)">M</button>
-                        <button class="size-option"
-                                th:classappend="${product.size == 'L'} ? 'active' : ''"
-                                data-size="L" onclick="selectSize('L', this)">L</button>
-                        <button class="size-option"
-                                th:classappend="${product.size == 'XL'} ? 'active' : ''"
-                                data-size="XL" onclick="selectSize('XL', this)">XL</button>
+                        <div th:each="color : ${product.color.split(',')}"
+                             class="color-option border px-3 py-1 rounded"
+                             th:attr="data-color=${color}, title=${color}"
+                             th:text="${color}"
+                             onclick="selectColor(this)">
+                        </div>
                     </div>
                 </div>
+
+
+                <!-- SIZE -->
+                <div class="mb-4" th:if="${product.size != null and !product.size.isEmpty()}">
+                    <h6 class="mb-3">Kích cỡ: <span id="selectedSize">-- chọn --</span></h6>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button th:each="size : ${product.size.split(',')}"
+                                class="size-option btn btn-outline-dark"
+                                th:attr="data-size=${size}"
+                                th:text="${size}"
+                                onclick="selectSize(this)">
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- INPUT ẨN -->
+                <input type="hidden" name="color" id="inputColor" />
+                <input type="hidden" name="size" id="inputSize" />
+
+
+                <!-- SỐ LƯỢNG -->
+                <div class="input-group quantity-selector mb-3" style="width: 120px;">
+                    <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity(-1)">−</button>
+                    <input type="number" name="quantity" id="quantityInput" class="form-control text-center" value="1" min="1">
+                    <button type="button" class="btn btn-outline-secondary" onclick="changeQuantity(1)">+</button>
+                </div>
+
 
                 <!-- Add to Bag Button -->
-                <button class="btn btn-add-to-bag btn-dark w-100 mb-4"
+<!--                <button class="btn btn-add-to-bag btn-dark w-100 mb-4"-->
+<!--                        th:disabled="${product.quantity <= 0}"-->
+<!--                        onclick="addToCart()">-->
+<!--&lt;!&ndash;                    <span th:if="${product.quantity > 0}">Thêm vào giỏ hàng</span>&ndash;&gt;-->
+<!--                    <button-->
+<!--                            th:if="${product.quantity > 0}"-->
+<!--                            class="btn btn-primary add-to-cart-btn"-->
+<!--                            th:data-product-id="${product.id}"-->
+<!--                            th:data-quantity="1"-->
+<!--                            onclick="addToCart(this)">-->
+<!--                        <i class="fas fa-shopping-cart me-2" ></i>-->
+<!--                        Thêm vào giỏ hàng-->
+<!--                    </button>-->
+
+<!--                    <span th:if="${product.quantity <= 0}">Hết hàng</span>-->
+<!--                </button>-->
+                <!-- ✅ Nút chính, gọi JavaScript addToCart -->
+<!--                <button-->
+<!--                        class="btn btn-primary add-to-cart-btn w-100 mb-4"-->
+<!--                        th:if="${product.quantity > 0}"-->
+<!--                        th:data-product-id="${product.id}"-->
+<!--                        onclick="addToCart(this)">-->
+<!--                    <i class="fas fa-shopping-cart me-2"></i> Thêm vào giỏ hàng-->
+<!--                </button>-->
+                <!-- ✅ Nút đúng: không lồng button bên trong button -->
+                <button
+                        class="btn btn-primary w-100 mb-4"
+                        th:data-product-id="${product.id}"
                         th:disabled="${product.quantity <= 0}"
-                        onclick="addToCart()">
-                    <span th:if="${product.quantity > 0}">Thêm vào giỏ hàng</span>
-                    <span th:if="${product.quantity <= 0}">Hết hàng</span>
+                        onclick="addToCart(this)">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    Thêm vào giỏ hàng
                 </button>
+
+
+                <!-- ✅ Trường hợp hết hàng -->
+                <button class="btn btn-secondary w-100 mb-4" disabled th:if="${product.quantity <= 0}">
+                    Hết hàng
+                </button>
+
 
                 <!-- Product Details -->
                 <div class="mb-4">
@@ -433,108 +463,7 @@
         </div>
     </div>
 
-<!--    <div class="row">-->
-<!--        &lt;!&ndash; Product Images &ndash;&gt;-->
-<!--        <div class="col-lg-7">-->
-<!--            &lt;!&ndash; Main Product Image &ndash;&gt;-->
-<!--            <img id="mainImage" src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&h=600&fit=crop"-->
-<!--                 alt="Alpaca Wool Crewneck Sweater" class="product-image main-product-image">-->
 
-<!--            &lt;!&ndash; Thumbnail Images &ndash;&gt;-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-6 mb-3">-->
-<!--                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop"-->
-<!--                         alt="Model wearing sweater" class="product-image thumbnail-images thumbnail-clickable active"-->
-<!--                         data-main-src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&h=600&fit=crop">-->
-<!--                </div>-->
-<!--                <div class="col-md-6 mb-3">-->
-<!--                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=300&fit=crop"-->
-<!--                         alt="Sweater back view" class="product-image thumbnail-images thumbnail-clickable"-->
-<!--                         data-main-src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&h=600&fit=crop">-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <div class="row">-->
-<!--                <div class="col-md-6 mb-3">-->
-<!--                    <img src="https://images.unsplash.com/photo-1583743814966-8936f37f3040?w=400&h=300&fit=crop"-->
-<!--                         alt="Sweater detail" class="product-image thumbnail-images thumbnail-clickable"-->
-<!--                         data-main-src="https://images.unsplash.com/photo-1583743814966-8936f37f3040?w=600&h=600&fit=crop">-->
-<!--                </div>-->
-<!--                <div class="col-md-6 mb-3">-->
-<!--                    <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=300&fit=crop"-->
-<!--                         alt="Fabric texture" class="product-image thumbnail-images thumbnail-clickable"-->
-<!--                         data-main-src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&h=600&fit=crop">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; Product Information &ndash;&gt;-->
-<!--        <div class="col-lg-5">-->
-<!--            <div class="product-info">-->
-<!--                <h1 class="product-title">Alpaca Wool Crewneck Sweater</h1>-->
-<!--                <div class="product-price">$249</div>-->
-
-<!--                &lt;!&ndash; Product Description &ndash;&gt;-->
-<!--                <p class="text-muted-custom mb-4">-->
-<!--                    A timeless crewneck sweater crafted from premium alpaca wool.-->
-<!--                    Soft, warm, and incredibly comfortable for everyday wear.-->
-<!--                </p>-->
-
-<!--                &lt;!&ndash; Color Selection &ndash;&gt;-->
-<!--                <div class="mb-4">-->
-<!--                    <h6 class="mb-3">Color: <span id="selectedColor">Natural</span></h6>-->
-<!--                    <div class="d-flex gap-2">-->
-<!--                        <div class="color-option color-beige active" data-color="Natural" title="Natural"></div>-->
-<!--                        <div class="color-option color-black" data-color="Black" title="Black"></div>-->
-<!--                        <div class="color-option color-gray" data-color="Gray" title="Gray"></div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; Size Selection &ndash;&gt;-->
-<!--                <div class="mb-4">-->
-<!--                    <div class="d-flex justify-content-between align-items-center mb-3">-->
-<!--                        <h6 class="mb-0">Size: <span id="selectedSize">S</span></h6>-->
-<!--                        <a href="#" class="text-decoration-underline text-muted-custom">Size Guide</a>-->
-<!--                    </div>-->
-<!--                    <div class="d-flex gap-2 flex-wrap">-->
-<!--                        <button class="size-option" data-size="XS">XS</button>-->
-<!--                        <button class="size-option active" data-size="S">S</button>-->
-<!--                        <button class="size-option" data-size="M">M</button>-->
-<!--                        <button class="size-option" data-size="L">L</button>-->
-<!--                        <button class="size-option" data-size="XL">XL</button>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; Add to Bag Button &ndash;&gt;-->
-<!--                <button class="btn btn-add-to-bag btn-dark w-100 mb-4">-->
-<!--                    Add to Bag-->
-<!--                </button>-->
-
-<!--                &lt;!&ndash; Product Details &ndash;&gt;-->
-<!--                <div class="mb-4">-->
-<!--                    <h6 class="section-title">Details</h6>-->
-<!--                    <ul class="feature-list">-->
-<!--                        <li><strong>Material:</strong> 100% Alpaca Wool</li>-->
-<!--                        <li><strong>Fit:</strong> Regular fit</li>-->
-<!--                        <li><strong>Care:</strong> Hand wash cold, lay flat to dry</li>-->
-<!--                        <li><strong>Origin:</strong> Ethically sourced from Peru</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-
-<!--                &lt;!&ndash; Shipping Info &ndash;&gt;-->
-<!--                <div class="border-custom border rounded p-3">-->
-<!--                    <div class="d-flex align-items-center mb-2">-->
-<!--                        <i class="fas fa-truck me-2"></i>-->
-<!--                        <span><strong>Free shipping</strong> on orders over $75</span>-->
-<!--                    </div>-->
-<!--                    <div class="d-flex align-items-center">-->
-<!--                        <i class="fas fa-undo me-2"></i>-->
-<!--                        <span><strong>Free returns</strong> within 30 days</span>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
 
     <!-- Product Description Section -->
     <div class="section-spacing">
@@ -819,6 +748,127 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
+    //     function selectColor(el) {
+    //     const color = el.getAttribute("data-color");
+    //     document.getElementById("inputColor").value = color;
+    //     document.getElementById("selectedColor").innerText = color;
+    //
+    //     document.querySelectorAll(".color-option").forEach(e => e.classList.remove("active"));
+    //     el.classList.add("active");
+    // }
+    //
+    //     function selectSize(el) {
+    //     const size = el.getAttribute("data-size");
+    //     document.getElementById("inputSize").value = size;
+    //     document.getElementById("selectedSize").innerText = size;
+    //
+    //     document.querySelectorAll(".size-option").forEach(e => e.classList.remove("active"));
+    //     el.classList.add("active");
+    // }
+
+// function addToCart(productId) {
+//         const color = document.getElementById('inputColor').value;
+//         const size = document.getElementById('inputSize').value;
+//         const quantity = document.getElementById('quantityInput').value;
+//
+//         if (!color || !size) {
+//             alert('Vui lòng chọn màu sắc và kích cỡ!');
+//             return;
+//         }
+//
+//         fetch('/cart/add', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/x-www-form-urlencoded'
+//             },
+//             body: new URLSearchParams({
+//                 productId,
+//                 color,
+//                 size,
+//                 quantity
+//             })
+//         }).then(res => res.json())
+//             .then(data => {
+//                 if (data.success) {
+//                     alert("Đã thêm vào giỏ hàng");
+//                 } else {
+//                     alert(data.message);
+//                 }
+//             });
+//     }
+
+
+    function addToCart(button) {
+        const productId = button.getAttribute("data-product-id");
+        const color = document.getElementById("inputColor")?.value;
+        const size = document.getElementById("inputSize")?.value;
+        const quantity = document.getElementById("quantityInput")?.value;
+
+        console.log("🟢 Product ID:", productId);
+        console.log("🎨 Color:", color);
+        console.log("📏 Size:", size);
+        console.log("🔢 Quantity:", quantity);
+
+        if (!color || !size) {
+            alert("Vui lòng chọn màu sắc và kích cỡ!");
+            return;
+        }
+
+        // Gửi lên server
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `productId=${productId}&color=${encodeURIComponent(color)}&size=${encodeURIComponent(size)}&quantity=${quantity}`
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Response:", data);
+                alert(data.message);
+            })
+            .catch(err => console.error("❌ Error:", err));
+    }
+
+
+
+    // function selectColor(el) {
+        //     document.querySelectorAll('.color-option').forEach(e => e.classList.remove('active'));
+        //     el.classList.add('active');
+        //     document.getElementById('selectedColor').innerText = el.getAttribute('data-color');
+        //     document.getElementById('inputColor').value = el.getAttribute('data-color');
+        // }
+        //
+        // function selectSize(el) {
+        //     document.querySelectorAll('.size-option').forEach(e => e.classList.remove('active'));
+        //     el.classList.add('active');
+        //     document.getElementById('selectedSize').innerText = el.getAttribute('data-size');
+        //     document.getElementById('inputSize').value = el.getAttribute('data-size');
+        // }
+    function selectColor(el) {
+        // Bỏ active các thẻ khác
+        document.querySelectorAll(".color-option").forEach(e => e.classList.remove("active"));
+        el.classList.add("active");
+
+        // Gán vào input hidden
+        document.getElementById("inputColor").value = el.getAttribute("data-color");
+        document.getElementById("selectedColor").innerText = el.getAttribute("data-color");
+    }
+
+    function selectSize(el) {
+        document.querySelectorAll(".size-option").forEach(e => e.classList.remove("active"));
+        el.classList.add("active");
+
+        document.getElementById("inputSize").value = el.getAttribute("data-size");
+        document.getElementById("selectedSize").innerText = el.getAttribute("data-size");
+    }
+
+        function changeQuantity(amount) {
+            const input = document.getElementById("quantityInput");
+            let current = parseInt(input.value) || 1;
+            current += amount;
+            if (current < 1) current = 1;
+            input.value = current;
+        }
+
     // Load more reviews functionality
     document.getElementById('loadMoreReviews').addEventListener('click', function() {
         // Simulate loading more reviews
@@ -963,6 +1013,14 @@
             // window.location.href = '/product/' + productId;
         });
     });
+    document.addEventListener("DOMContentLoaded", function () {
+        const addBtn = document.getElementById("addToCartBtn");
+        if (addBtn) {
+            addBtn.addEventListener("click", function () {
+            });
+        }
+    });
+
 </script>
 </body>
 </html>

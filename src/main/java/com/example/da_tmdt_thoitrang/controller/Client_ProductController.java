@@ -68,8 +68,26 @@ public class Client_ProductController {
         List<ProductEntity> relatedProducts = clientProductService
                 .getRelatedProducts(id, product.getCategoryId(), 4);
 
+        model.addAttribute("colors", product.getColor());
+        model.addAttribute("sizes", product.getSize());
         model.addAttribute("product", product);
         model.addAttribute("relatedProducts", relatedProducts);
         return "client/product_client/product_detail";
     }
+//        @GetMapping("/product/{id}")
+//        public String productDetail(@PathVariable Long id, Model model) {
+//            ProductEntity product = clientProductService.getProductById(id);
+//
+//            // Debug dữ liệu ra log để chắc chắn
+//            System.out.println("Colors: " + product.getColor());
+//            System.out.println("Sizes: " + product.getSize());
+//
+//            model.addAttribute("product", product);
+//            model.addAttribute("colors", product.getAvailableColors());
+//            model.addAttribute("sizes", product.getAvailableSizes());
+//
+//            return "client/product_client/product_detail";
+//        }
+
+
 }

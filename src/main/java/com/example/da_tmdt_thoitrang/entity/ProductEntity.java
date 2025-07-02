@@ -112,6 +112,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -192,6 +194,32 @@ public class ProductEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductDiscountEntity> productDiscounts;
+
+
+    @Column(name = "available_sizes") // VD: "S,M,L"
+    private String availableSizes;
+
+    @Column(name = "available_colors") // VD: "Đỏ,Đen"
+    private String availableColors;
+
+    // Trả về List<String> để view hiển thị
+    @Transient
+    public List<String> getAvailableSizes() {
+        if (availableSizes != null && !availableSizes.isEmpty()) {
+            return Arrays.asList(availableSizes.split(","));
+        }
+        return Collections.emptyList();
+    }
+
+    @Transient
+    public List<String> getAvailableColors() {
+        if (availableColors != null && !availableColors.isEmpty()) {
+            return Arrays.asList(availableColors.split(","));
+        }
+        return Collections.emptyList();
+    }
+
+
 
     // ⚠️ Nếu các entity như CartItemEntity hay InventoryEntity đang dùng ProductDetailEntity
     // → bạn cần sửa lại để dùng trực tiếp ProductEntity

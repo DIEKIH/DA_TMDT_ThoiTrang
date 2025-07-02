@@ -33,9 +33,12 @@ public class CartItemEntity {
 //    private Long productDetailId;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private ProductEntity productId;
+    @JoinColumn(name = "product_id", nullable = false)
+    private ProductEntity product;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cartId", insertable = false, updatable = false)
+    private CartEntity cart;
 
     @Column(nullable = false)
     private Integer quantity;
@@ -46,13 +49,25 @@ public class CartItemEntity {
     @CreationTimestamp
     private LocalDateTime addedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cartId", insertable = false, updatable = false)
-    private CartEntity cart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product", insertable = false, updatable = false)
-    private ProductEntity productEntity;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "product", insertable = false, updatable = false)
+//    private ProductEntity productEntity;
+
+    @Column(name = "color")
+    private String color;
+
+    @Column(name = "size")
+    private String size;
+    @Column(columnDefinition = "DECIMAL(10,2)")
+    private BigDecimal subtotal;
+
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
 
     public BigDecimal getSubtotal() {
@@ -66,4 +81,14 @@ public class CartItemEntity {
 //    }    public void updateQuantity(Integer quantity) { this.quantity = quantity; }
 
     // Other getters and setters...
+
+    @Transient
+    public Long getProductId() {
+        return product != null ? product.getId() : null;
+    }
+
+    // ✅ Setter đổi tên lại cho hợp lý
+    public void setProductId(ProductEntity product) {
+        this.product = product;
+    }
 }
