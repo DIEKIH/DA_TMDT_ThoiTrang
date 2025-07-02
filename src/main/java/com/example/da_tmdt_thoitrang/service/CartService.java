@@ -82,6 +82,10 @@ public class CartService {
         }
     }
 
+    public List<CartItemEntity> getItems(Long cartId) {
+        return cartItemRepository.findByCartId(cartId);
+    }
+
     /**
      * Cập nhật số lượng sản phẩm trong giỏ
      */

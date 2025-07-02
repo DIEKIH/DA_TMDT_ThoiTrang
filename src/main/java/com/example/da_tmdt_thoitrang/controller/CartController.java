@@ -1,6 +1,7 @@
 package com.example.da_tmdt_thoitrang.controller;
 
 import com.example.da_tmdt_thoitrang.entity.CartEntity;
+import com.example.da_tmdt_thoitrang.entity.CartItemEntity;
 import com.example.da_tmdt_thoitrang.entity.ProductEntity;
 import com.example.da_tmdt_thoitrang.entity.UserEntity;
 import com.example.da_tmdt_thoitrang.service.CartService;
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -29,6 +31,7 @@ public class CartController {
     @Autowired
     private ProductService productService;
 
+
     private Long getCurrentUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -39,6 +42,11 @@ public class CartController {
         }
         return null;
     }
+
+//    @GetMapping
+//    public List<CartItemEntity> list(@PathVariable Long cartId) {
+//        return cartService.getItems(cartId);
+//    }
 
 
     /**
