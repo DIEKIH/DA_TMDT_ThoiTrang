@@ -213,7 +213,7 @@ public class AddressController {
 
         cartService.clearCart(userId); // truyền userId nếu CartEntity theo userId
 
-        return "client/orders/list"; // ✔ chuyển đến trang danh sách đơn hàng
+        return "redirect:/checkout/order"; // ✔ chuyển đến trang danh sách đơn hàng
     }
 
 
