@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +81,13 @@ public class CartService {
 
             cartItemRepository.save(newItem);
         }
+    }
+
+    public List<CartItemEntity> getCartItems(Long userId) {
+        CartEntity cart = cartRepository.findByUserId(userId).orElse(null);
+        if (cart == null) return Collections.emptyList();
+
+        return cartItemRepository.findByCartIdWithProduct(cart.getId());
     }
 
     public List<CartItemEntity> getItems(Long cartId) {
