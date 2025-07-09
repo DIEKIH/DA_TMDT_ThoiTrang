@@ -90,6 +90,13 @@ public class CartService {
         return cartItemRepository.findByCartIdWithProduct(cart.getId());
     }
 
+    public void clearCart(Long userId) {
+        CartEntity cart = cartRepository.findByUserId(userId).orElse(null);
+        if (cart != null) {
+            cartItemRepository.deleteByCartId(cart.getId());
+        }
+    }
+
     public List<CartItemEntity> getItems(Long cartId) {
         return cartItemRepository.findByCartId(cartId);
     }
