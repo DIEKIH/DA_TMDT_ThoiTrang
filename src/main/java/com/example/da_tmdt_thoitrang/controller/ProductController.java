@@ -50,10 +50,30 @@ public class ProductController {
         model.addAttribute("adminUsername", session.getAttribute("adminUsername"));
     }
 
+//    @GetMapping("/list")
+//    public String listProducts(Model model) {
+//        List<ProductEntity> products = productService.getAllProducts();
+//        model.addAttribute("products", products);
+//        return "admin/products/list";
+//    }
+
     @GetMapping("/list")
     public String listProducts(Model model) {
         List<ProductEntity> products = productService.getAllProducts();
         model.addAttribute("products", products);
+
+//        List<Product> products = productService.findAll();
+//        model.addAttribute("products", products);
+
+// Tính số lượng
+        long activeCount = products.stream().filter(p -> p != null && Boolean.TRUE.equals(p.getIsActive())).count();
+        long inactiveCount = products.stream().filter(p -> p != null && Boolean.FALSE.equals(p.getIsActive())).count();
+        long lowStockCount = products.stream().filter(p -> p != null && p.getQuantity() != null && p.getQuantity() <= 10).count();
+
+        model.addAttribute("activeCount", activeCount);
+        model.addAttribute("inactiveCount", inactiveCount);
+        model.addAttribute("lowStockCount", lowStockCount);
+
         return "admin/products/list";
     }
 
