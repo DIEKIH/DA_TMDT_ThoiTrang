@@ -57,6 +57,7 @@ public class ProductController {
         return "admin/products/list";
     }
 
+
 //    @GetMapping("/add")
 //    public String showAddForm(Model model) {
 //        model.addAttribute("product", new ProductEntity());
