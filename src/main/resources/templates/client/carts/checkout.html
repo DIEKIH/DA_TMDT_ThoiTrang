@@ -228,6 +228,7 @@
     <div class="col-lg-4 a">
       <div class="order-summary-box">
         <h5 class="mb-3">🛒 Đơn hàng của bạn</h5>
+
         <div id="cart-items" class="mb-4" th:if="${cartItems != null and !#lists.isEmpty(cartItems)}">
           <div th:each="item : ${cartItems}" class="d-flex align-items-center mb-3" th:attr="data-price=${item.unitPrice}">
             <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" class="me-3" width="70" height="70"
@@ -371,10 +372,11 @@
     input.addEventListener('change', updateTotals);
   });
 
-  document.querySelectorAll('.btn-remove').forEach(btn => {btn.addEventListener('click', function () {
-    this.closest('div').remove();
-    updateTotals();
-  });
+  document.querySelectorAll('.btn-remove').forEach(btn => {
+    btn.addEventListener('click', function () {
+      this.closest('div').remove();
+      updateTotals();
+    });
   });
 
   // Cập nhật tổng ngay khi trang tải

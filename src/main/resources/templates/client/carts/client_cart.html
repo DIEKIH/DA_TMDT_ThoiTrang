@@ -243,9 +243,22 @@
                            th:text="${#numbers.formatDecimal(item.subtotal, 1, 2)} + 'đ'">
                         </p>
 
-                        <i class="fas fa-trash remove-btn"
+<!--                        <i class="fas fa-trash remove-btn"-->
+<!--                           onclick="removeFromCart([[${item.product.id}]])"-->
+<!--                           title="Xóa sản phẩm">Xóa</i>-->
+
+
+                        <button type="button" class="remove-btn btn btn-sm btn-danger"
+                                onclick="removeFromCart([[${item.product.id}]])"
+                                title="Xóa sản phẩm">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                        <i class="fas fa-trash text-danger" style="cursor: pointer;"
                            onclick="removeFromCart([[${item.product.id}]])"
                            title="Xóa sản phẩm"></i>
+
+
+
                     </div>
                 </div>
             </div>
@@ -432,32 +445,58 @@
 
 
     // Xóa sản phẩm khỏi giỏ hàng
+    // function removeFromCart(productId) {
+    //     if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+    //         return;
+    //     }
+    //
+    //     fetch('/cart/remove', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/x-www-form-urlencoded',
+    //         },
+    //         body: `productId=${productId}`
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.success) {
+    //                 updateCartUI(data.cartCount, data.cartTotal);
+    //                 showNotification('success', data.message);
+    //                 // Reload trang để cập nhật danh sách
+    //                 location.reload();
+    //             } else {
+    //                 showNotification('error', data.message);
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.error('Error:', error);
+    //             showNotification('error', 'Có lỗi xảy ra, vui lòng thử lại');
+    //         });
+    // }
+
     function removeFromCart(productId) {
-        if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
-            return;
-        }
+        if (!confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) return;
 
         fetch('/cart/remove', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content // nếu có
             },
-            body: `productId=${productId}`
+            body: new URLSearchParams({ productId: productId })
         })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    updateCartUI(data.cartCount, data.cartTotal);
-                    showNotification('success', data.message);
-                    // Reload trang để cập nhật danh sách
+                    alert(data.message);
                     location.reload();
                 } else {
-                    showNotification('error', data.message);
+                    alert("Lỗi: " + data.message);
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('error', 'Có lỗi xảy ra, vui lòng thử lại');
+            .catch(err => {
+                alert("Lỗi kết nối đến server");
+                console.error(err);
             });
     }
 
