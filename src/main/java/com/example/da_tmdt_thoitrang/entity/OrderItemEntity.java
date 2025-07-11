@@ -60,5 +60,15 @@ public class OrderItemEntity {
     }
     public BigDecimal calculateTotal() { return unitPrice.multiply(BigDecimal.valueOf(quantity)); }
 
+    @Override
+    public String toString() {
+        return "OrderItemEntity{" +
+                "id=" + id +
+                ", orderId=" + orderId +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                ", totalPrice=" + getTotalPrice() +
+                '}';
+    }
     // Other getters and setters...
 }

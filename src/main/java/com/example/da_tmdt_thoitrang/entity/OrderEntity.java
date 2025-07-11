@@ -114,5 +114,15 @@ public class OrderEntity {
     public void cancel() { this.status = OrderStatus.CANCELLED; }
     public void confirm() { this.status = OrderStatus.CONFIRMED; }
 
+    @Override
+    public String toString() {
+        return "OrderEntity{" +
+                "id=" + id +
+                ", user=" + (user != null ? user.getId() : null) +
+                ", total=" + totalAmount +
+                ", orderItems.size=" + (orderItems != null ? orderItems.size() : 0) +
+                '}';
+    }
+
     // Other getters and setters...
 }

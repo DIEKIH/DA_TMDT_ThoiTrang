@@ -219,6 +219,15 @@ public class ProductEntity {
         return Collections.emptyList();
     }
 
+    @Override
+    public String toString() {
+        return "ProductEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", categoryId=" + (category != null ? category.getId() : null) +
+                '}';
+    }
+
 
 
     // ⚠️ Nếu các entity như CartItemEntity hay InventoryEntity đang dùng ProductDetailEntity

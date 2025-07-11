@@ -1,10 +1,7 @@
 package com.example.da_tmdt_thoitrang.controller;
 
 import com.example.da_tmdt_thoitrang.entity.*;
-import com.example.da_tmdt_thoitrang.service.AddressService;
-import com.example.da_tmdt_thoitrang.service.CartService;
-import com.example.da_tmdt_thoitrang.service.OrderItemService;
-import com.example.da_tmdt_thoitrang.service.OrderService;
+import com.example.da_tmdt_thoitrang.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,8 @@ public class AddressController {
     @Autowired
     private OrderItemService orderItemService;
 
+    @Autowired
+    private ProductService productService;
 
     private Long getCurrentUserId(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -45,15 +44,33 @@ public class AddressController {
         return null;
     }
 
-    @PostMapping("/save-address")
-    public String saveAddress(@ModelAttribute AddressEntity address, HttpServletRequest request) {
-        Long userId = getCurrentUserId(request);
-        if (userId == null) return "redirect:/client/login";
+//    @PostMapping("/save-address")
+//    public String saveAddress(@ModelAttribute AddressEntity address, HttpServletRequest request) {
+//        Long userId = getCurrentUserId(request);
+//        if (userId == null) return "redirect:/client/login";
+//
+//        address.setUserId(userId);
+//        addressService.saveAddress(address);
+//        return "redirect:/checkout";
+//    }
+@PostMapping("/save-address")
+public String saveAddress(@ModelAttribute AddressEntity address, HttpServletRequest request) {
+    Long userId = getCurrentUserId(request);
+    if (userId == null) return "redirect:/client/login";
 
-        address.setUserId(userId);
+    address.setUserId(userId);
+
+    if (address.getId() != null) {
+        // Địa chỉ đã tồn tại → cập nhật
+        addressService.updateAddress(address);
+    } else {
+        // Thêm mới
         addressService.saveAddress(address);
-        return "redirect:/checkout";
     }
+
+    return "redirect:/checkout";
+}
+
 
     @GetMapping
     public String showCheckoutPage(Model model, HttpServletRequest request) {
@@ -73,13 +90,35 @@ public class AddressController {
         return "client/carts/checkout";
     }
 
+//    @GetMapping("/edit/{id}")
+//    public String editAddress(@PathVariable Long id, HttpServletRequest request, Model model) {
+//        Long userId = getCurrentUserId(request);
+//        Optional<AddressEntity> address = addressService.getAddressById(id, userId);
+//        address.ifPresent(value -> model.addAttribute("address", value));
+//        return "client/carts/checkout";
+//    }
+
     @GetMapping("/edit/{id}")
     public String editAddress(@PathVariable Long id, HttpServletRequest request, Model model) {
         Long userId = getCurrentUserId(request);
         Optional<AddressEntity> address = addressService.getAddressById(id, userId);
-        address.ifPresent(value -> model.addAttribute("address", value));
+        if (address.isPresent()) {
+            model.addAttribute("address", address.get());
+        } else {
+            return "redirect:/checkout";
+        }
+
+        // Bổ sung lại thông tin để trang không bị thiếu
+        CartEntity cart = cartService.getCartWithItems(request.getSession().getId(), userId);
+        model.addAttribute("cartItems", cart != null ? cart.getCartItems() : new ArrayList<>());
+        model.addAttribute("cartTotal", cart != null ? cart.getTotalAmount() : BigDecimal.ZERO);
+
+        List<AddressEntity> addresses = addressService.getUserAddresses(userId);
+        model.addAttribute("addresses", addresses);
+
         return "client/carts/checkout";
     }
+
 
     @GetMapping("/delete/{id}")
     public String deleteAddress(@PathVariable Long id, HttpServletRequest request) {
@@ -161,8 +200,64 @@ public class AddressController {
 //        return "redirect:/order/thank-you";
 //    }
 
+//    @PostMapping("/confirm")
+//    public String confirmOrder(@RequestParam("paymentMethod") String paymentMethod,
+//                               HttpServletRequest request,
+//                               RedirectAttributes redirectAttributes) {
+//        Long userId = getCurrentUserId(request);
+//        if (userId == null) return "redirect:/client/login";
+//
+//        List<CartItemEntity> cartItems = cartService.getCartItems(userId);
+//        if (cartItems.isEmpty()) {
+//            redirectAttributes.addFlashAttribute("error", "Giỏ hàng trống.");
+//            return "redirect:/checkout";
+//        }
+//
+//        // Tính tổng tiền
+//        BigDecimal totalAmount = cartItems.stream()
+//                .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        BigDecimal shippingFee = new BigDecimal("30000");
+//        BigDecimal discountAmount = BigDecimal.ZERO;
+//        BigDecimal finalAmount = totalAmount.add(shippingFee).subtract(discountAmount);
+//
+//        // TODO: lấy địa chỉ mặc định hoặc địa chỉ chọn
+//        String shippingAddress = "Địa chỉ giao hàng mặc định hoặc đã chọn";
+//
+//        OrderEntity order = OrderEntity.builder()
+//                .userId(userId)
+//                .orderNumber(UUID.randomUUID().toString())
+//                .totalAmount(totalAmount)
+//                .discountAmount(discountAmount)
+//                .shippingFee(shippingFee)
+//                .finalAmount(finalAmount)
+//                .paymentStatus(OrderEntity.PaymentStatus.PENDING)
+//                .status(OrderEntity.OrderStatus.PENDING)
+//                .shippingAddress(shippingAddress)
+//                .notes("Phương thức: " + paymentMethod)
+//                .build();
+//
+//        orderService.save(order);
+//
+//        for (CartItemEntity item : cartItems) {
+//            OrderItemEntity orderItem = new OrderItemEntity();
+//            orderItem.setOrderId(order.getId());
+//            orderItem.setProduct(item.getProduct());
+//            orderItem.setQuantity(item.getQuantity());
+//            orderItem.setUnitPrice(item.getProduct().getPrice());
+//
+//            orderItemService.save(orderItem);
+//        }
+//
+//        cartService.clearCart(userId); // truyền userId nếu CartEntity theo userId
+//
+//        return "redirect:/checkout/order"; // ✔ chuyển đến trang danh sách đơn hàng
+//    }
+
     @PostMapping("/confirm")
     public String confirmOrder(@RequestParam("paymentMethod") String paymentMethod,
+                               @RequestParam("selectedAddressId") Long selectedAddressId,
                                HttpServletRequest request,
                                RedirectAttributes redirectAttributes) {
         Long userId = getCurrentUserId(request);
@@ -174,18 +269,27 @@ public class AddressController {
             return "redirect:/checkout";
         }
 
+        // Lấy địa chỉ được chọn
+        Optional<AddressEntity> selectedAddressOpt = addressService.getAddressById(selectedAddressId, userId);
+        if (selectedAddressOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy địa chỉ giao hàng.");
+            return "redirect:/checkout";
+        }
+        AddressEntity selectedAddress = selectedAddressOpt.get();
+        String shippingAddress = selectedAddress.getStreet() + ", " +
+                selectedAddress.getWard() + ", " +
+                selectedAddress.getDistrict() + ", " +
+                selectedAddress.getCity();
+
         // Tính tổng tiền
         BigDecimal totalAmount = cartItems.stream()
                 .map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-
         BigDecimal shippingFee = new BigDecimal("30000");
         BigDecimal discountAmount = BigDecimal.ZERO;
         BigDecimal finalAmount = totalAmount.add(shippingFee).subtract(discountAmount);
 
-        // TODO: lấy địa chỉ mặc định hoặc địa chỉ chọn
-        String shippingAddress = "Địa chỉ giao hàng mặc định hoặc đã chọn";
-
+        // Tạo đơn hàng
         OrderEntity order = OrderEntity.builder()
                 .userId(userId)
                 .orderNumber(UUID.randomUUID().toString())
@@ -198,23 +302,36 @@ public class AddressController {
                 .shippingAddress(shippingAddress)
                 .notes("Phương thức: " + paymentMethod)
                 .build();
-
         orderService.save(order);
 
+        // Lưu chi tiết đơn hàng
         for (CartItemEntity item : cartItems) {
             OrderItemEntity orderItem = new OrderItemEntity();
             orderItem.setOrderId(order.getId());
             orderItem.setProduct(item.getProduct());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setUnitPrice(item.getProduct().getPrice());
-
             orderItemService.save(orderItem);
+
+            // Trừ số lượng tồn kho sản phẩm
+            ProductEntity product = item.getProduct();
+            int newStock = product.getQuantity() - item.getQuantity();
+            if (newStock < 0) newStock = 0; // Không để âm
+            product.setQuantity(newStock);
+
+// Lưu lại số lượng mới vào DB
+            productService.saveProductAfterPurchase(product.getId(), item.getQuantity());
+
+
+
         }
 
-        cartService.clearCart(userId); // truyền userId nếu CartEntity theo userId
+        // Xóa giỏ hàng
+        cartService.clearCart(userId);
 
-        return "redirect:/checkout/order"; // ✔ chuyển đến trang danh sách đơn hàng
+        return "redirect:/checkout/order";
     }
+
 
 
     @GetMapping("/order")

@@ -60,12 +60,66 @@
                 padding: 20px;
             }
         }
+
+        .order-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+        .order-header {
+            background: #2d3748;
+            color: white;
+            padding: 15px 20px;
+        }
+        .order-body {
+            padding: 20px;
+        }
+        .order-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: #fff3e0;
+            color: #e67e22;
+        }
+        .status-confirmed {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .status-delivered {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        .status-cancelled {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        .order-detail-btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 8px 16px;
+        }
+        .order-price {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
 <div th:replace="fragments/client_navbar :: client_navbar"></div>
-<p>✅ Đã vào trang danh sách đơn hàng</p>
-<p th:text="${orders}">[orders]</p>
+<!--<p>✅ Đã vào trang danh sách đơn hàng</p>-->
+<!--<p th:text="${orders}">[orders]</p>-->
 <div class="container py-4">
     <h3 class="mb-4"><i class="fas fa-list-alt me-2"></i>Danh sách đơn hàng</h3>
 
@@ -138,58 +192,4 @@
 
 </body>
 </html>
-<style>
-    .order-card {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        margin-bottom: 20px;
-        overflow: hidden;
-    }
-    .order-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    }
-    .order-header {
-        background: #2d3748;
-        color: white;
-        padding: 15px 20px;
-    }
-    .order-body {
-        padding: 20px;
-    }
-    .order-status {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-    .status-pending {
-        background: #fff3e0;
-        color: #e67e22;
-    }
-    .status-confirmed {
-        background: #e3f2fd;
-        color: #1976d2;
-    }
-    .status-delivered {
-        background: #e8f5e9;
-        color: #388e3c;
-    }
-    .status-cancelled {
-        background: #ffebee;
-        color: #d32f2f;
-    }
-    .order-detail-btn {
-        border-radius: 8px;
-        font-weight: 500;
-        padding: 8px 16px;
-    }
-    .order-price {
-        font-weight: 600;
-        color: #2d3748;
-        font-size: 1.1rem;
-    }
-</style>
+

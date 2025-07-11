@@ -12,7 +12,9 @@ public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
 
     List<AddressEntity> findByUserId(Long userId);
 
-    Optional<AddressEntity> findByIdAndUserId(Long id, Long userId);
 
     void deleteByIdAndUserId(Long id, Long userId);
+
+    Optional<AddressEntity> findByIdAndUserId(Long id, Long userId);
+
 }

@@ -182,20 +182,11 @@ public class CartController {
         return "client/carts/client_cart";
     }
 
-    @GetMapping("/checkout")
-    public String checkout(Model model, HttpServletRequest request) {
-//        String sessionId = request.getSession().getId();
-//        Long userId = getCurrentUserId(request);
+//    @GetMapping("/checkout")
+//    public String checkout(Model model, HttpServletRequest request) {
 //
-//        CartEntity cart = cartService.getCartWithItems(sessionId, userId);
-//
-//
-//        model.addAttribute("cart", cart);
-//        model.addAttribute("cartItems", cart != null ? cart.getCartItems() : new ArrayList<>());
-//        model.addAttribute("cartTotal", cart != null ? cart.getTotalAmount() : BigDecimal.ZERO);
-
-        return "client/carts/checkout";
-    }
+//        return "client/carts/checkout";
+//    }
 
     /**
      * Cập nhật số lượng sản phẩm trong giỏ (AJAX)

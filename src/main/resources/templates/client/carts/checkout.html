@@ -75,55 +75,57 @@
     <div class="col-lg-8 mb-4 a ">
       <div class="checkout-container">
         <h4 class="mb-4">Thông tin giao hàng</h4>
-        <form action="/checkout/save-address" method="post" class="p-4 border rounded shadow-sm bg-white">
+<!--        <form action="/checkout/save-address" method="post" class="p-4 border rounded shadow-sm bg-white">-->
+        <form th:action="@{/checkout/save-address}" method="post" class="p-4 border rounded shadow-sm bg-white">
+          <input type="hidden" th:if="${address.id}" th:name="id" th:value="${address.id}">
           <h5 class="mb-4">📦 Thêm địa chỉ giao hàng</h5>
 
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="fullname" class="form-label">Họ và tên</label>
-              <input type="text" class="form-control" id="fullname" name="fullName" placeholder="Nguyễn Văn A">
+<!--              <input type="text" class="form-control" id="fullname" name="fullName" placeholder="Nguyễn Văn A">-->
+              <input type="text" class="form-control" id="fullname" name="fullName"
+                     placeholder="Nguyễn Văn A"
+                     th:value="${address.fullName}">
             </div>
 
             <div class="col-md-6 mb-3">
               <label for="phone" class="form-label">Số điện thoại</label>
-              <input type="tel" class="form-control" id="phone" name="phoneNumber" placeholder="0901234567">
+<!--              <input type="tel" class="form-control" id="phone" name="phoneNumber" placeholder="0901234567">-->
+              <input type="tel" class="form-control" id="phone" name="phoneNumber"
+                     placeholder="0901234567"
+                     th:value="${address.phoneNumber}">
             </div>
 
             <div class="col-12 mb-3">
               <label for="address" class="form-label">Địa chỉ cụ thể</label>
-              <input type="text" class="form-control" id="address" name="street" placeholder="Ví dụ: 123 đường ABC, khu XYZ">
+<!--              <input type="text" class="form-control" id="address" name="street" placeholder="Ví dụ: 123 đường ABC, khu XYZ">-->
+              <input type="text" class="form-control" id="address" name="street"
+                     placeholder="Ví dụ: 123 đường ABC"
+                     th:value="${address.street}">
             </div>
 
             <div class="col-md-4 mb-3">
               <label class="form-label">Tỉnh / Thành phố</label>
-              <select class="form-select" name="city">
+              <select class="form-select select2" name="city">
                 <option selected disabled>Chọn tỉnh / thành</option>
-                <option>TP Hồ Chí Minh</option>
-                <option>Hà Nội</option>
-                <option>Đà Nẵng</option>
-                <option>Cần Thơ</option>
               </select>
             </div>
 
             <div class="col-md-4 mb-3">
               <label class="form-label">Quận / Huyện</label>
-              <select class="form-select" name="district">
+              <select class="form-select select2" name="district">
                 <option selected disabled>Chọn quận / huyện</option>
-                <option>Quận 1</option>
-                <option>Quận 2</option>
-                <option>Quận Bình Thạnh</option>
               </select>
             </div>
 
             <div class="col-md-4 mb-3">
               <label class="form-label">Phường / Xã</label>
-              <select class="form-select" name="ward">
+              <select class="form-select select2" name="ward">
                 <option selected disabled>Chọn phường / xã</option>
-                <option>Phường 1</option>
-                <option>Phường 2</option>
-                <option>Phường 25</option>
               </select>
             </div>
+
           </div>
 
           <div class="text-end">
@@ -132,96 +134,85 @@
             </button>
           </div>
         </form>
+      </div>
+<!--        <div class="mt-5">-->
+<!--          <h5 class="mb-4">📄 Địa chỉ đã lưu</h5>-->
+<!--          <div th:each="addr : ${addresses}" class="border rounded p-3 mb-3 bg-light shadow-sm">-->
+<!--            <div class="d-flex justify-content-between align-items-start">-->
+<!--              <div>-->
+<!--                <div class="fw-bold" th:text="${addr.fullName}">Nguyễn Văn A</div>-->
+<!--                <div class="text-muted small" th:text="'📞 ' + ${addr.phoneNumber}">0901234567</div>-->
+<!--                <div th:text="${addr.street + ', ' + addr.ward + ', ' + addr.district + ', ' + addr.city}"></div>-->
+<!--              </div>-->
+<!--              <div class="text-end">-->
+<!--                <a th:href="@{'/checkout/edit/' + ${addr.id}}" class="btn btn-sm btn-outline-primary me-2">✏️ Sửa</a>-->
+<!--                <a th:href="@{'/checkout/delete/' + ${addr.id}}" class="btn btn-sm btn-outline-danger">🗑️ Xoá</a>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--     -->
+<!--      <form action="/checkout/confirm" method="post">-->
+<!--        <div class="checkout-container mt-4">-->
+<!--          <h4 class="mb-4">Phương thức thanh toán</h4>-->
 
-        <div class="mt-5">
-          <h5 class="mb-4">📄 Địa chỉ đã lưu</h5>
+<!--          <div class="form-check mb-3">-->
+<!--            <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>-->
+<!--            <label class="form-check-label" for="cod">💵 Thanh toán khi nhận hàng (COD)</label>-->
+<!--          </div>-->
+
+<!--          <div class="form-check mb-3">-->
+<!--            <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="BANK">-->
+<!--            <label class="form-check-label" for="bank">🏦 Chuyển khoản ngân hàng</label>-->
+<!--          </div>-->
+
+<!--          <div class="form-check mb-3">-->
+<!--            <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="CARD">-->
+<!--            <label class="form-check-label" for="card">💳 Thẻ tín dụng / ghi nợ</label>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <button type="submit" class="btn btn-checkout w-100">Xác nhận đặt hàng</button>-->
+<!--      </form>-->
+      <div class="mt-5">
+        <h5 class="mb-4">📄 Địa chỉ đã lưu</h5>
+        <form action="/checkout/confirm" method="post">
           <div th:each="addr : ${addresses}" class="border rounded p-3 mb-3 bg-light shadow-sm">
-            <div class="d-flex justify-content-between align-items-start">
-              <div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="selectedAddressId" th:value="${addr.id}" required>
+              <label class="form-check-label">
                 <div class="fw-bold" th:text="${addr.fullName}">Nguyễn Văn A</div>
                 <div class="text-muted small" th:text="'📞 ' + ${addr.phoneNumber}">0901234567</div>
                 <div th:text="${addr.street + ', ' + addr.ward + ', ' + addr.district + ', ' + addr.city}"></div>
-              </div>
-              <div class="text-end">
-                <a th:href="@{'/checkout/edit/' + ${addr.id}}" class="btn btn-sm btn-outline-primary me-2">✏️ Sửa</a>
-                <a th:href="@{'/checkout/delete/' + ${addr.id}}" class="btn btn-sm btn-outline-danger">🗑️ Xoá</a>
-              </div>
+              </label>
+            </div>
+            <div class="text-end mt-2">
+              <a th:href="@{'/checkout/edit/' + ${addr.id}}" class="btn btn-sm btn-outline-primary me-2">✏️ Sửa</a>
+              <a th:href="@{'/checkout/delete/' + ${addr.id}}" class="btn btn-sm btn-outline-danger">🗑️ Xoá</a>
             </div>
           </div>
-        </div>
+
+          <!-- Phương thức thanh toán -->
+          <div class="checkout-container mt-4">
+            <h4 class="mb-4">Phương thức thanh toán</h4>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
+              <label class="form-check-label" for="cod">💵 Thanh toán khi nhận hàng (COD)</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="BANK">
+              <label class="form-check-label" for="bank">🏦 Chuyển khoản ngân hàng</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="CARD">
+              <label class="form-check-label" for="card">💳 Thẻ tín dụng / ghi nợ</label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-checkout w-100">Xác nhận đặt hàng</button>
+        </form>
       </div>
-      <!--      &lt;!&ndash; PHƯƠNG THỨC THANH TOÁN &ndash;&gt;-->
-      <!--      <div class="checkout-container mt-4">-->
-      <!--        <h4 class="mb-4">Phương thức thanh toán</h4>-->
-
-      <!--        <div class="form-check mb-3">-->
-      <!--          <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>-->
-      <!--          <label class="form-check-label" for="cod">-->
-      <!--            💵 Thanh toán khi nhận hàng (COD)-->
-      <!--          </label>-->
-      <!--        </div>-->
-
-      <!--        <div class="form-check mb-3">-->
-      <!--          <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="BANK">-->
-      <!--          <label class="form-check-label" for="bank">-->
-      <!--            🏦 Chuyển khoản ngân hàng-->
-      <!--          </label>-->
-      <!--        </div>-->
-      <!--        <div class="bank-info border p-3 rounded bg-light mb-3 d-none">-->
-      <!--          <p class="mb-1 fw-bold">Ngân hàng Vietcombank</p>-->
-      <!--          <p>Chủ tài khoản: NGUYEN VAN A</p>-->
-      <!--          <p>Số tài khoản: 123 456 789</p>-->
-      <!--          <p>Chi nhánh: TP. Hồ Chí Minh</p>-->
-      <!--          <small class="text-muted">Vui lòng chuyển đúng số tiền và ghi đúng nội dung thanh toán.</small>-->
-      <!--        </div>-->
-
-      <!--        <div class="form-check mb-3">-->
-      <!--          <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="CARD">-->
-      <!--          <label class="form-check-label" for="card">-->
-      <!--            💳 Thẻ tín dụng / ghi nợ (Visa, MasterCard)-->
-      <!--          </label>-->
-      <!--        </div>-->
-      <!--        <div class="card-info border p-3 rounded bg-light d-none">-->
-      <!--          <div class="mb-3">-->
-      <!--            <label for="cardNumber" class="form-label">Số thẻ</label>-->
-      <!--            <input type="text" class="form-control" id="cardNumber" placeholder="•••• •••• •••• ••••">-->
-      <!--          </div>-->
-      <!--          <div class="row">-->
-      <!--            <div class="col-md-6 mb-3">-->
-      <!--              <label for="expiry" class="form-label">Ngày hết hạn</label>-->
-      <!--              <input type="text" class="form-control" id="expiry" placeholder="MM/YY">-->
-      <!--            </div>-->
-      <!--            <div class="col-md-6 mb-3">-->
-      <!--              <label for="cvv" class="form-label">CVV</label>-->
-      <!--              <input type="text" class="form-control" id="cvv" placeholder="123">-->
-      <!--            </div>-->
-      <!--          </div>-->
-      <!--        </div>-->
-      <!--      </div>-->
-      <form action="/checkout/confirm" method="post">
-        <div class="checkout-container mt-4">
-          <h4 class="mb-4">Phương thức thanh toán</h4>
-
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
-            <label class="form-check-label" for="cod">💵 Thanh toán khi nhận hàng (COD)</label>
-          </div>
-
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="BANK">
-            <label class="form-check-label" for="bank">🏦 Chuyển khoản ngân hàng</label>
-          </div>
-
-          <div class="form-check mb-3">
-            <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="CARD">
-            <label class="form-check-label" for="card">💳 Thẻ tín dụng / ghi nợ</label>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-checkout w-100">Xác nhận đặt hàng</button>
-      </form>
-
-
 
     </div>
     <!-- Tóm tắt đơn hàng -->
@@ -278,18 +269,70 @@
         </div>
       </div>
     </div>
-    <!--    <div class="container py-5 text-center">-->
-    <!--      <h2 class="mb-3">🎉 Cảm ơn bạn đã đặt hàng!</h2>-->
-    <!--      <p class="lead">Đơn hàng của bạn đang được xử lý. Chúng tôi sẽ liên hệ sớm nhất.</p>-->
-    <!--      <a href="/" class="btn btn-dark">Quay về trang chủ</a>-->
-    <!--    </div>-->
 
 
   </div>
 </div>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+  $(document).ready(function() {
+    $('.select2').select2({
+      placeholder: "Tìm kiếm...",
+      allowClear: true,
+      width: '100%'
+    });
+  });
+
+  // $('.select2').select2({
+  //   theme: 'bootstrap4',        // nếu bạn dùng giao diện Bootstrap
+  //   placeholder: 'Tìm kiếm...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   minimumResultsForSearch: 0  // 👈 Bắt buộc luôn hiển thị ô tìm kiếm
+  // });
+
+
+
+  $(document).ready(function() {
+    // Load tỉnh
+    $.get("/api/location/provinces", function(data) {
+      data.forEach(function(province) {
+        $("select[name='city']").append(`<option value="${province.code}">${province.name}</option>`);
+      });
+    });
+
+    // Khi chọn tỉnh → load quận
+    $("select[name='city']").on("change", function() {
+      const provinceCode = $(this).val();
+      $("select[name='district']").empty().append('<option disabled selected>Chọn quận / huyện</option>');
+      $("select[name='ward']").empty().append('<option disabled selected>Chọn phường / xã</option>');
+
+      $.get("/api/location/districts/" + provinceCode, function(data) {
+        data.forEach(function(district) {
+          $("select[name='district']").append(`<option value="${district.code}">${district.name}</option>`);
+        });
+      });
+    });
+
+    // Khi chọn quận → load phường
+    $("select[name='district']").on("change", function() {
+      const districtCode = $(this).val();
+      $("select[name='ward']").empty().append('<option disabled selected>Chọn phường / xã</option>');
+
+      $.get("/api/location/wards/" + districtCode, function(data) {
+        data.forEach(function(ward) {
+          $("select[name='ward']").append(`<option value="${ward.name}">${ward.name}</option>`);
+        });
+      });
+    });
+  });
 
   document.addEventListener("DOMContentLoaded", function () {
     const cod = document.getElementById("cod");

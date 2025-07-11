@@ -84,6 +84,25 @@ public class ProductService {
         return productImageRepository.findByProductIdOrderBySortOrder(productId);
     }
 
+//    public void save(ProductEntity product) {
+//        productRepository.save(product);
+//    }
+public void saveProductAfterPurchase(Long productId, int quantityPurchased) {
+    ProductEntity product = productRepository.findById(productId).orElse(null);
+    if (product != null) {
+        int currentStock = product.getQuantity();
+        if (quantityPurchased > currentStock) {
+            throw new IllegalArgumentException("Không đủ hàng trong kho");
+        }
+        product.setQuantity(currentStock - quantityPurchased);
+        productRepository.save(product);
+    } else {
+        throw new RuntimeException("Sản phẩm không tồn tại");
+    }
+}
+
+
+
     /**
      * Lấy ảnh phụ theo ID
      */
