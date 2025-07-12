@@ -75,7 +75,6 @@
     <div class="col-lg-8 mb-4 a ">
       <div class="checkout-container">
         <h4 class="mb-4">Thông tin giao hàng</h4>
-<!--        <form action="/checkout/save-address" method="post" class="p-4 border rounded shadow-sm bg-white">-->
         <form th:action="@{/checkout/save-address}" method="post" class="p-4 border rounded shadow-sm bg-white">
           <input type="hidden" th:if="${address.id}" th:name="id" th:value="${address.id}">
           <h5 class="mb-4">📦 Thêm địa chỉ giao hàng</h5>
@@ -83,7 +82,6 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="fullname" class="form-label">Họ và tên</label>
-<!--              <input type="text" class="form-control" id="fullname" name="fullName" placeholder="Nguyễn Văn A">-->
               <input type="text" class="form-control" id="fullname" name="fullName"
                      placeholder="Nguyễn Văn A"
                      th:value="${address.fullName}">
@@ -91,7 +89,6 @@
 
             <div class="col-md-6 mb-3">
               <label for="phone" class="form-label">Số điện thoại</label>
-<!--              <input type="tel" class="form-control" id="phone" name="phoneNumber" placeholder="0901234567">-->
               <input type="tel" class="form-control" id="phone" name="phoneNumber"
                      placeholder="0901234567"
                      th:value="${address.phoneNumber}">
@@ -99,7 +96,6 @@
 
             <div class="col-12 mb-3">
               <label for="address" class="form-label">Địa chỉ cụ thể</label>
-<!--              <input type="text" class="form-control" id="address" name="street" placeholder="Ví dụ: 123 đường ABC, khu XYZ">-->
               <input type="text" class="form-control" id="address" name="street"
                      placeholder="Ví dụ: 123 đường ABC"
                      th:value="${address.street}">
@@ -135,45 +131,6 @@
           </div>
         </form>
       </div>
-<!--        <div class="mt-5">-->
-<!--          <h5 class="mb-4">📄 Địa chỉ đã lưu</h5>-->
-<!--          <div th:each="addr : ${addresses}" class="border rounded p-3 mb-3 bg-light shadow-sm">-->
-<!--            <div class="d-flex justify-content-between align-items-start">-->
-<!--              <div>-->
-<!--                <div class="fw-bold" th:text="${addr.fullName}">Nguyễn Văn A</div>-->
-<!--                <div class="text-muted small" th:text="'📞 ' + ${addr.phoneNumber}">0901234567</div>-->
-<!--                <div th:text="${addr.street + ', ' + addr.ward + ', ' + addr.district + ', ' + addr.city}"></div>-->
-<!--              </div>-->
-<!--              <div class="text-end">-->
-<!--                <a th:href="@{'/checkout/edit/' + ${addr.id}}" class="btn btn-sm btn-outline-primary me-2">✏️ Sửa</a>-->
-<!--                <a th:href="@{'/checkout/delete/' + ${addr.id}}" class="btn btn-sm btn-outline-danger">🗑️ Xoá</a>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--     -->
-<!--      <form action="/checkout/confirm" method="post">-->
-<!--        <div class="checkout-container mt-4">-->
-<!--          <h4 class="mb-4">Phương thức thanh toán</h4>-->
-
-<!--          <div class="form-check mb-3">-->
-<!--            <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>-->
-<!--            <label class="form-check-label" for="cod">💵 Thanh toán khi nhận hàng (COD)</label>-->
-<!--          </div>-->
-
-<!--          <div class="form-check mb-3">-->
-<!--            <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="BANK">-->
-<!--            <label class="form-check-label" for="bank">🏦 Chuyển khoản ngân hàng</label>-->
-<!--          </div>-->
-
-<!--          <div class="form-check mb-3">-->
-<!--            <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="CARD">-->
-<!--            <label class="form-check-label" for="card">💳 Thẻ tín dụng / ghi nợ</label>-->
-<!--          </div>-->
-<!--        </div>-->
-
-<!--        <button type="submit" class="btn btn-checkout w-100">Xác nhận đặt hàng</button>-->
-<!--      </form>-->
       <div class="mt-5">
         <h5 class="mb-4">📄 Địa chỉ đã lưu</h5>
         <form action="/checkout/confirm" method="post">
@@ -209,6 +166,7 @@
               <label class="form-check-label" for="card">💳 Thẻ tín dụng / ghi nợ</label>
             </div>
           </div>
+          <input type="hidden" name="voucherCode" id="voucherCodeHidden">
 
           <button type="submit" class="btn btn-checkout w-100">Xác nhận đặt hàng</button>
         </form>
@@ -257,9 +215,25 @@
         </div>
 
         <!-- Mã giảm giá -->
-        <div class="discount-input-group d-flex mb-3">
-          <input type="text" class="form-control" placeholder="Mã giảm giá">
-          <button class="btn btn-outline-dark" type="button">Áp dụng</button>
+<!--        <div class="discount-input-group d-flex mb-3">-->
+<!--          <input type="text" class="form-control" placeholder="Mã giảm giá">-->
+<!--          <button class="btn btn-outline-dark" type="button">Áp dụng</button>-->
+<!--        </div>-->
+<!--        <input type="hidden" name="voucherCode" id="voucherCodeHidden">-->
+        <input type="hidden" id="userId" th:value="${user != null ? user.id : 0}">
+        <div class="voucher-section" id="voucherSection">
+          <h6><i class="fas fa-ticket-alt"></i> Mã giảm giá</h6>
+          <div class="input-group">
+            <input type="text" class="form-control" id="voucherCode" placeholder="Nhập mã voucher">
+            <button class="btn btn-outline-primary" type="button" id="applyVoucherBtn">
+              <i class="fas fa-check"></i> Áp dụng
+            </button>
+          </div>
+          <div id="voucherMessage" class="mt-2"></div>
+        </div>
+        <div class="d-flex justify-content-between text-muted small mb-2" id="discount-line" style="display: none;">
+          <span>Giảm giá:</span>
+          <span id="discount-amount">-0đ</span>
         </div>
 
         <hr>
@@ -282,6 +256,299 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+  document.getElementById("applyVoucherBtn").addEventListener("click", async function () {
+    const voucherCode = document.getElementById("voucherCode").value.trim();
+    const userId = document.getElementById("userId").value;
+    let totalAmount = 0;
+
+    // Tính tổng tiền đơn hàng
+    document.querySelectorAll(".qty-input").forEach(input => {
+      const qty = parseInt(input.value);
+      const price = parseFloat(input.getAttribute("data-price"));
+      if (!isNaN(qty) && !isNaN(price)) {
+        totalAmount += qty * price;
+      }
+    });
+
+    totalAmount += 30000; // cộng phí ship
+
+    if (!voucherCode) {
+      document.getElementById("voucherMessage").textContent = "Vui lòng nhập mã voucher.";
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/voucher/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: voucherCode,
+          userId: userId,
+          orderAmount: totalAmount
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        document.getElementById("voucherMessage").innerHTML =
+                `<span class="text-success">${data.message}</span>`;
+
+        document.getElementById("voucherCodeHidden").value = voucherCode;
+
+        // Hiển thị giảm giá
+        document.getElementById("discount-amount").textContent = "-" + data.discountAmount + "đ";
+        document.getElementById("discount-line").style.display = "flex";
+
+        // Cập nhật tổng cộng
+        const grandTotal = totalAmount - parseFloat(data.discountAmount);
+        document.getElementById("grand-total").textContent = grandTotal.toLocaleString() + "đ";
+
+      } else {
+        document.getElementById("voucherMessage").innerHTML =
+                `<span class="text-danger">${data.message}</span>`;
+        document.getElementById("discount-line").style.display = "none";
+        document.getElementById("voucherCodeHidden").value = "";
+      }
+    } catch (error) {
+      console.error("Error applying voucher:", error);
+      document.getElementById("voucherMessage").innerHTML =
+              `<span class="text-danger">Lỗi khi áp dụng mã.</span>`;
+    }
+  });
+
+
+  let currentOrder = {
+    userId: 1, // This would come from session/auth
+    subtotal: 1100000,
+    shippingFee: 30000,
+    discountAmount: 0,
+    appliedVoucher: null
+  };
+
+  // DOM elements
+  const voucherCodeInput = document.getElementById('voucherCode');
+  const applyVoucherBtn = document.getElementById('applyVoucherBtn');
+  const voucherMessage = document.getElementById('voucherMessage');
+  const voucherSection = document.getElementById('voucherSection');
+  const discountRow = document.getElementById('discountRow');
+  const discountAmount = document.getElementById('discountAmount');
+  const appliedVoucherRow = document.getElementById('appliedVoucherRow');
+  const appliedVoucherCode = document.getElementById('appliedVoucherCode');
+  const removeVoucherBtn = document.getElementById('removeVoucherBtn');
+  const finalTotal = document.getElementById('finalTotal');
+  const checkoutForm = document.getElementById('checkoutForm');
+
+  // Apply voucher
+  applyVoucherBtn.addEventListener('click', async function() {
+    const voucherCode = voucherCodeInput.value.trim();
+    if (!voucherCode) {
+      showVoucherMessage('Vui lòng nhập mã voucher', 'danger');
+      return;
+    }
+
+    try {
+      applyVoucherBtn.disabled = true;
+      applyVoucherBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...';
+
+      const response = await fetch('/api/vouchers/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          code: voucherCode,
+          userId: currentOrder.userId,
+          orderAmount: currentOrder.subtotal
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.valid) {
+        currentOrder.appliedVoucher = result.voucher;
+        currentOrder.discountAmount = result.discountAmount;
+
+        showVoucherMessage('Áp dụng voucher thành công!', 'success');
+        updateOrderSummary();
+        showAppliedVoucher(voucherCode);
+      } else {
+        showVoucherMessage(result.message, 'danger');
+      }
+    } catch (error) {
+      showVoucherMessage('Có lỗi xảy ra khi kiểm tra voucher', 'danger');
+    } finally {
+      applyVoucherBtn.disabled = false;
+      applyVoucherBtn.innerHTML = '<i class="fas fa-check"></i> Áp dụng';
+    }
+  });
+
+  document.getElementById("voucherCodeHidden").value = localStorage.getItem("appliedVoucher") || "";
+
+
+  document.getElementById("applyVoucherBtn").addEventListener("click", function () {
+    const code = document.getElementById("voucherCode").value.trim();
+    const userId = document.getElementById("userId").value;
+    const totalText = document.getElementById("grand-total").innerText.replace(/[^\d]/g, "");
+    const orderAmount = parseFloat(totalText); // tổng tiền hiện tại
+
+    if (!code) {
+      showVoucherMessage("Vui lòng nhập mã voucher.", "danger");
+      return;
+    }
+
+    fetch("/api/vouchers/validate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        code: code,
+        userId: userId,
+        orderAmount: orderAmount
+      })
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.valid) {
+                const discount = parseFloat(data.discountAmount);
+                const newTotal = orderAmount - discount;
+
+                document.getElementById("voucherMessage").innerHTML =
+                        `<span class="text-success">✅ Mã hợp lệ! Giảm <strong>${discount.toLocaleString()}đ</strong></span>`;
+
+                document.getElementById("discount-amount").innerText = `-${discount.toLocaleString()}đ`;
+                document.getElementById("discount-line").style.display = "flex";
+
+                document.getElementById("grand-total").innerText = newTotal.toLocaleString() + "đ";
+
+                // ✅ Ghi giá trị để submit form
+                document.getElementById("voucherCodeHidden").value = code;
+
+                // Lưu localStorage nếu cần
+                localStorage.setItem("appliedVoucher", code);
+              } else {
+                showVoucherMessage(data.message || "Mã không hợp lệ.", "danger");
+              }
+            })
+
+            .catch(error => {
+              console.error("Lỗi khi áp dụng voucher:", error);
+              showVoucherMessage("Lỗi kết nối đến server.", "danger");
+            });
+
+    function showVoucherMessage(msg, type = "info") {
+      document.getElementById("voucherMessage").innerHTML =
+              `<span class="text-${type}">${msg}</span>`;
+    }
+  });
+
+  document.getElementById("applyVoucherBtn").addEventListener("click", function () {
+    const code = document.getElementById("voucherCode").value.trim();
+    const userId = document.getElementById("userId").value;
+    const orderAmount = parseFloat(document.getElementById("grand-total").innerText.replace(/[^\d]/g, ""));
+
+    if (!code) {
+      showVoucherMessage("Vui lòng nhập mã voucher.", "danger");
+      return;
+    }
+
+    fetch("/api/vouchers/validate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        code: code,
+        userId: userId,
+        orderAmount: orderAmount
+      })
+    })
+            .then(response => {
+              if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.valid) {
+                const discount = data.discountAmount;
+                const newTotal = orderAmount - discount;
+
+                document.getElementById("voucherMessage").innerHTML =
+                        `<span class="text-success">✅ Đã áp dụng voucher: Giảm ${discount.toLocaleString()}đ</span>`;
+
+                document.getElementById("grand-total").innerText = newTotal.toLocaleString() + "đ";
+              } else {
+                showVoucherMessage(data.message || "Voucher không hợp lệ.", "danger");
+              }
+            })
+            .catch(error => {
+              showVoucherMessage("Có lỗi xảy ra khi kiểm tra voucher.", "danger");
+              console.error("Voucher validation error:", error);
+            });
+
+    function showVoucherMessage(msg, type = "info") {
+      document.getElementById("voucherMessage").innerHTML =
+              `<span class="text-${type}">${msg}</span>`;
+    }
+  });
+
+  function updateQuantity(productId, change) {
+    const input = document.getElementById('quantity-' + productId);
+    if (!input) return;
+    let currentQuantity = parseInt(input.value);
+    let newQuantity = currentQuantity + change;
+    if (newQuantity < 1) newQuantity = 1;
+    sendUpdateRequest(productId, newQuantity);
+  }
+
+  function updateQuantityDirect(productId, value) {
+    let newQuantity = parseInt(value);
+    if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
+    sendUpdateRequest(productId, newQuantity);
+  }
+
+  function sendUpdateRequest(productId, quantity) {
+    fetch('/cart/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `productId=${productId}&quantity=${quantity}`
+    })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                document.getElementById('quantity-' + productId).value = data.newQuantity;
+                document.getElementById('subtotal-' + productId).innerText = formatCurrency(data.itemSubtotal);
+                document.getElementById('cart-total').innerText = formatCurrency(data.cartTotal);
+                document.getElementById('cart-count').innerText = data.cartCount;
+              } else {
+                alert(data.message);
+              }
+            });
+  }
+
+  function formatCurrency(value) {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0
+    }).format(value);
+  }
+
+
+  function formatPrice(value) {
+    return value.toLocaleString('vi-VN') + 'đ';
+  }
+
+  function updateCartUI(cartCount, cartTotal) {
+    document.getElementById("cart-count").innerText = cartCount;
+    document.getElementById("cart-total").innerText = formatPrice(cartTotal);
+  }
+
+
   $(document).ready(function() {
     $('.select2').select2({
       placeholder: "Tìm kiếm...",

@@ -88,15 +88,21 @@ public class OrderEntity {
 
     private LocalDateTime deliveryDate;
 
+    @Column(name = "voucher_id")
     private Long voucherId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voucher_id", insertable = false, updatable = false)
+    private VoucherEntity voucher;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voucherId", insertable = false, updatable = false)
-    private VoucherEntity voucher;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "voucherId", insertable = false, updatable = false)
+//    private VoucherEntity voucher;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItemEntity> orderItems = new ArrayList<>();

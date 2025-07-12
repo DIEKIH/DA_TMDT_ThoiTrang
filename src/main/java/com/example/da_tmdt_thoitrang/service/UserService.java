@@ -82,4 +82,8 @@ public class UserService {
             throw new Exception("Mật khẩu phải có ít nhất 6 ký tự!");
         }
     }
+
+    public UserEntity getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }

@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AdminController {
 
-    @GetMapping("/admin/vouchers")
-    public String vc(){
-        return "admin/vouchers/list";
-    }
+//    @GetMapping("/admin/vouchers")
+//    public String vc(){
+//        return "list1";
+//    }
 
     @GetMapping("/admin/discounts")
     public String dc(){
