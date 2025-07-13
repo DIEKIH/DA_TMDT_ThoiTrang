@@ -6,6 +6,7 @@ import com.example.da_tmdt_thoitrang.entity.ProductEntity;
 import com.example.da_tmdt_thoitrang.entity.UserEntity;
 import com.example.da_tmdt_thoitrang.service.CartService;
 import com.example.da_tmdt_thoitrang.service.ProductService;
+import com.example.da_tmdt_thoitrang.service.ProductSuggestionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,10 @@ public class CartController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private ProductSuggestionService productSuggestionService;
+
 
 
     private Long getCurrentUserId(HttpServletRequest request) {
@@ -167,6 +172,20 @@ public class CartController {
     /**
      * Hiển thị trang giỏ hàng
      */
+//    @GetMapping("")
+//    public String viewCart(Model model, HttpServletRequest request) {
+//        String sessionId = request.getSession().getId();
+//        Long userId = getCurrentUserId(request);
+//
+//        CartEntity cart = cartService.getCartWithItems(sessionId, userId);
+//
+//
+//        model.addAttribute("cart", cart);
+//        model.addAttribute("cartItems", cart != null ? cart.getCartItems() : new ArrayList<>());
+//        model.addAttribute("cartTotal", cart != null ? cart.getTotalAmount() : BigDecimal.ZERO);
+//
+//        return "client/carts/client_cart";
+//    }
     @GetMapping("")
     public String viewCart(Model model, HttpServletRequest request) {
         String sessionId = request.getSession().getId();
@@ -174,13 +193,19 @@ public class CartController {
 
         CartEntity cart = cartService.getCartWithItems(sessionId, userId);
 
+        List<CartItemEntity> cartItems = cart != null ? cart.getCartItems() : new ArrayList<>();
+
+        // 👉 Gợi ý sản phẩm tương tự
+        List<ProductEntity> suggestedProducts = productSuggestionService.getSuggestedProductsFromCart(cartItems);
 
         model.addAttribute("cart", cart);
-        model.addAttribute("cartItems", cart != null ? cart.getCartItems() : new ArrayList<>());
+        model.addAttribute("cartItems", cartItems);
         model.addAttribute("cartTotal", cart != null ? cart.getTotalAmount() : BigDecimal.ZERO);
+        model.addAttribute("suggestedProducts", suggestedProducts); // ✅ thêm vào
 
         return "client/carts/client_cart";
     }
+
 
 //    @GetMapping("/checkout")
 //    public String checkout(Model model, HttpServletRequest request) {

@@ -3,11 +3,13 @@ package com.example.da_tmdt_thoitrang.repository;
 
 import com.example.da_tmdt_thoitrang.entity.ProductEntity;
 import com.example.da_tmdt_thoitrang.entity.ProductImageEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -68,5 +70,60 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     List<ProductEntity> findByCategoryIdAndIsActiveTrueAndIdNotOrderByViewCountDesc(Long categoryId, Long excludeId);
 
+
+//    @Query("SELECT p FROM ProductEntity p " +
+//            "WHERE p.categoryId IN :categoryIds " +
+//            "AND p.id NOT IN :excludedProductIds " +
+//            "AND p.isActive = true " +
+//            "ORDER BY p.viewCount DESC")
+//    List<ProductEntity> findSuggestedProducts(
+//            @Param("categoryIds") List<Long> categoryIds,
+//            @Param("excludedProductIds") List<Long> excludedProductIds,
+//            Pageable pageable
+//    );
+
+//    @Query("SELECT p FROM ProductEntity p " +
+//            "WHERE p.categoryId IN :categoryIds " +
+//            "AND p.id NOT IN :excludedProductIds " +
+//            "AND p.isActive = true " +
+//            "AND LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+//            "AND p.price BETWEEN :minPrice AND :maxPrice " +
+//            "ORDER BY p.viewCount DESC")
+//    List<ProductEntity> findSuggestedProducts(
+//            @Param("categoryIds") List<Long> categoryIds,
+//            @Param("excludedProductIds") List<Long> excludedProductIds,
+//            @Param("keyword") String keyword,
+//            @Param("minPrice") BigDecimal minPrice,
+//            @Param("maxPrice") BigDecimal maxPrice,
+//            Pageable pageable
+//    );
+    @Query("SELECT p FROM ProductEntity p " +
+            "WHERE p.isActive = true " +
+            "AND p.id NOT IN :excludedProductIds " +
+            "AND LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "AND p.price BETWEEN :minPrice AND :maxPrice " +
+            "ORDER BY p.viewCount DESC")
+    List<ProductEntity> findSuggestedProductsGeneral(
+            @Param("excludedProductIds") List<Long> excludedProductIds,
+            @Param("keyword") String keyword,
+            @Param("minPrice") BigDecimal minPrice,
+            @Param("maxPrice") BigDecimal maxPrice,
+            Pageable pageable
+    );
+
+    @Query("SELECT p FROM ProductEntity p " +
+            "WHERE p.isActive = true " +
+            "AND p.id NOT IN :excludedProductIds " +
+            "AND p.categoryId IN :categoryIds " +
+            "ORDER BY p.viewCount DESC")
+    List<ProductEntity> findSuggestedProductsInSameCategory(
+            @Param("excludedProductIds") List<Long> excludedProductIds,
+            @Param("categoryIds") List<Long> categoryIds,
+            Pageable pageable
+    );
+
+
+
+    List<ProductEntity> findAllByCategoryIdInAndIsActiveTrue(List<Long> categoryIds);
 
 }
