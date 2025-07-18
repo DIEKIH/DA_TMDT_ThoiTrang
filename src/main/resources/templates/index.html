@@ -181,6 +181,111 @@
     </div>
 </section>
 
+<section>
+
+<!--    <h3 class="mt-4">Gợi ý cho bạn</h3>-->
+<!--    <p th:if="${recommendedProducts != null}"-->
+<!--       th:text="'Số sản phẩm gợi ý: ' + ${#lists.size(recommendedProducts)}"></p>-->
+
+<!--    <div class="row">-->
+<!--        <div class="col-md-3 mb-3" th:each="product : ${recommendedProducts}">-->
+<!--            <div class="card h-100">-->
+<!--                <img th:src="@{${product.imageUrl}}" class="card-img-top" alt="Ảnh sản phẩm" />-->
+<!--                <div class="card-body">-->
+<!--                    <h5 class="card-title" th:text="${product.name}">Tên sản phẩm</h5>-->
+<!--                    <p th:text="${product.price} + '₫'">Giá</p>-->
+<!--                    <a th:href="@{/product/{id}(id=${product.id})}" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <h3>Gợi ý cho bạn</h3>
+    <div th:if="${#lists.isEmpty(recommendedProducts)}">
+        <p>Không có sản phẩm gợi ý</p>
+    </div>
+    <div class="row" th:if="${!#lists.isEmpty(recommendedProducts)}">
+        <div class="col-md-3" th:each="product : ${recommendedProducts}">
+            <div class="card">
+                <img th:src="${product.imageUrl != null} ? ${product.imageUrl} : '@{/images/default.png}'"
+                     th:alt="${product.name}" class="img-fluid">
+                <div class="card-body">
+                    <h5 th:text="${product.name}"></h5>
+                    <p th:text="${product.price + ' đ'}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!--    <h4 class="mt-5">Top 4 sản phẩm được đánh giá cao</h4>-->
+<!--    <div class="row row-cols-1 row-cols-md-4 g-4 mt-2">-->
+<!--        <div class="col" th:each="product : ${topRatedProducts}">-->
+<!--            <div class="card h-100">-->
+<!--                <img th:src="${product.imageUrl}" class="card-img-top" alt="Ảnh sản phẩm" style="height: 180px; object-fit: cover;">-->
+<!--                <div class="card-body">-->
+<!--                    <h5 class="card-title" th:text="${product.name}">Tên sản phẩm</h5>-->
+<!--                    <p class="card-text" th:text="${product.description}">Mô tả</p>-->
+<!--                </div>-->
+<!--                <div class="card-footer text-end">-->
+<!--                    <a th:href="@{'/product/' + ${product.id}}" class="btn btn-outline-primary">Xem chi tiết</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="row mb-5">-->
+<!--        <div class="col-12">-->
+<!--            <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--                <h2><i class="fas fa-star text-warning"></i> Top Recommended Products</h2>-->
+<!--                <div class="recommendation-badge">-->
+<!--                    <i class="fas fa-brain"></i> AI Powered-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="row" id="recommendedProducts">-->
+<!--                <div th:each="product : ${topProducts}" class="col-md-3 mb-4">-->
+<!--                    <div class="card product-card h-100">-->
+<!--                        <img th:src="${product.productImage}" class="card-img-top" alt="Product Image" style="height: 200px; object-fit: cover;">-->
+<!--                        <div class="card-body d-flex flex-column">-->
+<!--                            <h5 class="card-title" th:text="${product.productName}">Product Name</h5>-->
+
+<!--                            &lt;!&ndash; Rating Display &ndash;&gt;-->
+<!--                            <div class="mb-2">-->
+<!--                                <div class="rating-stars">-->
+<!--                                        <span th:each="i : ${#numbers.sequence(1, 5)}"-->
+<!--                                              th:class="${i <= product.averageRating} ? 'fas fa-star' : 'far fa-star'"></span>-->
+<!--                                </div>-->
+<!--                                <small class="text-muted">-->
+<!--                                    <span th:text="${#numbers.formatDecimal(product.averageRating, 1, 1)}">0.0</span>-->
+<!--                                    (<span th:text="${product.reviewCount}">0</span> reviews)-->
+<!--                                </small>-->
+<!--                            </div>-->
+
+<!--                            <div class="mt-auto">-->
+<!--                                <p class="card-text h5 text-success mb-2">$<span th:text="${product.price}">0.00</span></p>-->
+<!--                                <a th:href="@{/client/product/{id}(id=${product.productId})}" class="btn btn-primary btn-sm">View Details</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Load More Button &ndash;&gt;-->
+<!--            <div class="text-center mt-4">-->
+<!--                <button class="btn btn-outline-primary" onclick="loadMoreRecommendations()">-->
+<!--                    <i class="fas fa-sync-alt"></i> Load More Recommendations-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+
+</section>
+
 
 <!-- Featured Collections -->
 <section class="category-section">
@@ -458,6 +563,64 @@
     //         alert(`Đã thêm "${productTitle}" (${productPrice}) vào giỏ hàng!`);
     //     });
     // });
+    async function loadMoreRecommendations() {
+        try {
+            const response = await fetch('/api/recommendations/collaborative-filtering?limit=8');
+            const products = await response.json();
+
+            const container = document.getElementById('recommendedProducts');
+            container.innerHTML = '';
+
+            products.forEach(product => {
+                const productCard = createProductCard(product);
+                container.appendChild(productCard);
+            });
+
+        } catch (error) {
+            console.error('Error loading recommendations:', error);
+        }
+    }
+
+    function createProductCard(product) {
+        const col = document.createElement('div');
+        col.className = 'col-md-3 mb-4';
+
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+            stars.push(`<span class="${i <= product.averageRating ? 'fas fa-star' : 'far fa-star'}"></span>`);
+        }
+
+        col.innerHTML = `
+                <div class="card product-card h-100">
+                    <img src="${product.productImage}" class="card-img-top" alt="Product Image" style="height: 200px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${product.productName}</h5>
+
+                        <div class="mb-2">
+                            <div class="rating-stars">
+                                ${stars.join('')}
+                            </div>
+                            <small class="text-muted">
+                                ${product.averageRating.toFixed(1)} (${product.reviewCount} reviews)
+                            </small>
+                        </div>
+
+                        <div class="mt-auto">
+                            <p class="card-text h5 text-success mb-2">${product.price}</p>
+                            <a href="/client/product/${product.productId}" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        return col;
+    }
+
+    // Auto-refresh recommendations every 30 seconds for logged-in users
+    setInterval(() => {
+        loadMoreRecommendations();
+    }, 30000);
+
 </script>
 </body>
 </html>

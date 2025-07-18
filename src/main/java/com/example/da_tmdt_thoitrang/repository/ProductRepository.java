@@ -3,14 +3,18 @@ package com.example.da_tmdt_thoitrang.repository;
 
 import com.example.da_tmdt_thoitrang.entity.ProductEntity;
 import com.example.da_tmdt_thoitrang.entity.ProductImageEntity;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
@@ -122,8 +126,25 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             Pageable pageable
     );
 
+    @EntityGraph(attributePaths = {"reviews", "reviews.user"})
+    Optional<ProductEntity> findById(Long id);
 
+    @EntityGraph(attributePaths = {"reviews", "reviews.user"})
+    @Query("SELECT p FROM ProductEntity p WHERE p.id = :id")
+    Optional<ProductEntity> findByIdWithReviews(@Param("id") Long id);
+
+    List<ProductEntity> findByIdIn(List<Long> ids);
 
     List<ProductEntity> findAllByCategoryIdInAndIsActiveTrue(List<Long> categoryIds);
+
+    @Query("""
+    SELECT p FROM ProductEntity p 
+    JOIN ReviewEntity r ON r.productId = p.id
+    WHERE r.isApproved = true
+    GROUP BY p.id
+    ORDER BY AVG(r.rating) DESC
+""")
+    List<ProductEntity> findTopRatedProducts(Pageable pageable);
+
 
 }
