@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Thanh toán - CEIN</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/navbar_client.css">
   <style>
     body {
       background-color: #f8f9fa;
     }
+
 
     .checkout-container {
       background: #fff;
@@ -59,204 +61,574 @@
         padding: 20px;
       }
     }
+    .a{
+      padding-top: 50px;
+    }
   </style>
 </head>
 <body>
+<div th:replace="fragments/client_navbar :: client_navbar"></div>
 
 <div class="container py-5">
   <div class="row">
     <!-- Thông tin người nhận -->
-    <div class="col-lg-8 mb-4">
+    <div class="col-lg-8 mb-4 a ">
       <div class="checkout-container">
         <h4 class="mb-4">Thông tin giao hàng</h4>
-
-        <form>
-          <div class="mb-3">
-            <label for="fullname" class="form-label">Họ và tên</label>
-            <input type="text" class="form-control" id="fullname" placeholder="Nhập họ và tên">
-          </div>
-
-          <div class="mb-3">
-            <label for="phone" class="form-label">Số điện thoại</label>
-            <input type="tel" class="form-control" id="phone" placeholder="Nhập số điện thoại">
-          </div>
-
-          <div class="mb-3">
-            <label for="address" class="form-label">Địa chỉ cụ thể</label>
-            <input type="text" class="form-control" id="address" placeholder="Ví dụ: 123 đường ABC, khu XYZ">
-          </div>
+        <form th:action="@{/checkout/save-address}" method="post" class="p-4 border rounded shadow-sm bg-white">
+          <input type="hidden" th:if="${address.id}" th:name="id" th:value="${address.id}">
+          <h5 class="mb-4">📦 Thêm địa chỉ giao hàng</h5>
 
           <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="fullname" class="form-label">Họ và tên</label>
+              <input type="text" class="form-control" id="fullname" name="fullName"
+                     placeholder="Nguyễn Văn A"
+                     th:value="${address.fullName}">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="phone" class="form-label">Số điện thoại</label>
+              <input type="tel" class="form-control" id="phone" name="phoneNumber"
+                     placeholder="0901234567"
+                     th:value="${address.phoneNumber}">
+            </div>
+
+            <div class="col-12 mb-3">
+              <label for="address" class="form-label">Địa chỉ cụ thể</label>
+              <input type="text" class="form-control" id="address" name="street"
+                     placeholder="Ví dụ: 123 đường ABC"
+                     th:value="${address.street}">
+            </div>
+
             <div class="col-md-4 mb-3">
               <label class="form-label">Tỉnh / Thành phố</label>
-              <select class="form-select">
-                <option selected>Chọn tỉnh / thành</option>
-                <option>TP Hồ Chí Minh</option>
-                <option>Hà Nội</option>
-                <option>Đà Nẵng</option>
-                <option>Cần Thơ</option>
+              <select class="form-select select2" name="city">
+                <option selected disabled>Chọn tỉnh / thành</option>
               </select>
             </div>
 
             <div class="col-md-4 mb-3">
               <label class="form-label">Quận / Huyện</label>
-              <select class="form-select">
-                <option selected>Chọn quận / huyện</option>
-                <option>Quận 1</option>
-                <option>Quận 2</option>
-                <option>Quận Bình Thạnh</option>
+              <select class="form-select select2" name="district">
+                <option selected disabled>Chọn quận / huyện</option>
               </select>
             </div>
 
             <div class="col-md-4 mb-3">
               <label class="form-label">Phường / Xã</label>
-              <select class="form-select">
-                <option selected>Chọn phường / xã</option>
-                <option>Phường 1</option>
-                <option>Phường 2</option>
-                <option>Phường 25</option>
+              <select class="form-select select2" name="ward">
+                <option selected disabled>Chọn phường / xã</option>
               </select>
             </div>
+
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-dark">
+              💾 Lưu địa chỉ
+            </button>
           </div>
         </form>
       </div>
-      <!-- PHƯƠNG THỨC THANH TOÁN -->
-      <div class="checkout-container mt-4">
-        <h4 class="mb-4">Phương thức thanh toán</h4>
-
-        <div class="form-check mb-3">
-          <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
-          <label class="form-check-label" for="cod">
-            💵 Thanh toán khi nhận hàng (COD)
-          </label>
-        </div>
-
-        <div class="form-check mb-3">
-          <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="BANK">
-          <label class="form-check-label" for="bank">
-            🏦 Chuyển khoản ngân hàng
-          </label>
-        </div>
-        <div class="bank-info border p-3 rounded bg-light mb-3 d-none">
-          <p class="mb-1 fw-bold">Ngân hàng Vietcombank</p>
-          <p>Chủ tài khoản: NGUYEN VAN A</p>
-          <p>Số tài khoản: 123 456 789</p>
-          <p>Chi nhánh: TP. Hồ Chí Minh</p>
-          <small class="text-muted">Vui lòng chuyển đúng số tiền và ghi đúng nội dung thanh toán.</small>
-        </div>
-
-        <div class="form-check mb-3">
-          <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="CARD">
-          <label class="form-check-label" for="card">
-            💳 Thẻ tín dụng / ghi nợ (Visa, MasterCard)
-          </label>
-        </div>
-        <div class="card-info border p-3 rounded bg-light d-none">
-          <div class="mb-3">
-            <label for="cardNumber" class="form-label">Số thẻ</label>
-            <input type="text" class="form-control" id="cardNumber" placeholder="•••• •••• •••• ••••">
-          </div>
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="expiry" class="form-label">Ngày hết hạn</label>
-              <input type="text" class="form-control" id="expiry" placeholder="MM/YY">
+      <div class="mt-5">
+        <h5 class="mb-4">📄 Địa chỉ đã lưu</h5>
+        <form action="/checkout/confirm" method="post">
+          <div th:each="addr : ${addresses}" class="border rounded p-3 mb-3 bg-light shadow-sm">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="selectedAddressId" th:value="${addr.id}" required>
+              <label class="form-check-label">
+                <div class="fw-bold" th:text="${addr.fullName}">Nguyễn Văn A</div>
+                <div class="text-muted small" th:text="'📞 ' + ${addr.phoneNumber}">0901234567</div>
+                <div th:text="${addr.street + ', ' + addr.ward + ', ' + addr.district + ', ' + addr.city}"></div>
+              </label>
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="cvv" class="form-label">CVV</label>
-              <input type="text" class="form-control" id="cvv" placeholder="123">
+            <div class="text-end mt-2">
+              <a th:href="@{'/checkout/edit/' + ${addr.id}}" class="btn btn-sm btn-outline-primary me-2">✏️ Sửa</a>
+              <a th:href="@{'/checkout/delete/' + ${addr.id}}" class="btn btn-sm btn-outline-danger">🗑️ Xoá</a>
             </div>
           </div>
-        </div>
+
+          <!-- Phương thức thanh toán -->
+          <div class="checkout-container mt-4">
+            <h4 class="mb-4">Phương thức thanh toán</h4>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked>
+              <label class="form-check-label" for="cod">💵 Thanh toán khi nhận hàng (COD)</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="BANK">
+              <label class="form-check-label" for="bank">🏦 Chuyển khoản ngân hàng</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="CARD">
+              <label class="form-check-label" for="card">💳 Thẻ tín dụng / ghi nợ</label>
+            </div>
+          </div>
+          <input type="hidden" name="voucherCode" id="voucherCodeHidden">
+
+          <button type="submit" class="btn btn-checkout w-100">Xác nhận đặt hàng</button>
+        </form>
       </div>
+
     </div>
-
-
-
     <!-- Tóm tắt đơn hàng -->
-    <div class="col-lg-4">
+    <div class="col-lg-4 a">
       <div class="order-summary-box">
-        <h5 class="mb-3">Đơn hàng của bạn</h5>
-<!--        <div class="d-flex justify-content-between mb-2">-->
-<!--          <span>Tạm tính:</span>-->
-<!--          <span>$547</span>-->
-<!--        </div>-->
-<!--        <div class="d-flex justify-content-between mb-3">-->
-<!--          <span>Phí giao hàng:</span>-->
-<!--          <span>Miễn phí</span>-->
-<!--        </div>-->
+        <h5 class="mb-3">🛒 Đơn hàng của bạn</h5>
 
-<!--        <div class="discount-input-group mb-3 d-flex">-->
-<!--          <input type="text" class="form-control" placeholder="Mã giảm giá">-->
-<!--          <button class="btn btn-outline-dark" type="button">Áp dụng</button>-->
-<!--        </div>-->
-
-<!--        <hr>-->
-<!--        <div class="d-flex justify-content-between fw-bold mb-4">-->
-<!--          <span>Tổng cộng:</span>-->
-<!--          <span>$547</span>-->
-<!--        </div>-->
-
-<!--        <button class="btn btn-checkout w-100">Chọn phương thức thanh toán</button>-->
-        <div id="cart-items" class="mb-4">
-          <div class="d-flex align-items-center mb-3" data-price="249">
-            <img src="https://images.unsplash.com/photo-1600180758890-6d340b50d53b?w=80" alt="Sản phẩm" class="me-3" width="70" height="70" style="object-fit: cover; border-radius: 8px;">
+        <div id="cart-items" class="mb-4" th:if="${cartItems != null and !#lists.isEmpty(cartItems)}">
+          <div th:each="item : ${cartItems}" class="d-flex align-items-center mb-3" th:attr="data-price=${item.unitPrice}">
+            <img th:src="${item.product.imageUrl}" th:alt="${item.product.name}" class="me-3" width="70" height="70"
+                 style="object-fit: cover; border-radius: 8px;">
             <div class="flex-grow-1">
-              <div class="fw-semibold">Áo len cổ tròn</div>
-              <div class="text-muted small">Màu: Be | Size: S</div>
+              <div class="fw-semibold" th:text="${item.product.name}">Tên sản phẩm</div>
+              <div class="text-muted small">
+                <span th:if="${item.color}" th:text="'Màu: ' + ${item.color}">Màu</span>
+                <span th:if="${item.size}"> | </span>
+                <span th:if="${item.size}" th:text="'Size: ' + ${item.size}">Size</span>
+              </div>
               <div class="d-flex align-items-center mt-2">
-                <button class="btn btn-sm btn-outline-secondary me-2 btn-minus">−</button>
-                <input type="number" class="form-control form-control-sm text-center qty-input" value="1" min="1" style="width: 50px;">
-                <button class="btn btn-sm btn-outline-secondary ms-2 btn-plus">+</button>
+                <button class="btn btn-sm btn-outline-secondary me-2 btn-minus"
+                        th:onclick="'updateQuantity(' + ${item.product.id} + ', -1)'">−</button>
+
+                <input type="number" class="form-control form-control-sm text-center qty-input" min="1"
+                       th:value="${item.quantity}" style="width: 50px;"
+                       th:id="'quantity-' + ${item.product.id}"
+                       th:attr="data-price=${item.unitPrice}"
+                       th:onchange="'updateQuantityDirect(' + ${item.product.id} + ', this.value)'">
+
+                <button class="btn btn-sm btn-outline-secondary ms-2 btn-plus"
+                        th:onclick="'updateQuantity(' + ${item.product.id} + ', 1)'">+</button>
               </div>
             </div>
             <div class="text-end ms-3">
-              <div class="fw-semibold item-total">$249</div>
-              <button class="btn btn-sm btn-link text-danger p-0 mt-1 btn-remove">Xoá</button>
-            </div>
-          </div>
-
-          <div class="d-flex align-items-center mb-3" data-price="299">
-            <img src="https://images.unsplash.com/photo-1600180452045-508cfd6b1c72?w=80" alt="Sản phẩm" class="me-3" width="70" height="70" style="object-fit: cover; border-radius: 8px;">
-            <div class="flex-grow-1">
-              <div class="fw-semibold">Cardigan len gân</div>
-              <div class="text-muted small">Màu: Nâu | Size: M</div>
-              <div class="d-flex align-items-center mt-2">
-                <button class="btn btn-sm btn-outline-secondary me-2 btn-minus">−</button>
-                <input type="number" class="form-control form-control-sm text-center qty-input" value="1" min="1" style="width: 50px;">
-                <button class="btn btn-sm btn-outline-secondary ms-2 btn-plus">+</button>
+              <div class="fw-semibold item-total" th:id="'subtotal-' + ${item.product.id}"
+                   th:text="${#numbers.formatDecimal(item.subtotal, 1, 2)} + 'đ'">
+                $249
               </div>
-            </div>
-            <div class="text-end ms-3">
-              <div class="fw-semibold item-total">$299</div>
-              <button class="btn btn-sm btn-link text-danger p-0 mt-1 btn-remove">Xoá</button>
+              <button class="btn btn-sm btn-link text-danger p-0 mt-1 btn-remove"
+                      th:onclick="'removeFromCart(' + ${item.product.id} + ')'">Xoá</button>
             </div>
           </div>
         </div>
 
         <!-- Mã giảm giá -->
-        <div class="discount-input-group d-flex mb-3">
-          <input type="text" class="form-control" placeholder="Mã giảm giá">
-          <button class="btn btn-outline-dark" type="button">Áp dụng</button>
+<!--        <div class="discount-input-group d-flex mb-3">-->
+<!--          <input type="text" class="form-control" placeholder="Mã giảm giá">-->
+<!--          <button class="btn btn-outline-dark" type="button">Áp dụng</button>-->
+<!--        </div>-->
+<!--        <input type="hidden" name="voucherCode" id="voucherCodeHidden">-->
+        <input type="hidden" id="userId" th:value="${user != null ? user.id : 0}">
+        <div class="voucher-section" id="voucherSection">
+          <h6><i class="fas fa-ticket-alt"></i> Mã giảm giá</h6>
+          <div class="input-group">
+            <input type="text" class="form-control" id="voucherCode" placeholder="Nhập mã voucher">
+            <button class="btn btn-outline-primary" type="button" id="applyVoucherBtn">
+              <i class="fas fa-check"></i> Áp dụng
+            </button>
+          </div>
+          <div id="voucherMessage" class="mt-2"></div>
+        </div>
+        <div class="d-flex justify-content-between text-muted small mb-2" id="discount-line" style="display: none;">
+          <span>Giảm giá:</span>
+          <span id="discount-amount">-0đ</span>
         </div>
 
         <hr>
         <div class="d-flex justify-content-between fw-bold mb-4">
           <span>Tổng cộng:</span>
-          <span id="grand-total">$548</span>
+          <span id="grand-total" th:text="${#numbers.formatDecimal(total, 1, 2)} + 'đ'">$0</span>
         </div>
-
-        <button class="btn btn-checkout w-100">Xác nhận đặt hàng</button>
       </div>
     </div>
 
 
-
-
   </div>
 </div>
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+  document.getElementById("applyVoucherBtn").addEventListener("click", async function () {
+    const voucherCode = document.getElementById("voucherCode").value.trim();
+    const userId = document.getElementById("userId").value;
+    let totalAmount = 0;
+
+    // Tính tổng tiền đơn hàng
+    document.querySelectorAll(".qty-input").forEach(input => {
+      const qty = parseInt(input.value);
+      const price = parseFloat(input.getAttribute("data-price"));
+      if (!isNaN(qty) && !isNaN(price)) {
+        totalAmount += qty * price;
+      }
+    });
+
+    totalAmount += 30000; // cộng phí ship
+
+    if (!voucherCode) {
+      document.getElementById("voucherMessage").textContent = "Vui lòng nhập mã voucher.";
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/voucher/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: voucherCode,
+          userId: userId,
+          orderAmount: totalAmount
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        document.getElementById("voucherMessage").innerHTML =
+                `<span class="text-success">${data.message}</span>`;
+
+        document.getElementById("voucherCodeHidden").value = voucherCode;
+
+        // Hiển thị giảm giá
+        document.getElementById("discount-amount").textContent = "-" + data.discountAmount + "đ";
+        document.getElementById("discount-line").style.display = "flex";
+
+        // Cập nhật tổng cộng
+        const grandTotal = totalAmount - parseFloat(data.discountAmount);
+        document.getElementById("grand-total").textContent = grandTotal.toLocaleString() + "đ";
+
+      } else {
+        document.getElementById("voucherMessage").innerHTML =
+                `<span class="text-danger">${data.message}</span>`;
+        document.getElementById("discount-line").style.display = "none";
+        document.getElementById("voucherCodeHidden").value = "";
+      }
+    } catch (error) {
+      console.error("Error applying voucher:", error);
+      document.getElementById("voucherMessage").innerHTML =
+              `<span class="text-danger">Lỗi khi áp dụng mã.</span>`;
+    }
+  });
+
+
+  let currentOrder = {
+    userId: 1, // This would come from session/auth
+    subtotal: 1100000,
+    shippingFee: 30000,
+    discountAmount: 0,
+    appliedVoucher: null
+  };
+
+  // DOM elements
+  const voucherCodeInput = document.getElementById('voucherCode');
+  const applyVoucherBtn = document.getElementById('applyVoucherBtn');
+  const voucherMessage = document.getElementById('voucherMessage');
+  const voucherSection = document.getElementById('voucherSection');
+  const discountRow = document.getElementById('discountRow');
+  const discountAmount = document.getElementById('discountAmount');
+  const appliedVoucherRow = document.getElementById('appliedVoucherRow');
+  const appliedVoucherCode = document.getElementById('appliedVoucherCode');
+  const removeVoucherBtn = document.getElementById('removeVoucherBtn');
+  const finalTotal = document.getElementById('finalTotal');
+  const checkoutForm = document.getElementById('checkoutForm');
+
+  // Apply voucher
+  applyVoucherBtn.addEventListener('click', async function() {
+    const voucherCode = voucherCodeInput.value.trim();
+    if (!voucherCode) {
+      showVoucherMessage('Vui lòng nhập mã voucher', 'danger');
+      return;
+    }
+
+    try {
+      applyVoucherBtn.disabled = true;
+      applyVoucherBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kiểm tra...';
+
+      const response = await fetch('/api/vouchers/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          code: voucherCode,
+          userId: currentOrder.userId,
+          orderAmount: currentOrder.subtotal
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.valid) {
+        currentOrder.appliedVoucher = result.voucher;
+        currentOrder.discountAmount = result.discountAmount;
+
+        showVoucherMessage('Áp dụng voucher thành công!', 'success');
+        updateOrderSummary();
+        showAppliedVoucher(voucherCode);
+      } else {
+        showVoucherMessage(result.message, 'danger');
+      }
+    } catch (error) {
+      showVoucherMessage('Có lỗi xảy ra khi kiểm tra voucher', 'danger');
+    } finally {
+      applyVoucherBtn.disabled = false;
+      applyVoucherBtn.innerHTML = '<i class="fas fa-check"></i> Áp dụng';
+    }
+  });
+
+  document.getElementById("voucherCodeHidden").value = localStorage.getItem("appliedVoucher") || "";
+
+
+  document.getElementById("applyVoucherBtn").addEventListener("click", function () {
+    const code = document.getElementById("voucherCode").value.trim();
+    const userId = document.getElementById("userId").value;
+    const totalText = document.getElementById("grand-total").innerText.replace(/[^\d]/g, "");
+    const orderAmount = parseFloat(totalText); // tổng tiền hiện tại
+
+    if (!code) {
+      showVoucherMessage("Vui lòng nhập mã voucher.", "danger");
+      return;
+    }
+
+    fetch("/api/vouchers/validate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        code: code,
+        userId: userId,
+        orderAmount: orderAmount
+      })
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.valid) {
+                const discount = parseFloat(data.discountAmount);
+                const newTotal = orderAmount - discount;
+
+                document.getElementById("voucherMessage").innerHTML =
+                        `<span class="text-success">✅ Mã hợp lệ! Giảm <strong>${discount.toLocaleString()}đ</strong></span>`;
+
+                document.getElementById("discount-amount").innerText = `-${discount.toLocaleString()}đ`;
+                document.getElementById("discount-line").style.display = "flex";
+
+                document.getElementById("grand-total").innerText = newTotal.toLocaleString() + "đ";
+
+                // ✅ Ghi giá trị để submit form
+                document.getElementById("voucherCodeHidden").value = code;
+
+                // Lưu localStorage nếu cần
+                localStorage.setItem("appliedVoucher", code);
+              } else {
+                showVoucherMessage(data.message || "Mã không hợp lệ.", "danger");
+              }
+            })
+
+            .catch(error => {
+              console.error("Lỗi khi áp dụng voucher:", error);
+              showVoucherMessage("Lỗi kết nối đến server.", "danger");
+            });
+
+    function showVoucherMessage(msg, type = "info") {
+      document.getElementById("voucherMessage").innerHTML =
+              `<span class="text-${type}">${msg}</span>`;
+    }
+  });
+
+  document.getElementById("applyVoucherBtn").addEventListener("click", function () {
+    const code = document.getElementById("voucherCode").value.trim();
+    const userId = document.getElementById("userId").value;
+    const orderAmount = parseFloat(document.getElementById("grand-total").innerText.replace(/[^\d]/g, ""));
+
+    if (!code) {
+      showVoucherMessage("Vui lòng nhập mã voucher.", "danger");
+      return;
+    }
+
+    fetch("/api/vouchers/validate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        code: code,
+        userId: userId,
+        orderAmount: orderAmount
+      })
+    })
+            .then(response => {
+              if (!response.ok) {
+                return response.json().then(err => Promise.reject(err));
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.valid) {
+                const discount = data.discountAmount;
+                const newTotal = orderAmount - discount;
+
+                document.getElementById("voucherMessage").innerHTML =
+                        `<span class="text-success">✅ Đã áp dụng voucher: Giảm ${discount.toLocaleString()}đ</span>`;
+
+                document.getElementById("grand-total").innerText = newTotal.toLocaleString() + "đ";
+              } else {
+                showVoucherMessage(data.message || "Voucher không hợp lệ.", "danger");
+              }
+            })
+            .catch(error => {
+              showVoucherMessage("Có lỗi xảy ra khi kiểm tra voucher.", "danger");
+              console.error("Voucher validation error:", error);
+            });
+
+    function showVoucherMessage(msg, type = "info") {
+      document.getElementById("voucherMessage").innerHTML =
+              `<span class="text-${type}">${msg}</span>`;
+    }
+  });
+
+  function updateQuantity(productId, change) {
+    const input = document.getElementById('quantity-' + productId);
+    if (!input) return;
+    let currentQuantity = parseInt(input.value);
+    let newQuantity = currentQuantity + change;
+    if (newQuantity < 1) newQuantity = 1;
+    sendUpdateRequest(productId, newQuantity);
+  }
+
+  function updateQuantityDirect(productId, value) {
+    let newQuantity = parseInt(value);
+    if (isNaN(newQuantity) || newQuantity < 1) newQuantity = 1;
+    sendUpdateRequest(productId, newQuantity);
+  }
+
+  function sendUpdateRequest(productId, quantity) {
+    fetch('/cart/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: `productId=${productId}&quantity=${quantity}`
+    })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                document.getElementById('quantity-' + productId).value = data.newQuantity;
+                document.getElementById('subtotal-' + productId).innerText = formatCurrency(data.itemSubtotal);
+                document.getElementById('cart-total').innerText = formatCurrency(data.cartTotal);
+                document.getElementById('cart-count').innerText = data.cartCount;
+              } else {
+                alert(data.message);
+              }
+            });
+  }
+
+  function formatCurrency(value) {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+      minimumFractionDigits: 0
+    }).format(value);
+  }
+
+
+  function formatPrice(value) {
+    return value.toLocaleString('vi-VN') + 'đ';
+  }
+
+  function updateCartUI(cartCount, cartTotal) {
+    document.getElementById("cart-count").innerText = cartCount;
+    document.getElementById("cart-total").innerText = formatPrice(cartTotal);
+  }
+
+
+  $(document).ready(function() {
+    $('.select2').select2({
+      placeholder: "Tìm kiếm...",
+      allowClear: true,
+      width: '100%'
+    });
+  });
+
+  // $('.select2').select2({
+  //   theme: 'bootstrap4',        // nếu bạn dùng giao diện Bootstrap
+  //   placeholder: 'Tìm kiếm...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   minimumResultsForSearch: 0  // 👈 Bắt buộc luôn hiển thị ô tìm kiếm
+  // });
+
+
+
+  $(document).ready(function() {
+    // Load tỉnh
+    $.get("/api/location/provinces", function(data) {
+      data.forEach(function(province) {
+        $("select[name='city']").append(`<option value="${province.code}">${province.name}</option>`);
+      });
+    });
+
+    // Khi chọn tỉnh → load quận
+    $("select[name='city']").on("change", function() {
+      const provinceCode = $(this).val();
+      $("select[name='district']").empty().append('<option disabled selected>Chọn quận / huyện</option>');
+      $("select[name='ward']").empty().append('<option disabled selected>Chọn phường / xã</option>');
+
+      $.get("/api/location/districts/" + provinceCode, function(data) {
+        data.forEach(function(district) {
+          $("select[name='district']").append(`<option value="${district.code}">${district.name}</option>`);
+        });
+      });
+    });
+
+    // Khi chọn quận → load phường
+    $("select[name='district']").on("change", function() {
+      const districtCode = $(this).val();
+      $("select[name='ward']").empty().append('<option disabled selected>Chọn phường / xã</option>');
+
+      $.get("/api/location/wards/" + districtCode, function(data) {
+        data.forEach(function(ward) {
+          $("select[name='ward']").append(`<option value="${ward.name}">${ward.name}</option>`);
+        });
+      });
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const cod = document.getElementById("cod");
+    const bank = document.getElementById("bank");
+    const card = document.getElementById("card");
+
+    const bankInfo = document.querySelector(".bank-info");
+    const cardInfo = document.querySelector(".card-info");
+
+    const togglePaymentFields = () => {
+      if (bank.checked) {
+        bankInfo.classList.remove("d-none");
+        cardInfo.classList.add("d-none");
+      } else if (card.checked) {
+        cardInfo.classList.remove("d-none");
+        bankInfo.classList.add("d-none");
+      } else {
+        bankInfo.classList.add("d-none");
+        cardInfo.classList.add("d-none");
+      }
+    };
+
+    cod.addEventListener("change", togglePaymentFields);
+    bank.addEventListener("change", togglePaymentFields);
+    card.addEventListener("change", togglePaymentFields);
+
+    togglePaymentFields(); // Khởi động ban đầu
+  });
+
   const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
   const bankInfo = document.querySelector('.bank-info');
   const cardInfo = document.querySelector('.card-info');

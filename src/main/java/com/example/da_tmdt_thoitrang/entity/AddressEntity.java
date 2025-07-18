@@ -82,6 +82,16 @@ public class AddressEntity {
     @JoinColumn(name = "userId", insertable = false, updatable = false)
     private UserEntity user;
 
+    @Override
+    public String toString() {
+        return "AddressEntity{" +
+                "id=" + id +
+                ", userId=" + (user != null ? user.getId() : null) +
+                '}';
+    }
+
+
+
 //    public Long getId() { return id; }
 //
 //    public String getFullAddress() {

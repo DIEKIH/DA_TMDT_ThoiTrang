@@ -26,6 +26,9 @@ public class CartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String sessionId;
+
     @Column(nullable = false, unique = true)
     private Long userId;
 
@@ -40,7 +43,29 @@ public class CartEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<CartItemEntity> cartItems = new ArrayList<>();
+
+
+    @Column(columnDefinition = "DECIMAL(10,2)")
+    private BigDecimal totalAmount = BigDecimal.ZERO;
+
+    @Column
+    private Integer totalItems = 0;
+
+
+    public BigDecimal getTotalAmount() {
+        return cartItems.stream()
+                .map(CartItemEntity::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public Integer getTotalItems() {
+        return cartItems.stream()
+                .mapToInt(CartItemEntity::getQuantity)
+                .sum();
+    }
+
 
 //    public Long getId() { return id; }
 //

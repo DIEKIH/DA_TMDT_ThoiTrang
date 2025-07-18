@@ -64,6 +64,10 @@ public class VoucherEntity {
     @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderEntity> orders = new ArrayList<>();
 
+    @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VoucherUsageEntity> voucherUsages = new ArrayList<>();
+
+
 //    public Long getId() { return id; }
 //    public String getCode() { return code; }
 //

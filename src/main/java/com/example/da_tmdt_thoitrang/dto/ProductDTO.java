@@ -1,37 +1,50 @@
 package com.example.da_tmdt_thoitrang.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import jakarta.validation.constraints.*;
-
+import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ProductDTO {
     private Long id;
-
-    @NotBlank(message = "Tên sản phẩm không được để trống")
-    @Size(max = 255, message = "Tên sản phẩm không được vượt quá 255 ký tự")
     private String name;
-
     private String description;
-
     private String imageUrl;
-
-    @NotNull(message = "Giá sản phẩm không được để trống")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Giá sản phẩm phải lớn hơn 0")
-    private BigDecimal basePrice;
-
-    @NotNull(message = "Danh mục không được để trống")
+    private String size;
+    private String color;
+    private Integer quantity;
+    private BigDecimal price;
+    private String sku;
+    private Boolean isActive;
     private Long categoryId;
-
-    @NotNull(message = "Thương hiệu không được để trống")
+    private String categoryName;
     private Long brandId;
+    private String brandName;
 
-    private Boolean isActive = true;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updatedAt;
+
+    private Integer viewCount;
+    private BigDecimal averageRating;
+    private List<ProductImageDTO> productImages;
+
+    // Status helpers
+    public String getStockStatus() {
+        if (quantity == null || quantity <= 0) return "OUT_OF_STOCK";
+        if (quantity <= 10) return "LOW_STOCK";
+        return "IN_STOCK";
+    }
+
+    public Boolean isOutOfStock() {
+        return quantity == null || quantity <= 0;
+    }
 }

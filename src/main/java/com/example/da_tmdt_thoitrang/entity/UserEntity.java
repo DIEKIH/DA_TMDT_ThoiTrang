@@ -78,6 +78,19 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductViewEntity> productViews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VoucherUsageEntity> voucherUsages = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                // KHÔNG đưa danh sách Address vào
+                '}';
+    }
+
+
     // Getters and Setters
 //    public Long getId() { return id; }
 //    public String getUsername() { return username; }
