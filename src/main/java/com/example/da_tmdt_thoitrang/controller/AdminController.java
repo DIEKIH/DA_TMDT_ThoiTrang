@@ -11,13 +11,13 @@ public class AdminController {
 //        return "list1";
 //    }
 
-    @GetMapping("/admin/discounts")
-    public String dc(){
-        return "admin/products/discounts";
-    }
-
-    @GetMapping("/admin/product_discounts")
-    public String pdc(){
-        return "admin/products/product_discounts";
-    }
+//    @GetMapping("/admin/discounts")
+//    public String dc(){
+//        return "admin/products/discounts";
+//    }
+//
+//    @GetMapping("/admin/product_discounts")
+//    public String pdc(){
+//        return "admin/products/product_discounts";
+//    }
 }

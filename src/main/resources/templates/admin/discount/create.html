@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tạo chương trình giảm giá mới</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h4><i class="fas fa-plus me-2"></i>Tạo chương trình giảm giá mới</h4>
+        </div>
+        <div class="card-body">
+          <div th:if="${error}" class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+          </div>
+
+          <form th:action="@{/admin/discounts/create}" th:object="${discountDTO}" method="post">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Tên chương trình <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" th:field="*{name}"
+                         th:class="${#fields.hasErrors('name')} ? 'form-control is-invalid' : 'form-control'">
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Loại chương trình <span class="text-danger">*</span></label>
+                  <select class="form-select" th:field="*{type}"
+                          th:class="${#fields.hasErrors('type')} ? 'form-select is-invalid' : 'form-select'">
+                    <option value="">-- Chọn loại --</option>
+                    <!-- Loại giảm giá -->
+<!--                    <option th:each="type : ${discountTypes}"-->
+<!--                            th:value="${type}"-->
+<!--                            th:text="${type == T(com.example.da_tmdt_thoitrang.enums.DiscountType).PRODUCT ? 'Sản phẩm' :-->
+<!--                 (type == T(com.example.da_tmdt_thoitrang.enums.DiscountType).CATEGORY ? 'Danh mục' : 'Thương hiệu')}">-->
+<!--                    </option>-->
+
+                    <option th:each="type : ${discountTypes}"
+                            th:value="${type.name()}"
+                            th:selected="${discountDTO.type != null and discountDTO.type.name() == type.name()}"
+                            th:text="${type.name() == 'PRODUCT' ? 'Sản phẩm' :
+                 (type.name() == 'CATEGORY' ? 'Danh mục' : 'Thương hiệu')}">
+                    </option>
+
+
+
+
+
+                  </select>
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Mô tả</label>
+              <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Giá trị giảm <span class="text-danger">*</span></label>
+                  <input type="number" step="0.01" class="form-control" th:field="*{value}"
+                         th:class="${#fields.hasErrors('value')} ? 'form-control is-invalid' : 'form-control'">
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('value')}" th:errors="*{value}"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Kiểu giá trị <span class="text-danger">*</span></label>
+                  <select class="form-select" th:field="*{valueType}"
+                          th:class="${#fields.hasErrors('valueType')} ? 'form-select is-invalid' : 'form-select'">
+                    <option value="">-- Chọn kiểu --</option>
+                    <!-- Giá trị giảm -->
+<!--                    <option th:each="valueType : ${valueTypes}"-->
+<!--                            th:value="${valueType}"-->
+<!--                            th:text="${valueType == T(com.example.da_tmdt_thoitrang.enums.ValueType).PERCENTAGE ? 'Phần trăm (%)' : 'Số tiền cố định (đ)'}">-->
+<!--                    </option>-->
+
+                    <option th:each="valueType : ${valueTypes}"
+                            th:value="${valueType.name()}"
+                            th:selected="${#strings.equals(discountDTO.valueType?.name(), valueType.name())}"
+                            th:text="${valueType.name() == 'PERCENTAGE' ? 'Phần trăm (%)' : 'Số tiền cố định (đ)'}">
+                    </option>
+
+
+
+
+                  </select>
+                  <div class="invalid-feedback" th:if="${#fields.hasErrors('valueType')}" th:errors="*{valueType}"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Ngày bắt đầu</label>
+                  <input type="datetime-local" class="form-control" th:field="*{startDate}">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Ngày kết thúc</label>
+                  <input type="datetime-local" class="form-control" th:field="*{endDate}">
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" th:field="*{isActive}" id="isActive">
+                <label class="form-check-label" for="isActive">
+                  Kích hoạt ngay
+                </label>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a th:href="@{/admin/discounts}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Quay lại
+              </a>
+
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Tạo chương trình
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

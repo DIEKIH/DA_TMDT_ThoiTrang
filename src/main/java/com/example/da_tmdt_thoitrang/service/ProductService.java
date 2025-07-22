@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,14 +24,35 @@ public class ProductService {
     @Autowired
     private ProductImageRepository productImageRepository;
 
+
+
+    // Lấy tất cả sản phẩm active
+//    public List<ProductEntity> getAllActiveProducts() {
+//        return productRepository.findByIsActiveTrue();
+//    }
+
+    public List<ProductEntity> getAllActiveProducts() {
+        return productRepository.findByIsActiveTrue();
+    }
+
+    public ProductEntity getProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+    }
+
+    // Lấy sản phẩm theo ID
+//    public Optional<ProductEntity> getProductById(Long id) {
+//        return productRepository.findById(id);
+//    }
+
     public List<ProductEntity> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public ProductEntity getProductById(Long id) {
-        Optional<ProductEntity> product = productRepository.findById(id);
-        return product.orElse(null);
-    }
+//    public ProductEntity getProductById(Long id) {
+//        Optional<ProductEntity> product = productRepository.findById(id);
+//        return product.orElse(null);
+//    }
 
     public ProductEntity saveProduct(ProductEntity product) {
         return productRepository.save(product);

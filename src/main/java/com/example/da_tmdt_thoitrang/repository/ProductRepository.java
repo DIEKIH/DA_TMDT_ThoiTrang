@@ -147,4 +147,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findTopRatedProducts(Pageable pageable);
 
 
+    List<ProductEntity> findTop5ByNameContainingIgnoreCaseAndIsActiveTrue(String name);
+
+
+
+
+
+
 }

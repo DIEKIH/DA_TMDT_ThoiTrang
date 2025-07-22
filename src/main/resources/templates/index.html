@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="/css/navbar_client.css">
     <link rel="stylesheet" href="/css/quickview.css">
     <style>
+
+
         .product-card {
             overflow: hidden;
             position: relative;
@@ -475,7 +477,50 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Modal event listeners
+        document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("searchInput");
+        const suggestionsBox = document.getElementById("suggestions");
+
+        input.addEventListener("input", function () {
+        const keyword = input.value.trim();
+        if (keyword.length < 2) {
+        suggestionsBox.style.display = "none";
+        return;
+    }
+
+        fetch(`/api/suggest?q=${encodeURIComponent(keyword)}`)
+        .then(res => res.json())
+        .then(data => {
+        suggestionsBox.innerHTML = "";
+        if (data.length > 0) {
+        data.forEach(name => {
+        const item = document.createElement("li");
+        item.className = "list-group-item list-group-item-action";
+        item.textContent = name;
+        item.addEventListener("click", function () {
+        input.value = name;
+        suggestionsBox.style.display = "none";
+        input.form.submit(); // tự động submit form
+    });
+        suggestionsBox.appendChild(item);
+    });
+        suggestionsBox.style.display = "block";
+    } else {
+        suggestionsBox.style.display = "none";
+    }
+    });
+    });
+
+        // Ẩn gợi ý khi click ra ngoài
+        document.addEventListener("click", function (e) {
+        if (!suggestionsBox.contains(e.target) && e.target !== input) {
+        suggestionsBox.style.display = "none";
+    }
+    });
+    });
+
+
+// Modal event listeners
     document.getElementById('productQuickView').addEventListener('shown.bs.modal', function () {
         console.log('Quick view modal opened');
     });

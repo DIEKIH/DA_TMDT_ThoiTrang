@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${discount.id != null ? 'Chỉnh sửa chương trình giảm giá' : 'Tạo chương trình giảm giá mới'}">Chương trình giảm giá</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 th:text="${discount.id != null ? 'Chỉnh sửa chương trình giảm giá' : 'Tạo chương trình giảm giá mới'}">Chỉnh sửa</h3>
+                </div>
+                <div class="card-body">
+                    <form id="discountForm">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tên chương trình <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   th:value="${discount.name}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="description" name="description"
+                                      rows="3" th:text="${discount.description}"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" id="typeProduct" value="PRODUCT"
+                                           th:checked="${discount.type == 'PRODUCT'}">
+                                    <label class="form-check-label" for="typeProduct">Sản phẩm</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" id="typeCategory" value="CATEGORY"
+                                           th:checked="${discount.type == 'CATEGORY'}">
+                                    <label class="form-check-label" for="typeCategory">Danh mục</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="type" id="typeBrand" value="BRAND"
+                                           th:checked="${discount.type == 'BRAND'}">
+                                    <label class="form-check-label" for="typeBrand">Thương hiệu</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="value" class="form-label">Giá trị giảm <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="value" name="value"
+                                           step="0.01" min="0" th:value="${discount.value}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="valueType" class="form-label">Kiểu giảm <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="valueType" name="valueType" required>
+                                        <option value="PERCENTAGE" th:selected="${discount.valueType == 'PERCENTAGE'}">Phần trăm (%)</option>
+                                        <option value="FIXED_AMOUNT" th:selected="${discount.valueType == 'FIXED_AMOUNT'}">Số tiền cố định</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                    <input type="datetime-local" class="form-control" id="startDate" name="startDate"
+                                           th:value="${discount.startDate != null ? #temporals.format(discount.startDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                    <input type="datetime-local" class="form-control" id="endDate" name="endDate"
+                                           th:value="${discount.endDate != null ? #temporals.format(discount.endDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input class="form-check-input" type="checkbox" id="isActive" name="isActive"
+                                   th:checked="${discount.isActive}">
+                            <label class="form-check-label" for="isActive">Kích hoạt chương trình</label>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/admin/discounts" class="btn btn-secondary">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>
+                                <span th:text="${discount.id != null ? 'Cập nhật' : 'Tạo mới'}">Lưu</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    const discountId = /*[[${discount.id}]]*/ null;
+
+    document.getElementById('discountForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const data = {};
+
+        formData.forEach((value, key) => {
+            if (key === 'isActive') {
+                data[key] = document.getElementById('isActive').checked;
+            } else if (key === 'value') {
+                data[key] = parseFloat(value);
+            } else if (key === 'startDate' || key === 'endDate') {
+                data[key] = value ? new Date(value).toISOString() : null;
+            } else {
+                data[key] = value;
+            }
+        });
+
+        const method = discountId ? 'PUT' : 'POST';
+        const url = discountId ? `/admin/discounts/${discountId}` : '/admin/discounts';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Lưu thành công!');
+                    window.location.href = '/admin/discounts';
+                } else {
+                    response.text().then(text => {
+                        alert('Lỗi khi lưu: ' + text);
+                    });
+                }
+            })
+            .catch(error => {
+                alert('Lỗi kết nối đến máy chủ.');
+                console.error(error);
+            });
+    });
+</script>
+</body>
+</html>

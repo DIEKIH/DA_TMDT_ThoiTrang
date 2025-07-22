@@ -37,7 +37,7 @@
                 <!-- Filters -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <form th:action="@{/admin/discounts}" method="get" class="row g-3">
+                        <form th:action="@{discounts}" method="get" class="row g-3">
                             <div class="col-md-3">
                                 <input type="text" name="search" class="form-control" placeholder="Tìm kiếm..." th:value="${search}">
                             </div>
@@ -162,7 +162,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="discountForm" th:action="@{/admin/discounts/save}" method="post">
+                    <form id="discountForm" th:action="@{discounts}" method="post">
                         <input type="hidden" id="discountId" name="id">
                         <div class="mb-3">
                             <label class="form-label">Tên chương trình</label>

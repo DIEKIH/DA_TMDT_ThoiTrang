@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm trong chương trình giảm giá</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{discounts}">Chương trình giảm giá</a></li>
+                    <li class="breadcrumb-item active">Quản lý sản phẩm</li>
+                </ol>
+            </nav>
+            <h2>
+                <i class="bi bi-box-seam text-info me-2"></i>
+                Quản lý sản phẩm - <span th:text="${discount.name}" class="text-primary"></span>
+            </h2>
+            <p class="text-muted" th:text="${discount.description}"></p>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="row">
+        <!-- Danh sách sản phẩm đã thêm -->
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Sản phẩm trong chương trình (<span th:text="${#lists.size(discountProducts)}"></span>)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(discountProducts)}" class="text-center py-4 text-muted">
+                        <i class="bi bi-inbox display-4"></i>
+                        <p class="mt-2">Chưa có sản phẩm nào trong chương trình</p>
+                    </div>
+
+                    <div th:unless="${#lists.isEmpty(discountProducts)}" class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Giá gốc</th>
+                                <th>Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="dp : ${discountProducts}">
+                                <td th:text="${dp.product?.id}"></td>
+                                <td>
+                                    <strong th:text="${dp.product?.name}"></strong>
+                                    <br><small class="text-muted">SKU: <span th:text="${dp.product?.sku}"></span></small>
+                                </td>
+                                <td class="text-end">
+                                    <span th:text="${#numbers.formatCurrency(dp.product?.price)}" class="fw-bold"></span>
+                                </td>
+                                <td>
+                                    <form th:action="@{discounts(discountId=${discount.id},productId=${dp.productId})}"
+                                          method="post" class="d-inline"
+                                          onsubmit="return confirm('Xóa sản phẩm khỏi chương trình?')">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danh sách tất cả sản phẩm -->
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        Thêm sản phẩm vào chương trình
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Search Box -->
+                    <div class="mb-3">
+                        <input type="text" id="productSearch" class="form-control"
+                               placeholder="Tìm kiếm sản phẩm...">
+                    </div>
+
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <div th:each="product : ${allProducts}" class="border-bottom pb-2 mb-2 product-item">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <strong th:text="${product.name}" class="product-name"></strong>
+                                    <br><small class="text-muted">
+                                    SKU: <span th:text="${product.sku}"></span> |
+                                    Giá: <span th:text="${#numbers.formatCurrency(product.price)}"></span>
+                                </small>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <!-- Check if product is already in discount -->
+<!--                                    <div th:if="${#lists.contains(discountProducts.![productId], product.id)}">-->
+                                    <div th:if="${#lists.contains(discountProductIds, product.id)}">
+
+                                    <span class="badge bg-success">Đã thêm</span>
+                                    </div>
+<!--                                    <div th:unless="${#lists.contains(discountProducts.![productId], product.id)}">-->
+                                    <div th:if="${#lists.contains(discountProductIds, product.id)}">
+
+                                    <form th:action="@{discounts(discountId=${discount.id},productId=${product.id})}"
+                                              method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row mt-4">
+        <div class="col">
+            <a th:href="@{discounts}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại danh sách chương trình
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Simple product search
+    document.getElementById('productSearch').addEventListener('input', function() {
+        const searchValue = this.value.toLowerCase();
+        const productItems = document.querySelectorAll('.product-item');
+
+        productItems.forEach(function(item) {
+            const productName = item.querySelector('.product-name').textContent.toLowerCase();
+            if (productName.includes(searchValue)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+</script>
+</body>
+</html>

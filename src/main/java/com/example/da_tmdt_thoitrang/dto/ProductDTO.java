@@ -22,6 +22,9 @@ public class ProductDTO {
     private BigDecimal price;
     private String sku;
     private Boolean isActive;
+    private BigDecimal discountedPrice;
+    private BigDecimal discountValue;
+    private String discountType;
     private Long categoryId;
     private String categoryName;
     private Long brandId;

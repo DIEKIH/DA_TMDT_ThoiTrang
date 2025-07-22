@@ -1,4 +1,6 @@
 package com.example.da_tmdt_thoitrang.entity;
+import com.example.da_tmdt_thoitrang.enums.DiscountType;
+import com.example.da_tmdt_thoitrang.enums.ValueType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
@@ -35,18 +37,22 @@ public class DiscountEntity {
     @Enumerated(EnumType.STRING)
     private DiscountType type;
 
-    public enum DiscountType {
-        PRODUCT,
-        CATEGORY,
-        BRAND
-    }
+//    public enum DiscountType {
+//        PRODUCT,
+//        CATEGORY,
+//        BRAND
+//    }
 
-    @Column(precision = 5, scale = 2, nullable = false)
+    @Column(precision = 10, scale = 2, nullable = false)
     @Min(value = 0, message = "Discount value must be positive")
     private BigDecimal value;
 
+    @Column(name = "start_date")
     private LocalDateTime startDate;
+
+    @Column(name = "end_date")
     private LocalDateTime endDate;
+
 
     @Column(nullable = false)
     private Boolean isActive = true;
@@ -68,12 +74,22 @@ public class DiscountEntity {
 //    public void deactivate() { this.isActive = false; }
 //
     @Enumerated(EnumType.STRING)
-    private ValueType valueType = ValueType.PERCENTAGE;
+    private ValueType valueType;
+//= ValueType.PERCENTAGE;
+//    public enum ValueType {
+//        PERCENTAGE, // giảm theo %
+//        FIXED_AMOUNT // giảm số tiền cố định
+//    }
 
-    public enum ValueType {
-        PERCENTAGE, // giảm theo %
-        FIXED_AMOUNT // giảm số tiền cố định
+    @Override
+    public String toString() {
+        return "DiscountEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
+
+
 
     // Other getters and setters...
 }
