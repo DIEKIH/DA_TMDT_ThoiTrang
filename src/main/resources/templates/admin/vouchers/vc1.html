@@ -1,0 +1,666 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="vi">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Quản lý voucher - Admin Dashboard</title>-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet" th:href="@{/css/admin_nav.css}">-->
+<!--    <style>-->
+<!--        .main-content {-->
+<!--            margin-left: 260px;-->
+<!--            padding: 20px;-->
+<!--            transition: all 0.3s;-->
+<!--        }-->
+
+<!--        @media (max-width: 768px) {-->
+<!--            .main-content {-->
+<!--                margin-left: 0;-->
+<!--                padding: 15px;-->
+<!--            }-->
+<!--        }-->
+
+<!--        .card {-->
+<!--            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);-->
+<!--            border: 1px solid rgba(0, 0, 0, 0.125);-->
+<!--        }-->
+
+<!--        .voucher-card {-->
+<!--            border-left: 4px solid #007bff;-->
+<!--            transition: transform 0.2s;-->
+<!--        }-->
+
+<!--        .voucher-card:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);-->
+<!--        }-->
+
+<!--        .badge-custom {-->
+<!--            font-size: 0.75em;-->
+<!--            padding: 0.5em 0.75em;-->
+<!--        }-->
+
+<!--        .table-actions {-->
+<!--            width: 120px;-->
+<!--        }-->
+
+<!--        .btn-sm {-->
+<!--            padding: 0.25rem 0.5rem;-->
+<!--            font-size: 0.875rem;-->
+<!--        }-->
+
+<!--        .modal-dialog {-->
+<!--            max-width: 600px;-->
+<!--        }-->
+
+<!--        .form-label {-->
+<!--            font-weight: 500;-->
+<!--            margin-bottom: 0.5rem;-->
+<!--        }-->
+
+<!--        .status-active {-->
+<!--            color: #198754;-->
+<!--        }-->
+
+<!--        .status-inactive {-->
+<!--            color: #dc3545;-->
+<!--        }-->
+
+<!--        .voucher-type-percentage {-->
+<!--            background-color: #e3f2fd;-->
+<!--            color: #1976d2;-->
+<!--        }-->
+
+<!--        .voucher-type-fixed {-->
+<!--            background-color: #f3e5f5;-->
+<!--            color: #7b1fa2;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; Sidebar &ndash;&gt;-->
+<!--<div th:replace="fragments/admin_sidebar :: admin_sidebar"></div>-->
+
+<!--&lt;!&ndash; Overlay for mobile &ndash;&gt;-->
+<!--<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>-->
+<!--&lt;!&ndash; Main Content &ndash;&gt;-->
+
+<!--<div class="main-content" id="mainContent">-->
+<!--    <div th:replace="fragments/admin_navbar :: admin_navbar"></div>-->
+
+<!--    &lt;!&ndash; Dashboard Content &ndash;&gt;-->
+<!--    <div class="container-fluid">-->
+<!--        &lt;!&ndash; Page Header &ndash;&gt;-->
+<!--        <div class="row mb-4">-->
+<!--            <div class="col-12">-->
+<!--                <div class="d-flex justify-content-between align-items-center">-->
+<!--                    <div>-->
+<!--                        <h2 class="mb-1">-->
+<!--                            <i class="fas fa-ticket-alt me-2"></i>Quản lý Voucher-->
+<!--                        </h2>-->
+<!--                        <p class="text-muted mb-0">Quản lý mã giảm giá và khuyến mãi</p>-->
+<!--                    </div>-->
+<!--                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#voucherModal">-->
+<!--                        <i class="fas fa-plus me-2"></i>Thêm Voucher-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Statistics Cards &ndash;&gt;-->
+<!--        <div class="row mb-4">-->
+<!--            <div class="col-xl-3 col-md-6 mb-3">-->
+<!--                <div class="card voucher-card">-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="d-flex justify-content-between align-items-center">-->
+<!--                            <div>-->
+<!--                                <h6 class="card-title text-muted mb-1">Tổng Voucher</h6>-->
+<!--                                <h3 class="mb-0">24</h3>-->
+<!--                            </div>-->
+<!--                            <div class="text-primary">-->
+<!--                                <i class="fas fa-ticket-alt fa-2x"></i>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-xl-3 col-md-6 mb-3">-->
+<!--                <div class="card voucher-card">-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="d-flex justify-content-between align-items-center">-->
+<!--                            <div>-->
+<!--                                <h6 class="card-title text-muted mb-1">Đang Hoạt Động</h6>-->
+<!--                                <h3 class="text-success mb-0">18</h3>-->
+<!--                            </div>-->
+<!--                            <div class="text-success">-->
+<!--                                <i class="fas fa-check-circle fa-2x"></i>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-xl-3 col-md-6 mb-3">-->
+<!--                <div class="card voucher-card">-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="d-flex justify-content-between align-items-center">-->
+<!--                            <div>-->
+<!--                                <h6 class="card-title text-muted mb-1">Đã Hết Hạn</h6>-->
+<!--                                <h3 class="text-warning mb-0">4</h3>-->
+<!--                            </div>-->
+<!--                            <div class="text-warning">-->
+<!--                                <i class="fas fa-clock fa-2x"></i>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-xl-3 col-md-6 mb-3">-->
+<!--                <div class="card voucher-card">-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="d-flex justify-content-between align-items-center">-->
+<!--                            <div>-->
+<!--                                <h6 class="card-title text-muted mb-1">Đã Tạm Dừng</h6>-->
+<!--                                <h3 class="text-danger mb-0">2</h3>-->
+<!--                            </div>-->
+<!--                            <div class="text-danger">-->
+<!--                                <i class="fas fa-pause-circle fa-2x"></i>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Filter and Search &ndash;&gt;-->
+<!--        <div class="row mb-4">-->
+<!--            <div class="col-12">-->
+<!--                <div class="card">-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="row g-3">-->
+<!--                            <div class="col-md-4">-->
+<!--                                <label class="form-label">Tìm kiếm</label>-->
+<!--                                <input type="text" class="form-control" placeholder="Tìm theo mã hoặc tên voucher...">-->
+<!--                            </div>-->
+<!--                            <div class="col-md-3">-->
+<!--                                <label class="form-label">Loại Voucher</label>-->
+<!--                                <select class="form-select">-->
+<!--                                    <option value="">Tất cả loại</option>-->
+<!--                                    <option value="PERCENTAGE">Phần trăm</option>-->
+<!--                                    <option value="FIXED_AMOUNT">Số tiền cố định</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-3">-->
+<!--                                <label class="form-label">Trạng thái</label>-->
+<!--                                <select class="form-select">-->
+<!--                                    <option value="">Tất cả trạng thái</option>-->
+<!--                                    <option value="active">Đang hoạt động</option>-->
+<!--                                    <option value="inactive">Tạm dừng</option>-->
+<!--                                    <option value="expired">Hết hạn</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 d-flex align-items-end">-->
+<!--                                <button type="button" class="btn btn-outline-primary w-100">-->
+<!--                                    <i class="fas fa-search me-1"></i>Tìm kiếm-->
+<!--                                </button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Voucher Table &ndash;&gt;-->
+<!--        <div class="row">-->
+<!--            <div class="col-12">-->
+<!--                <div class="card">-->
+<!--                    <div class="card-header">-->
+<!--                        <h5 class="card-title mb-0">Danh sách Voucher</h5>-->
+<!--                    </div>-->
+<!--                    <div class="card-body p-0">-->
+<!--                        <div class="table-responsive">-->
+<!--                            <table class="table table-hover mb-0">-->
+<!--                                <thead class="table-light">-->
+<!--                                <tr>-->
+<!--                                    <th>Mã Voucher</th>-->
+<!--                                    <th>Tên</th>-->
+<!--                                    <th>Loại</th>-->
+<!--                                    <th>Giá trị</th>-->
+<!--                                    <th>Đơn tối thiểu</th>-->
+<!--                                    <th>Giới hạn sử dụng</th>-->
+<!--                                    <th>Đã sử dụng</th>-->
+<!--                                    <th>Thời gian</th>-->
+<!--                                    <th>Trạng thái</th>-->
+<!--                                    <th class="table-actions">Thao tác</th>-->
+<!--                                </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                &lt;!&ndash; Sample Data &ndash;&gt;-->
+<!--                                <tr>-->
+<!--                                    <td><strong>SUMMER2024</strong></td>-->
+<!--                                    <td>Giảm giá mùa hè</td>-->
+<!--                                    <td>-->
+<!--                                            <span class="badge voucher-type-percentage badge-custom">-->
+<!--                                                <i class="fas fa-percentage me-1"></i>Phần trăm-->
+<!--                                            </span>-->
+<!--                                    </td>-->
+<!--                                    <td>20%</td>-->
+<!--                                    <td>500,000đ</td>-->
+<!--                                    <td>100</td>-->
+<!--                                    <td>45</td>-->
+<!--                                    <td>-->
+<!--                                        <small class="text-muted">-->
+<!--                                            01/06 - 31/08<br>-->
+<!--                                            2024-->
+<!--                                        </small>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                            <span class="badge bg-success badge-custom">-->
+<!--                                                <i class="fas fa-check-circle me-1"></i>Hoạt động-->
+<!--                                            </span>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div class="btn-group btn-group-sm">-->
+<!--                                            <button type="button" class="btn btn-outline-primary" title="Chỉnh sửa" onclick="editVoucher(1)">-->
+<!--                                                <i class="fas fa-edit"></i>-->
+<!--                                            </button>-->
+<!--                                            <button type="button" class="btn btn-outline-warning" title="Tạm dừng" onclick="toggleVoucher(1)">-->
+<!--                                                <i class="fas fa-pause"></i>-->
+<!--                                            </button>-->
+<!--                                            <button type="button" class="btn btn-outline-danger" title="Xóa" onclick="deleteVoucher(1)">-->
+<!--                                                <i class="fas fa-trash"></i>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td><strong>NEWUSER50</strong></td>-->
+<!--                                    <td>Ưu đãi khách hàng mới</td>-->
+<!--                                    <td>-->
+<!--                                            <span class="badge voucher-type-fixed badge-custom">-->
+<!--                                                <i class="fas fa-dollar-sign me-1"></i>Cố định-->
+<!--                                            </span>-->
+<!--                                    </td>-->
+<!--                                    <td>50,000đ</td>-->
+<!--                                    <td>200,000đ</td>-->
+<!--                                    <td>500</td>-->
+<!--                                    <td>234</td>-->
+<!--                                    <td>-->
+<!--                                        <small class="text-muted">-->
+<!--                                            01/01 - 31/12<br>-->
+<!--                                            2024-->
+<!--                                        </small>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                            <span class="badge bg-success badge-custom">-->
+<!--                                                <i class="fas fa-check-circle me-1"></i>Hoạt động-->
+<!--                                            </span>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div class="btn-group btn-group-sm">-->
+<!--                                            <button type="button" class="btn btn-outline-primary" title="Chỉnh sửa" onclick="editVoucher(2)">-->
+<!--                                                <i class="fas fa-edit"></i>-->
+<!--                                            </button>-->
+<!--                                            <button type="button" class="btn btn-outline-warning" title="Tạm dừng" onclick="toggleVoucher(2)">-->
+<!--                                                <i class="fas fa-pause"></i>-->
+<!--                                            </button>-->
+<!--                                            <button type="button" class="btn btn-outline-danger" title="Xóa" onclick="deleteVoucher(2)">-->
+<!--                                                <i class="fas fa-trash"></i>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td><strong>WINTER20</strong></td>-->
+<!--                                    <td>Khuyến mãi mùa đông</td>-->
+<!--                                    <td>-->
+<!--                                            <span class="badge voucher-type-percentage badge-custom">-->
+<!--                                                <i class="fas fa-percentage me-1"></i>Phần trăm-->
+<!--                                            </span>-->
+<!--                                    </td>-->
+<!--                                    <td>15%</td>-->
+<!--                                    <td>300,000đ</td>-->
+<!--                                    <td>200</td>-->
+<!--                                    <td>180</td>-->
+<!--                                    <td>-->
+<!--                                        <small class="text-muted">-->
+<!--                                            01/12 - 28/02<br>-->
+<!--                                            2024-->
+<!--                                        </small>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                            <span class="badge bg-danger badge-custom">-->
+<!--                                                <i class="fas fa-pause-circle me-1"></i>Tạm dừng-->
+<!--                                            </span>-->
+<!--                                    </td>-->
+<!--                                    <td>-->
+<!--                                        <div class="btn-group btn-group-sm">-->
+<!--                                            <button type="button" class="btn btn-outline-primary" title="Chỉnh sửa" onclick="editVoucher(3)">-->
+<!--                                                <i class="fas fa-edit"></i>-->
+<!--                                            </button>-->
+<!--                                            <button type="button" class="btn btn-outline-success" title="Kích hoạt" onclick="toggleVoucher(3)">-->
+<!--                                                <i class="fas fa-play"></i>-->
+<!--                                            </button>-->
+<!--                                            <button type="button" class="btn btn-outline-danger" title="Xóa" onclick="deleteVoucher(3)">-->
+<!--                                                <i class="fas fa-trash"></i>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="card-footer">-->
+<!--                        <nav aria-label="Voucher pagination">-->
+<!--                            <ul class="pagination pagination-sm mb-0 justify-content-end">-->
+<!--                                <li class="page-item disabled">-->
+<!--                                    <a class="page-link" href="#" tabindex="-1">Trước</a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item active">-->
+<!--                                    <a class="page-link" href="#">1</a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item">-->
+<!--                                    <a class="page-link" href="#">2</a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item">-->
+<!--                                    <a class="page-link" href="#">3</a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item">-->
+<!--                                    <a class="page-link" href="#">Sau</a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </nav>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Add/Edit Voucher Modal &ndash;&gt;-->
+<!--<div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-lg">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title" id="voucherModalLabel">-->
+<!--                    <i class="fas fa-plus-circle me-2"></i>Thêm Voucher Mới-->
+<!--                </h5>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <form id="voucherForm">-->
+<!--                <div class="modal-body">-->
+<!--                    <div class="row g-3">-->
+<!--                        &lt;!&ndash; Mã voucher &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="voucherCode" class="form-label">-->
+<!--                                <i class="fas fa-tag me-1"></i>Mã Voucher <span class="text-danger">*</span>-->
+<!--                            </label>-->
+<!--                            <input type="text" class="form-control" id="voucherCode" name="code" required-->
+<!--                                   placeholder="VD: SUMMER2024" maxlength="20">-->
+<!--                            <div class="form-text">Mã duy nhất, tối đa 20 ký tự</div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Tên voucher &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="voucherName" class="form-label">-->
+<!--                                <i class="fas fa-file-alt me-1"></i>Tên Voucher <span class="text-danger">*</span>-->
+<!--                            </label>-->
+<!--                            <input type="text" class="form-control" id="voucherName" name="name" required-->
+<!--                                   placeholder="VD: Giảm giá mùa hè">-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Mô tả &ndash;&gt;-->
+<!--                        <div class="col-12">-->
+<!--                            <label for="voucherDescription" class="form-label">-->
+<!--                                <i class="fas fa-align-left me-1"></i>Mô tả-->
+<!--                            </label>-->
+<!--                            <textarea class="form-control" id="voucherDescription" name="description" rows="2"-->
+<!--                                      placeholder="Mô tả chi tiết về voucher..."></textarea>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Loại voucher &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="voucherType" class="form-label">-->
+<!--                                <i class="fas fa-list me-1"></i>Loại Voucher <span class="text-danger">*</span>-->
+<!--                            </label>-->
+<!--                            <select class="form-select" id="voucherType" name="type" required onchange="toggleValueInput()">-->
+<!--                                <option value="">Chọn loại voucher</option>-->
+<!--                                <option value="PERCENTAGE">Giảm theo phần trăm (%)</option>-->
+<!--                                <option value="FIXED_AMOUNT">Giảm số tiền cố định (VNĐ)</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Giá trị &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="voucherValue" class="form-label">-->
+<!--                                <i class="fas fa-calculator me-1"></i>Giá trị <span class="text-danger">*</span>-->
+<!--                            </label>-->
+<!--                            <div class="input-group">-->
+<!--                                <input type="number" class="form-control" id="voucherValue" name="value" required-->
+<!--                                       min="0" step="0.01" placeholder="0">-->
+<!--                                <span class="input-group-text" id="valueUnit">%</span>-->
+<!--                            </div>-->
+<!--                            <div class="form-text" id="valueHint">Nhập giá trị giảm giá</div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Đơn hàng tối thiểu &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="minOrderAmount" class="form-label">-->
+<!--                                <i class="fas fa-shopping-cart me-1"></i>Đơn hàng tối thiểu-->
+<!--                            </label>-->
+<!--                            <div class="input-group">-->
+<!--                                <input type="number" class="form-control" id="minOrderAmount" name="minOrderAmount"-->
+<!--                                       min="0" step="1000" placeholder="0">-->
+<!--                                <span class="input-group-text">VNĐ</span>-->
+<!--                            </div>-->
+<!--                            <div class="form-text">Giá trị đơn hàng tối thiểu để áp dụng</div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Giảm tối đa &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="maxDiscountAmount" class="form-label">-->
+<!--                                <i class="fas fa-limit me-1"></i>Giảm tối đa-->
+<!--                            </label>-->
+<!--                            <div class="input-group">-->
+<!--                                <input type="number" class="form-control" id="maxDiscountAmount" name="maxDiscountAmount"-->
+<!--                                       min="0" step="1000" placeholder="0">-->
+<!--                                <span class="input-group-text">VNĐ</span>-->
+<!--                            </div>-->
+<!--                            <div class="form-text">Số tiền giảm tối đa (cho voucher %)</div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Giới hạn sử dụng &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="usageLimit" class="form-label">-->
+<!--                                <i class="fas fa-users me-1"></i>Giới hạn sử dụng-->
+<!--                            </label>-->
+<!--                            <input type="number" class="form-control" id="usageLimit" name="usageLimit"-->
+<!--                                   min="1" placeholder="100">-->
+<!--                            <div class="form-text">Số lượng người có thể sử dụng</div>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Ngày bắt đầu &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="startDate" class="form-label">-->
+<!--                                <i class="fas fa-calendar-alt me-1"></i>Ngày bắt đầu <span class="text-danger">*</span>-->
+<!--                            </label>-->
+<!--                            <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Ngày kết thúc &ndash;&gt;-->
+<!--                        <div class="col-md-6">-->
+<!--                            <label for="endDate" class="form-label">-->
+<!--                                <i class="fas fa-calendar-times me-1"></i>Ngày kết thúc <span class="text-danger">*</span>-->
+<!--                            </label>-->
+<!--                            <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>-->
+<!--                        </div>-->
+
+<!--                        &lt;!&ndash; Trạng thái &ndash;&gt;-->
+<!--                        <div class="col-12">-->
+<!--                            <div class="form-check form-switch">-->
+<!--                                <input class="form-check-input" type="checkbox" id="isActive" name="isActive" checked>-->
+<!--                                <label class="form-check-label" for="isActive">-->
+<!--                                    <i class="fas fa-toggle-on me-1"></i>Kích hoạt voucher ngay-->
+<!--                                </label>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">-->
+<!--                        <i class="fas fa-times me-1"></i>Hủy-->
+<!--                    </button>-->
+<!--                    <button type="submit" class="btn btn-primary">-->
+<!--                        <i class="fas fa-save me-1"></i>Lưu Voucher-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Delete Confirmation Modal &ndash;&gt;-->
+<!--<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title text-danger" id="deleteModalLabel">-->
+<!--                    <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa-->
+<!--                </h5>-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <p>Bạn có chắc chắn muốn xóa voucher <strong id="deleteVoucherName"></strong>?</p>-->
+<!--                <p class="text-muted mb-0">-->
+<!--                    <i class="fas fa-info-circle me-1"></i>-->
+<!--                    Hành động này không thể hoàn tác!-->
+<!--                </p>-->
+<!--            </div>-->
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>-->
+<!--                <button type="button" class="btn btn-danger" id="confirmDelete">-->
+<!--                    <i class="fas fa-trash me-1"></i>Xóa-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>-->
+<!--<script>-->
+<!--    let currentVoucherId = null;-->
+<!--    let isEditMode = false;-->
+
+<!--    // Toggle value input based on voucher type-->
+<!--    function toggleValueInput() {-->
+<!--        const type = document.getElementById('voucherType').value;-->
+<!--        const valueUnit = document.getElementById('valueUnit');-->
+<!--        const valueHint = document.getElementById('valueHint');-->
+<!--        const maxDiscountField = document.getElementById('maxDiscountAmount').closest('.col-md-6');-->
+
+<!--        if (type === 'PERCENTAGE') {-->
+<!--            valueUnit.textContent = '%';-->
+<!--            valueHint.textContent = 'Nhập phần trăm giảm giá (0-100)';-->
+<!--            maxDiscountField.style.display = 'block';-->
+<!--        } else if (type === 'FIXED_AMOUNT') {-->
+<!--            valueUnit.textContent = 'VNĐ';-->
+<!--            valueHint.textContent = 'Nhập số tiền giảm cố định';-->
+<!--            maxDiscountField.style.display = 'none';-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Edit voucher-->
+<!--    function editVoucher(id) {-->
+<!--        isEditMode = true;-->
+<!--        currentVoucherId = id;-->
+
+<!--        // Update modal title-->
+<!--        document.getElementById('voucherModalLabel').innerHTML =-->
+<!--            '<i class="fas fa-edit me-2"></i>Chỉnh sửa Voucher';-->
+
+<!--        // Simulate loading voucher data (replace with actual API call)-->
+<!--        const sampleData = {-->
+<!--            code: 'SUMMER2024',-->
+<!--            name: 'Giảm giá mùa hè',-->
+<!--            description: 'Khuyến mãi đặc biệt dành cho mùa hè',-->
+<!--            type: 'PERCENTAGE',-->
+<!--            value: 20,-->
+<!--            minOrderAmount: 500000,-->
+<!--            maxDiscountAmount: 100000,-->
+<!--            usageLimit: 100,-->
+<!--            startDate: '2024-06-01T00:00',-->
+<!--            endDate: '2024-08-31T23:59',-->
+<!--            isActive: true-->
+<!--        };-->
+
+<!--        // Fill form with data-->
+<!--        Object.keys(sampleData).forEach(key => {-->
+<!--            const element = document.querySelector(`[name="${key}"]`);-->
+<!--            if (element) {-->
+<!--                if (element.type === 'checkbox') {-->
+<!--                    element.checked = sampleData[key];-->
+<!--                } else {-->
+<!--                    element.value = sampleData[key];-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+
+<!--        toggleValueInput();-->
+
+<!--        // Show modal-->
+<!--        new bootstrap.Modal(document.getElementById('voucherModal')).show();-->
+<!--    }-->
+
+<!--    // Toggle voucher status-->
+<!--    function toggleVoucher(id) {-->
+<!--        // Simulate API call-->
+<!--        console.log('Toggling voucher status for ID:', id);-->
+<!--        // Show success message or update UI-->
+<!--        alert('Trạng thái voucher đã được cập nhật!');-->
+<!--    }-->
+
+<!--    // Delete voucher-->
+<!--    function deleteVoucher(id) {-->
+<!--        currentVoucherId = id;-->
+<!--        document.getElementById('deleteVoucherName').textContent = 'SUMMER2024'; // Replace with actual name-->
+<!--        new bootstrap.Modal(document.getElementById('deleteModal')).show();-->
+<!--    }-->
+
+<!--    // Confirm delete-->
+<!--    document.getElementById('confirmDelete').addEventListener('click', function() {-->
+<!--        // Simulate API call-->
+<!--        console.log('Deleting voucher ID:', currentVoucherId);-->
+
+<!--        // Close modal-->
+<!--        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();-->
+
+<!--        // Show success message-->
+<!--        alert('Voucher đã được xóa thành công!');-->
+
+<!--        // Refresh table (replace with actual implementation)-->
+<!--        // location.reload();-->
+<!--    });-->
+
+<!--    // Form submission-->
+<!--    // document.getElementById('voucherForm').addEventListener('submit', function(e) {-->
+<!--    //     e.preventDefault();-->
+<!--    //-->
+<!--    //     // Get form data-->
+<!--    //     const formData = new FormData(this);-->
+<!--    //     const voucherData = Object.fromEntries(formData.entries());-->
+<!--    //-->
+<!--    //     // Validate dates-->
+<!--    //     const startDate = new Date(voucherData.startDate);-->
+<!--    //     const endDate = new Date(voucherData.endDate);-->
+<!--    //-->
+<!--    //     if (endDate <= startDate) {-->
+<!--    //         alert('Ngày kết thúc phải sau ngày bắt đầu!');-->
+<!--    //         return;-->
+<!--    //     }-->
+<!--    //-->
+<!--    //     // Validate value based on type-->
+<!--    //     if (voucherData.type === 'PERCENTAGE' && (v-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->

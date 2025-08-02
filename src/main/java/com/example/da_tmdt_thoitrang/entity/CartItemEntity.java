@@ -29,8 +29,16 @@ public class CartItemEntity {
     @Column(nullable = false)
     private Long cartId;
 
-    @Column(nullable = false)
-    private Long productDetailId;
+//    @Column(nullable = false)
+//    private Long productDetailId;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private ProductEntity product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cartId", insertable = false, updatable = false)
+    private CartEntity cart;
 
     @Column(nullable = false)
     private Integer quantity;
@@ -41,14 +49,30 @@ public class CartItemEntity {
     @CreationTimestamp
     private LocalDateTime addedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cartId", insertable = false, updatable = false)
-    private CartEntity cart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productDetailId", insertable = false, updatable = false)
-    private ProductDetailEntity productDetail;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "product", insertable = false, updatable = false)
+//    private ProductEntity productEntity;
 
+    @Column(name = "color")
+    private String color;
+
+    @Column(name = "size")
+    private String size;
+    @Column(columnDefinition = "DECIMAL(10,2)")
+    private BigDecimal subtotal;
+
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+
+    public BigDecimal getSubtotal() {
+        return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
 //    public Long getId() { return id; }
 //    public Integer getQuantity() { return quantity; }
 //    public BigDecimal getTotalPrice() {
@@ -57,4 +81,14 @@ public class CartItemEntity {
 //    }    public void updateQuantity(Integer quantity) { this.quantity = quantity; }
 
     // Other getters and setters...
+
+    @Transient
+    public Long getProductId() {
+        return product != null ? product.getId() : null;
+    }
+
+    // ✅ Setter đổi tên lại cho hợp lý
+    public void setProductId(ProductEntity product) {
+        this.product = product;
+    }
 }

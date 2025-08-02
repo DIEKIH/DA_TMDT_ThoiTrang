@@ -2,27 +2,28 @@
 //
 //import com.example.da_tmdt_thoitrang.entity.UserEntity;
 //import com.example.da_tmdt_thoitrang.repository.UserRepository;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.security.core.authority.SimpleGrantedAuthority;
-//import org.springframework.security.core.userdetails.*;
 //import org.springframework.stereotype.Service;
-//import java.util.Collections;
+//
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
 //
 //@Service
-//@RequiredArgsConstructor
 //public class CustomUserDetailsService implements UserDetailsService {
 //
 //    private final UserRepository userRepository;
 //
+//    public CustomUserDetailsService(UserRepository userRepository) {
+//        this.userRepository = userRepository;
+//    }
+//
 //    @Override
 //    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        UserEntity user = userRepository.findByUsername(username)
-//                .orElseThrow(() -> new UsernameNotFoundException("User không tồn tại"));
+//        UserEntity user = userRepository.findByUsername(username);
+//        if (user == null) {
+//            throw new UsernameNotFoundException("Không tìm thấy người dùng: " + username);
+//        }
 //
-//        return new org.springframework.security.core.userdetails.User(
-//                user.getUsername(),
-//                user.getPassword(), // mật khẩu đã mã hóa
-//                Collections.singleton(new SimpleGrantedAuthority("ROLE_ADMIN")) // hoặc ROLE_USER
-//        );
+//        return new CustomUserDetails(user);
 //    }
 //}

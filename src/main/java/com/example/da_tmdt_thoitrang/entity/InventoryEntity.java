@@ -18,8 +18,10 @@ public class InventoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long productDetailId;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
+
 
     // Tồn kho tổng
     @Column(nullable = false)
@@ -50,8 +52,8 @@ public class InventoryEntity {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productDetailId", insertable = false, updatable = false)
-    private ProductDetailEntity productDetail;
+    @JoinColumn(name = "product", insertable = false, updatable = false)
+    private ProductEntity productEntity;
 
 
     // ====== Hàm xử lý logic tồn kho ======

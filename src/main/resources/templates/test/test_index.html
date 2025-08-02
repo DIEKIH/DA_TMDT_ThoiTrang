@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEMA - Fashion Store</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #f8f9fa;
+            --accent-color: #e67e22;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--primary-color) !important;
+            font-weight: 500;
+            margin: 0 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--accent-color) !important;
+        }
+
+        /* Enhanced Banner Slider */
+        .banner-slider {
+            position: relative;
+            height: 80vh;
+            overflow: hidden;
+            margin-top: 80px;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-content {
+            text-align: center;
+            color: white;
+            max-width: 600px;
+            padding: 2rem;
+            animation: slideUp 1s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-title {
+            font-size: 3.5rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .slide-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .slide-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        .slide-btn:hover {
+            background: #d35400;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+            color: white;
+        }
+
+        /* Navigation arrows */
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .slider-nav:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-nav.prev {
+            left: 30px;
+        }
+
+        .slider-nav.next {
+            right: 30px;
+        }
+
+        /* Dots indicator */
+        .slider-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        /* Moving text banner */
+        .moving-banner {
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .moving-text {
+            display: flex;
+            white-space: nowrap;
+            animation: moveText 30s linear infinite;
+        }
+
+        .moving-text span {
+            padding-right: 100px;
+            font-weight: 500;
+        }
+
+        @keyframes moveText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+
+        .product-card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 300px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .category-section {
+            padding: 4rem 0;
+            background: var(--secondary-color);
+        }
+
+        .category-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            height: 250px;
+            margin-bottom: 2rem;
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .category-card:hover .category-overlay {
+            opacity: 1;
+        }
+
+        .category-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .category-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .trending-section {
+            padding: 4rem 0;
+        }
+
+        .product-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: opacity 0.3s;
+            padding: 0.5rem;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+
+        .product-overlay .btn {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: white;
+        }
+
+        .social-icons a {
+            color: #adb5bd;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .slide-title {
+                font-size: 2.5rem;
+            }
+
+            .slider-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .slider-nav.prev {
+                left: 15px;
+            }
+
+            .slider-nav.next {
+                right: 15px;
+            }
+
+            .banner-slider {
+                height: 60vh;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">CEMA</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="#home">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#categories">Danh mục</a></li>
+                <li class="nav-item"><a class="nav-link" href="#products">Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Liên hệ</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-search"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Moving Banner -->
+<div class="moving-banner">
+    <div class="moving-text">
+        <span>🎉 GIẢM GIÁ 50% CHO TẤT CẢ SẢN PHẨM MỚI</span>
+        <span>🚚 MIỄN PHÍ GIAO HÀNG CHO ĐŠN HÀNG TRÊN 500K</span>
+        <span>✨ BỘ SƯU TẬP MÙA ĐÔNG 2024 ĐÃ RA MẮT</span>
+        <span>💎 THÀNH VIÊN VIP ĐƯỢC GIẢM THÊM 10%</span>
+    </div>
+</div>
+
+<!-- Hero Banner Slider -->
+<section id="home" class="banner-slider">
+    <div class="slider-container">
+        <!-- Slide 1 -->
+        <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <h1 class="slide-title">Thời trang hiện đại</h1>
+                    <p class="slide-subtitle">Khám phá bộ sưu tập mới nhất với những thiết kế tinh tế, chất lượng cao và phong cách độc đáo dành cho phụ nữ hiện đại.</p>
+                    <a href="#products" class="slide-btn">Khám phá ngay</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <h1 class="slide-title">Bộ sưu tập mùa đông</h1>
+                    <p class="slide-subtitle">Ấm áp và phong cách với những món đồ thời trang cao cấp, phù hợp cho mọi hoàn cảnh trong mùa lạnh.</p>
+                    <a href="#categories" class="slide-btn">Xem bộ sưu tập</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <h1 class="slide-title">Thời trang công sở</h1>
+                    <p class="slide-subtitle">Chuyên nghiệp và thanh lịch với những bộ trang phục công sở hoàn hảo cho phụ nữ thành công.</p>
+                    <a href="#products" class="slide-btn">Mua sắm ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation arrows -->
+    <button class="slider-nav prev" onclick="changeSlide(-1)">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="slider-nav next" onclick="changeSlide(1)">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <!-- Dots indicator -->
+    <div class="slider-dots">
+        <span class="dot active" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section id="categories" class="category-section">
+    <div class="container">
+        <h2 class="section-title">Danh mục sản phẩm</h2>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Áo len">
+                    <div class="category-overlay">
+                        <h3 class="category-title">Áo len</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Chân váy">
+                    <div class="category-overlay">
+                        <h3 class="category-title">Chân váy</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Áo khoác">
+                    <div class="category-overlay">
+                        <h3 class="category-title">Áo khoác</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products Section -->
+<section id="products" class="trending-section">
+    <div class="container">
+        <h2 class="section-title">Sản phẩm nổi bật</h2>
+        <div class="row">
+            <!-- Sample Product 1 -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card position-relative">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Áo len cổ lọ" class="img-fluid">
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">Áo len cổ lọ</h5>
+                        <p class="product-price">890,000₫</p>
+                    </div>
+                    <div class="product-overlay d-flex justify-content-center align-items-center">
+                        <button class="btn btn-light me-2">Xem trước</button>
+                        <button class="btn btn-dark">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Product 2 -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card position-relative">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Chân váy midi" class="img-fluid">
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">Chân váy midi</h5>
+                        <p class="product-price">650,000₫</p>
+                    </div>
+                    <div class="product-overlay d-flex justify-content-center align-items-center">
+                        <button class="btn btn-light me-2">Xem trước</button>
+                        <button class="btn btn-dark">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Product 3 -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card position-relative">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Áo blazer" class="img-fluid">
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">Áo blazer</h5>
+                        <p class="product-price">1,200,000₫</p>
+                    </div>
+                    <div class="product-overlay d-flex justify-content-center align-items-center">
+                        <button class="btn btn-light me-2">Xem trước</button>
+                        <button class="btn btn-dark">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Product 4 -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card product-card position-relative">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1560243563-062d244a7e7f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Váy dạ hội" class="img-fluid">
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">Váy dạ hội</h5>
+                        <p class="product-price">1,800,000₫</p>
+                    </div>
+                    <div class="product-overlay d-flex justify-content-center align-items-center">
+                        <button class="btn btn-light me-2">Xem trước</button>
+                        <button class="btn btn-dark">Thêm vào giỏ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Collections -->
+<section class="category-section">
+    <div class="container">
+        <h2 class="section-title">Bộ sưu tập đặc biệt</h2>
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="category-card" style="height: 400px;">
+                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Winter Collection">
+                    <div class="category-overlay">
+                        <div class="text-center">
+                            <h3 class="category-title">Bộ sưu tập mùa đông</h3>
+                            <p class="text-white">Ấm áp và phong cách</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="category-card" style="height: 400px;">
+                    <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Office Collection">
+                    <div class="category-overlay">
+                        <div class="text-center">
+                            <h3 class="category-title">Thời trang công sở</h3>
+                            <p class="text-white">Chuyên nghiệp và thanh lịch</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-5" style="background: #f8f9fa;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h3 class="mb-3">Đăng ký nhận tin tức</h3>
+                <p class="text-muted mb-4">Nhận thông tin về các sản phẩm mới và ưu đãi đặc biệt</p>
+                <div class="input-group">
+                    <input type="email" class="form-control" placeholder="Nhập email của bạn">
+                    <button class="btn btn-primary" type="button">Đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <h5 class="footer-title">CEMA</h5>
+                <p class="text-muted">Thương hiệu thời trang hàng đầu, mang đến những sản phẩm chất lượng cao với thiết kế tinh tế và phong cách hiện đại.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h6 class="footer-title">Sản phẩm</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="footer-link">Áo len</a></li>
+                    <li><a href="#" class="footer-link">Chân váy</a></li>
+                    <li><a href="#" class="footer-link">Áo khoác</a></li>
+                    <li><a href="#" class="footer-link">Túi xách</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-md-6 mb-4">
+                <h6 class="footer-title">Dịch vụ</h6>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="footer-link">Hướng dẫn mua hàng</a></li>
+                    <li><a href="#" class="footer-link">Chính sách đổi trả</a></li>
+                    <li><a href="#" class="footer-link">Bảo hành</a></li>
+                    <li><a href="#" class="footer-link">Giao hàng</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <h6 class="footer-title">Liên hệ</h6>
+                <ul class="list-unstyled text-muted">
+                    <li><i class="fas fa-map-marker-alt me-2"></i>123 Đường ABC, Quận 1, TP.HCM</li>
+                    <li><i class="fas fa-phone me-2"></i>0123 456 789</li>
+                    <li><i class="fas fa-envelope me-2"></i>info@cema.com</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="row">
+            <div class="col-md-6">
+                <p class="text-muted mb-0">&copy; 2024 CEMA. Tất cả quyền được bảo lưu.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="#" class="footer-link me-3">Chính sách bảo mật</a>
+                <a href="#" class="footer-link">Điều khoản sử dụng</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Voucher</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 bg-dark text-white p-3">
+            <h5><i class="fas fa-cog"></i> Admin Panel</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white active" href="/admin/vouchers">
+                        <i class="fas fa-ticket-alt"></i> Voucher
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/admin/orders">
+                        <i class="fas fa-shopping-cart"></i> Đơn hàng
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-ticket-alt"></i> Quản lý Voucher</h2>
+                <a href="/admin/vouchers/create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Thêm Voucher
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
+                <i class="fas fa-check-circle"></i> <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Voucher Table -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Mã Voucher</th>
+                                <th>Tên</th>
+                                <th>Loại</th>
+                                <th>Giá trị</th>
+                                <th>Đã sử dụng</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="voucher : ${vouchers}">
+                                <td th:text="${voucher.id}"></td>
+                                <td>
+                                    <span class="badge bg-secondary" th:text="${voucher.code}"></span>
+                                </td>
+                                <td th:text="${voucher.name}"></td>
+                                <td>
+                                            <span th:if="${voucher.type.name() == 'PERCENTAGE'}" class="badge bg-info">
+                                                <i class="fas fa-percentage"></i> Phần trăm
+                                            </span>
+                                    <span th:if="${voucher.type.name() == 'FIXED_AMOUNT'}" class="badge bg-success">
+                                                <i class="fas fa-dollar-sign"></i> Cố định
+                                            </span>
+                                </td>
+                                <td>
+                                            <span th:if="${voucher.type.name() == 'PERCENTAGE'}"
+                                                  th:text="${voucher.value + '%'}"></span>
+                                    <span th:if="${voucher.type.name() == 'FIXED_AMOUNT'}"
+                                          th:text="${#numbers.formatDecimal(voucher.value, 0, 'COMMA', 0, 'POINT') + '₫'}"></span>
+                                </td>
+                                <td>
+                                    <span th:text="${voucher.usedCount}"></span>
+                                    <span th:if="${voucher.usageLimit != null}"
+                                          th:text="'/' + ${voucher.usageLimit}"></span>
+                                    <span th:if="${voucher.usageLimit == null}">/ ∞</span>
+                                </td>
+                                <td>
+                                            <span th:if="${voucher.isActive}" class="badge bg-success">
+                                                <i class="fas fa-check"></i> Hoạt động
+                                            </span>
+                                    <span th:if="${!voucher.isActive}" class="badge bg-danger">
+                                                <i class="fas fa-times"></i> Không hoạt động
+                                            </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a th:href="@{'/admin/vouchers/edit/' + ${voucher.id}}"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="deleteVoucher(this)"
+                                                th:data-id="${voucher.id}"
+                                                th:data-name="${voucher.name}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(vouchers)}">
+                                <td colspan="8" class="text-center py-4">
+                                    <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                                    <p class="text-muted">Chưa có voucher nào</p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa voucher <strong id="voucherName"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function deleteVoucher(button) {
+        const id = button.getAttribute('data-id');
+        const name = button.getAttribute('data-name');
+
+        document.getElementById('voucherName').textContent = name;
+        document.getElementById('deleteForm').action = '/admin/vouchers/delete/' + id;
+
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+</script>
+</body>
+</html>

@@ -28,8 +28,8 @@ public class ReviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+//    @Column(nullable = false)
+//    private Long userId;
 
     @Column(nullable = false)
     private Long productId;
@@ -47,9 +47,21 @@ public class ReviewEntity {
     @Column(nullable = false)
     private Boolean isApproved = false;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private UserEntity user;
+
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "userId", insertable = false, updatable = false)
+//    private UserEntity user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "userId")
+//    private UserEntity user;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productId", insertable = false, updatable = false)

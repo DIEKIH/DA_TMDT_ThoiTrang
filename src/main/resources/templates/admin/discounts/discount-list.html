@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý chương trình giảm giá</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome để có biểu tượng (nếu cần) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Quản lý chương trình giảm giá</h2>
+                <a href="/admin/discounts/new" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i> Tạo mới
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên chương trình</th>
+                        <th>Loại</th>
+                        <th>Giá trị giảm</th>
+                        <th>Kiểu giảm</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="discount : ${discounts}">
+                        <td th:text="${discount.id}"></td>
+                        <td th:text="${discount.name}"></td>
+                        <td><span class="badge bg-info" th:text="${discount.type}"></span></td>
+                        <td th:text="${discount.value}"></td>
+                        <td>
+                            <span th:if="${discount.valueType == 'PERCENTAGE'}"
+                                  th:text="${discount.value + '%'}"></span>
+
+                            <span th:if="${discount.valueType == 'FIXED'}"
+                                  th:text="${#numbers.formatDecimal(discount.value, 0, 'POINT', 2, 'COMMA') + ' VNĐ'}"></span>
+
+                        </td>
+                        <td th:text="${discount.startDate != null ? #temporals.format(discount.startDate, 'dd/MM/yyyy HH:mm') : 'Không giới hạn'}"></td>
+                        <td th:text="${discount.endDate != null ? #temporals.format(discount.endDate, 'dd/MM/yyyy HH:mm') : 'Không giới hạn'}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${discount.isActive ? 'bg-success' : 'bg-danger'}"
+                                  th:text="${discount.isActive ? 'Hoạt động' : 'Không hoạt động'}"></span>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a th:href="@{/admin/discounts/{id}/edit(id=${discount.id})}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <a th:href="@{/admin/discounts/{id}/assign-products(id=${discount.id})}"
+                                   class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-link"></i> Gán SP
+                                </a>
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        th:onclick="'deleteDiscount(' + ${discount.id} + ')'">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Xóa discount -->
+<script>
+    function deleteDiscount(id) {
+        if (confirm('Bạn có chắc chắn muốn xóa chương trình giảm giá này?')) {
+            fetch(`/admin/discounts/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Có lỗi xảy ra khi xóa chương trình giảm giá');
+                    }
+                })
+                .catch(() => alert('Không thể kết nối tới server'));
+        }
+    }
+</script>
+</body>
+</html>

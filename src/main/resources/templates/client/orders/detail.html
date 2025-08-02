@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thanh toán - CEIN</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/navbar_client.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+
+        .discount-input-group input {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .discount-input-group button {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container {
+                padding: 20px;
+            }
+        }
+        .order-detail-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        .product-item {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .product-item:hover {
+            background: #f9f9f9;
+        }
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: #fff3e0;
+            color: #e67e22;
+        }
+        .status-confirmed {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .status-delivered {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+        .status-cancelled {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        .price-highlight {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .summary-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .main-container {
+            padding-top: 100px; /* Thêm padding-top để tránh bị navbar che */
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/client_navbar :: client_navbar"></div>
+
+<div class="container main-container"> <!-- Thêm class main-container -->
+    <div class="order-detail-card">
+        <h3 class="mb-4">
+            <i class="fas fa-receipt me-2"></i>
+            Đơn hàng #<span th:text="${order.orderNumber}">123456</span>
+        </h3>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <p><strong><i class="fas fa-calendar-alt me-2"></i>Ngày đặt:</strong>
+                    <span th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}"></span></p>
+
+                <p><strong><i class="fas fa-truck me-2"></i>Địa chỉ:</strong>
+                    <span th:text="${order.shippingAddress}"></span></p>
+            </div>
+            <div class="col-md-6">
+                <p><strong><i class="fas fa-info-circle me-2"></i>Trạng thái:</strong>
+                    <span class="status-badge" th:classappend="'status-' + ${order.status.toString().toLowerCase()}"
+                          th:text="${order.status}"></span></p>
+
+                <p><strong><i class="fas fa-comment me-2"></i>Ghi chú:</strong>
+                    <span th:text="${order.notes ?: 'Không có'}"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-detail-card">
+        <h5 class="mb-4"><i class="fas fa-box-open me-2"></i>Sản phẩm</h5>
+
+        <div th:each="item : ${order.orderItems}" class="product-item">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <img th:if="${item.product != null}"
+                             th:src="${item.product.imageUrl}"
+                             class="me-3 rounded"
+                             style="width: 80px; height: 80px; object-fit: cover;">
+                        <div>
+                            <h6 th:text="${item.product != null ? item.product.name : 'Không có sản phẩm'}"></h6>
+                            <small class="text-muted">SKU: <span th:text="${item.product != null ? item.product.sku : 'N/A'}"></span></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 text-center">
+                    <span th:text="${item.quantity}">0</span>
+                </div>
+                <div class="col-md-2 text-end">
+                    <span th:text="${#numbers.formatDecimal(item.unitPrice, 1, 2) + 'đ'}">0đ</span>
+                </div>
+                <div class="col-md-2 text-end">
+                    <span class="fw-bold" th:text="${#numbers.formatDecimal(item.totalPrice, 1, 2) + 'đ'}">0đ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-detail-card summary-box">
+        <div class="row">
+            <div class="col-md-6">
+                <h5><i class="fas fa-credit-card me-2"></i>Thanh toán</h5>
+                <p><strong>Trạng thái:</strong>
+                    <span th:text="${order.paymentStatus}"></span></p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p><strong>Tổng tiền:</strong>
+                    <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)} + 'đ'"></span></p>
+                <p><strong>Giảm giá:</strong>
+                    <span class="text-danger" th:text="'-' + ${#numbers.formatDecimal(order.discountAmount, 1, 2)} + 'đ'"></span></p>
+                <p><strong>Phí vận chuyển:</strong>
+                    <span th:text="${#numbers.formatDecimal(order.shippingFee, 1, 2)} + 'đ'"></span></p>
+                <h4 class="mt-3"><strong>Thành tiền:</strong>
+                    <span class="text-success price-highlight" th:text="${#numbers.formatDecimal(order.finalAmount, 1, 2)} + 'đ'"></span></h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+</script>
+
+</body>
+</html>

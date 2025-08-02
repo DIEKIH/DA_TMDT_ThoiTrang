@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Discount</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ================== DISCOUNT LIST PAGE ================== -->
+<div class="container-fluid mt-3" id="discount-list-page">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-percent"></i> Quản lý Giảm giá</h2>
+                <a href="/admin/discounts/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Tạo chương trình mới
+                </a>
+            </div>
+
+            <!-- Flash Messages -->
+            <div class="alert alert-success alert-dismissible fade show" style="display: none;" id="success-alert">
+                <span id="success-message"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="alert alert-danger alert-dismissible fade show" style="display: none;" id="error-alert">
+                <span id="error-message"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Search Form -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="GET" action="/admin/discounts" class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="search"
+                                   placeholder="Tìm kiếm theo tên chương trình..."
+                                   value="">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-search"></i> Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Discounts Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Danh sách chương trình giảm giá</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên chương trình</th>
+                                <th>Loại</th>
+                                <th>Giá trị</th>
+                                <th>Thời gian</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Sample Data - Replace with Thymeleaf loop -->
+                            <tr>
+                                <td>1</td>
+                                <td>
+                                    <strong>Giảm giá tết 2025</strong>
+                                    <br><small class="text-muted">Khuyến mãi đặc biệt dịp Tết</small>
+                                </td>
+                                <td><span class="badge bg-info">PRODUCT</span></td>
+                                <td>
+                                    <span class="fw-bold text-danger">20%</span>
+                                    <br><small class="text-muted">Percentage</small>
+                                </td>
+                                <td>
+                                    <small>
+                                        <strong>Từ:</strong> 01/01/2025<br>
+                                        <strong>Đến:</strong> 15/02/2025
+                                    </small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Đang hoạt động</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="/admin/discounts/view/1" class="btn btn-outline-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/admin/discounts/edit/1" class="btn btn-outline-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-secondary"
+                                                onclick="toggleStatus(1)">
+                                            <i class="bi bi-toggle-on"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger"
+                                                onclick="deleteDiscount(1)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Add more sample rows -->
+                            <tr>
+                                <td>2</td>
+                                <td>
+                                    <strong>Flash Sale</strong>
+                                    <br><small class="text-muted">Giảm giá nhanh 2 tiếng</small>
+                                </td>
+                                <td><span class="badge bg-warning">CATEGORY</span></td>
+                                <td>
+                                    <span class="fw-bold text-danger">50,000đ</span>
+                                    <br><small class="text-muted">Fixed Amount</small>
+                                </td>
+                                <td>
+                                    <small>
+                                        <strong>Từ:</strong> 15/01/2025 14:00<br>
+                                        <strong>Đến:</strong> 15/01/2025 16:00
+                                    </small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">Tạm dừng</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="/admin/discounts/view/2" class="btn btn-outline-info">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="/admin/discounts/edit/2" class="btn btn-outline-warning">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-secondary"
+                                                onclick="toggleStatus(2)">
+                                            <i class="bi bi-toggle-off"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger"
+                                                onclick="deleteDiscount(2)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== DISCOUNT FORM PAGE ================== -->
+<div class="container-fluid mt-3" id="discount-form-page" style="display: none;">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-plus-circle"></i> Tạo chương trình giảm giá</h2>
+                <a href="/admin/discounts" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </a>
+            </div>
+
+            <form method="POST" action="/admin/discounts/create">
+                <div class="row">
+                    <!-- Left Column - Basic Info -->
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Thông tin cơ bản</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="name" class="form-label">Tên chương trình <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                               placeholder="VD: Giảm giá Tết 2025" required>
+                                        <div class="invalid-feedback">Vui lòng nhập tên chương trình</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="type" class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="type" name="type" required>
+                                            <option value="">-- Chọn loại --</option>
+                                            <option value="PRODUCT">Sản phẩm cụ thể</option>
+                                            <option value="CATEGORY">Danh mục</option>
+                                            <option value="BRAND">Thương hiệu</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Mô tả</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3"
+                                              placeholder="Mô tả chi tiết về chương trình giảm giá..."></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="valueType" class="form-label">Kiểu giảm giá <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="valueType" name="valueType" required onchange="toggleValueInput()">
+                                            <option value="">-- Chọn kiểu --</option>
+                                            <option value="PERCENTAGE">Phần trăm (%)</option>
+                                            <option value="FIXED_AMOUNT">Số tiền cố định</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="value" class="form-label">Giá trị <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="value" name="value"
+                                                   step="0.01" min="0" required>
+                                            <span class="input-group-text" id="value-suffix">%</span>
+                                        </div>
+                                        <div class="form-text" id="value-help">Nhập giá trị từ 0-100 cho %</div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="isActive" class="form-label">Trạng thái</label>
+                                        <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input" type="checkbox" id="isActive" name="isActive" checked>
+                                            <label class="form-check-label" for="isActive">Kích hoạt ngay</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="startDate" class="form-label">Ngày bắt đầu</label>
+                                        <input type="datetime-local" class="form-control" id="startDate" name="startDate">
+                                        <div class="form-text">Để trống để áp dụng ngay lập tức</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="endDate" class="form-label">Ngày kết thúc</label>
+                                        <input type="datetime-local" class="form-control" id="endDate" name="endDate">
+                                        <div class="form-text">Để trống để không giới hạn thời gian</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Product Selection -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Chọn sản phẩm áp dụng</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" id="productSearch"
+                                           placeholder="Tìm kiếm sản phẩm..." onkeyup="filterProducts()">
+                                </div>
+
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-2" onclick="selectAllProducts()">
+                                        Chọn tất cả
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearAllProducts()">
+                                        Bỏ chọn tất cả
+                                    </button>
+                                </div>
+
+                                <div class="product-list" style="max-height: 400px; overflow-y: auto;">
+                                    <!-- Sample products - Replace with dynamic data -->
+                                    <div class="form-check mb-2 product-item">
+                                        <input class="form-check-input" type="checkbox" name="productIds" value="1" id="product1">
+                                        <label class="form-check-label" for="product1">
+                                            <strong>iPhone 15 Pro</strong><br>
+                                            <small class="text-muted">25,000,000đ</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2 product-item">
+                                        <input class="form-check-input" type="checkbox" name="productIds" value="2" id="product2">
+                                        <label class="form-check-label" for="product2">
+                                            <strong>Samsung Galaxy S24</strong><br>
+                                            <small class="text-muted">20,000,000đ</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2 product-item">
+                                        <input class="form-check-input" type="checkbox" name="productIds" value="3" id="product3">
+                                        <label class="form-check-label" for="product3">
+                                            <strong>MacBook Pro M3</strong><br>
+                                            <small class="text-muted">45,000,000đ</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2 product-item">
+                                        <input class="form-check-input" type="checkbox" name="productIds" value="4" id="product4">
+                                        <label class="form-check-label" for="product4">
+                                            <strong>Dell XPS 15</strong><br>
+                                            <small class="text-muted">35,000,000đ</small>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 p-2 bg-light rounded">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle"></i>
+                                        Đã chọn: <span id="selected-count">0</span> sản phẩm
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body text-end">
+                                <a href="/admin/discounts" class="btn btn-secondary me-2">
+                                    <i class="bi bi-x-circle"></i> Hủy
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Tạo chương trình
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ================== DISCOUNT VIEW PAGE ================== -->
+<div class="container-fluid mt-3" id="discount-view-page" style="display: none;">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-eye"></i> Chi tiết chương trình giảm giá</h2>
+                <div>
+                    <a href="/admin/discounts/edit/1" class="btn btn-warning me-2">
+                        <i class="bi bi-pencil"></i> Chỉnh sửa
+                    </a>
+                    <a href="/admin/discounts" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Left Column - Discount Info -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Thông tin chương trình</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Tên chương trình</h6>
+                                    <p class="fw-bold">Giảm giá Tết 2025</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Trạng thái</h6>
+                                    <span class="badge bg-success fs-6">Đang hoạt động</span>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <h6 class="text-muted">Mô tả</h6>
+                                    <p>Chương trình giảm giá đặc biệt nhân dịp Tết Nguyên Đán 2025. Áp dụng cho các sản phẩm công nghệ hot nhất.</p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <h6 class="text-muted">Loại giảm giá</h6>
+                                    <span class="badge bg-info">Sản phẩm cụ thể</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted">Giá trị giảm</h6>
+                                    <p class="fw-bold text-danger fs-4">20%</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted">Kiểu giảm giá</h6>
+                                    <p>Phần trăm</p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Thời gian bắt đầu</h6>
+                                    <p><i class="bi bi-calendar-event"></i> 01/01/2025 00:00</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Thời gian kết thúc</h6>
+                                    <p><i class="bi bi-calendar-x"></i> 15/02/2025 23:59</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Statistics -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Thống kê</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <h3 class="text-primary">15</h3>
+                                <p class="text-muted">Sản phẩm áp dụng</p>
+                            </div>
+                            <div class="mb-3">
+                                <h3 class="text-success">1,250</h3>
+                                <p class="text-muted">Lượt sử dụng</p>
+                            </div>
+                            <div class="mb-3">
+                                <h3 class="text-info">45 ngày</h3>
+                                <p class="text-muted">Thời gian còn lại</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applied Products -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Sản phẩm áp dụng (15 sản phẩm)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Giá gốc</th>
+                                        <th>Giá sau giảm</th>
+                                        <th>Tiết kiệm</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>iPhone 15 Pro</strong><br>
+                                            <small class="text-muted">SKU: IP15P-256GB</small>
+                                        </td>
+                                        <td>25,000,000đ</td>
+                                        <td class="text-success fw-bold">20,000,000đ</td>
+                                        <td class="text-danger">-5,000,000đ</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="removeProduct(1, 1)">
+                                                <i class="bi bi-x-circle"></i> Gỡ
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Samsung Galaxy S24</strong><br>
+                                            <small class="text-muted">SKU: SGS24-128GB</small>
+                                        </td>
+                                        <td>20,000,000đ</td>
+                                        <td class="text-success fw-bold">16,000,000đ</td>
+                                        <td class="text-danger">-4,000,000đ</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="removeProduct(1, 2)">
+                                                <i class="bi bi-x-circle"></i> Gỡ
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== PRODUCTS REPORT PAGE ================== -->
+<div class="container-fluid mt-3" id="products-report-page" style="display: none;">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-graph-up"></i> Báo cáo sản phẩm giảm giá</h2>
+                <div>
+                    <button class="btn btn-success me-2" onclick="exportReport()">
+                        <i class="bi bi-file-excel"></i> Xuất Excel
+                    </button>
+                    <a href="/admin/discounts" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h3>1,245</h3>
+                            <p class="mb-0">Tổng sản phẩm</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h3>315</h3>
+                            <p class="mb-0">Có giảm giá</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body text-center">
+                            <h3>25%</h3>
+                            <p class="mb-0">Tỷ lệ giảm giá</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h3>2.5M</h3>
+                            <p class="mb-0">Tổng tiết kiệm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Chi tiết sản phẩm</h5>
+                        <div class="d-flex gap-2">
+                            <select class="form-select form-select-sm" style="width: auto;">
+                                <option>Tất cả trạng thái</option>
+                                <option>Có giảm giá</option>
+                                <option>Không giảm giá</option>
+                            </select>
+                            <input type="text" class="form-control form-control-sm" placeholder="Tìm kiếm..." style="width: 200px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Giá gốc</th>
+                                <th>Chương trình giảm giá</th>
+                                <th>Giá sau giảm</th>
+                                <th>% Tiết kiệm</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="table-success">
+                                <td>
+                                    <strong>iPhone 15 Pro Max</strong><br>
+                                    <small class="text-muted">SKU: IP15PM-256GB</small>
+                                </td>
+                                <td>30,000,000đ</td>
+                                <td>
+                                    <span class="badge bg-primary">Giảm giá Tết 2025</span>
+                                </td>
+                                <td class="fw-bold text-success">24,000,000đ</td>
+                                <td>
+                                    <span class="badge bg-danger">-20%</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Có giảm giá</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>iPad Air M2</strong><br>
+                                    <small class="text-muted">SKU: IPA-M2-256GB</small>
+                                </td>
+                                <td>18,000,000đ</td>
+                                <td>
+                                    <span class="text-muted">--</span>
+                                </td>
+                                <td>18,000,000đ</td>
+                                <td>
+                                    <span class="badge bg-secondary">0%</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">Không giảm giá</span>
+                                </td>
+                            </tr>
+                            <tr class="table-success">
+                                <td>
+                                    <strong>MacBook Pro M3</strong><br>
+                                    <small class="text-muted">SKU: MBP-M3-512GB</small>
+                                </td>
+                                <td>45,000,000đ</td>
+                                <td>
+                                    <span class="badge bg-warning">Flash Sale</span>
+                                </td>
+                                <td class="fw-bold text-success">43,500,000đ</td>
+                                <td>
+                                    <span class="badge bg-danger">-1,500,000đ</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">Có giảm giá</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <span class="page-link">Trước</span>
+                            </li>
+                            <li class="page-item active">
+                                <span class="page-link">1</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Sau</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa chương trình giảm giá này?</p>
+                <p class="text-danger"><strong>Lưu ý:</strong> Thao tác này không thể hoàn tác!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form method="POST" style="display: inline;" id="deleteForm">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    // JavaScript functions
+    function toggleValueInput() {
+        const valueType = document.getElementById('valueType').value;
+        const valueSuffix = document.getElementById('value-suffix');
+        const valueHelp = document.getElementById('value-help');
+        const valueInput = document.getElementById('value');
+
+        if (valueType === 'PERCENTAGE') {
+            valueSuffix.textContent = '%';
+            valueHelp.textContent = 'Nhập giá trị từ 0-100 cho %';
+            valueInput.setAttribute('max', '100');
+        } else if (valueType === 'FIXED_AMOUNT') {
+            valueSuffix.textContent = 'đ';
+            valueHelp.textContent = 'Nhập số tiền giảm cố định';
+            valueInput.removeAttribute('max');
+        }
+    }
+
+    function filterProducts() {
+        const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+        const products = document.querySelectorAll('.product-item');
+
+        products.forEach(product => {
+            const label = product.querySelector('label');
+            const text = label.textContent.toLowerCase();
+
+            if (text.includes(searchTerm)) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    }
+
+    function selectAllProducts() {
+        const checkboxes = document.querySelectorAll('input[name="productIds"]:not([style*="none"])');
+        checkboxes.forEach(cb => cb.checked = true);
+        updateSelectedCount();
+    }
+
+    function clearAllProducts() {
+        const checkboxes = document.querySelectorAll('input[name="productIds"]');
+        checkboxes.forEach(cb => cb.checked = false);
+        updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+        const checkedBoxes = document.querySelectorAll('input[name="productIds"]:checked');
+        document.getElementById('selected-count').textContent = checkedBoxes.length;
+    }
+
+    function deleteDiscount(id) {
+        document.getElementById('deleteForm').action = '/admin/discounts/delete/' + id;
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+
+    function toggleStatus(id) {
+        if (confirm('Bạn có muốn thay đổi trạng thái chương trình giảm giá này?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/discounts/toggle-status/' + id;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // function removeProduct(discountId, productId) {
+    //     if (confirm('Bạn có muốn gỡ sản phẩm này khỏi chương trình giảm giá?')) {
+    //         fetch(`/api/discounts/${discountId}/remove-product/${productId}`, {
+    //             method: 'DELETE'
+    //         }).then(response => {
+    //             if (response.ok) {
+    //                 location.reload();
+    //             } else {
+    //                 alert('
+
+</script>
+</body>
+</html>
